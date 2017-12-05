@@ -38,14 +38,15 @@
 
     .no-result-icon {
       width: 2.4rem;
-      height: 2rem;
+      height: 2.4rem;
       background-repeat: no-repeat;
       margin: 0 auto;
-      background-size: 2.4rem;
+      background-size: contain;
+      background-position: center;
     }
     .no-result-text {
       margin-top: 0.3rem;
-      font-size: $font-size-medium;
+      font-size: $font-size-medium-x;
       color: $color-text-d;
     }
   }

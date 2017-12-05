@@ -18,19 +18,25 @@
           <button :disabled="sending" @click="sendCaptcha">{{captBtnText}}</button>
         </div>
       </div>
-
-      <div class="form-btn">
-        <button @click="_changeMobile">重置</button>
+      <div class="form-item border-bottom-1px">
+        <div class="item-label">新密码</div>
+        <div class="item-input-wrapper">
+          <input type="password" class="item-input" v-model="pwd" @change="_pwdValid" placeholder="新密码不能少于6位">
+          <span v-show="pwdErr" class="error-tip">{{pwdErr}}</span>
+        </div>
       </div>
-      <toast ref="toast" text="修改成功"></toast>
+      <div class="form-btn">
+        <button @click="resetPwd">重置</button>
+      </div>
+      <toast ref="toast" text="密码重置成功"></toast>
       <full-loading v-show="loadFlag" title="重置中..."></full-loading>
     </div>
   </div>
 </template>
 <script>
   import {sendCaptcha} from 'api/general';
-  import {changeMobile} from 'api/user';
-  import {mobileValid, captValid, setTitle} from 'common/js/util';
+  import {resetPwd} from 'api/user';
+  import {mobileValid, captValid, pwdValid, setTitle} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
@@ -45,28 +51,31 @@
         captErr: '',
         captBtnText: '获取验证码',
         mobile: '',
-        mobErr: ''
+        mobErr: '',
+        pwd: '',
+        pwdErr: ''
       };
     },
     created() {
-      setTitle('修改手机号');
+      setTitle('找回密码');
     },
     methods: {
       sendCaptcha() {
         if (this._mobileValid()) {
           this.sending = true;
-          sendCaptcha(this.mobile, 805061).then(() => {
+          sendCaptcha(this.mobile, 805063).then(() => {
             this._setInterval();
           }).catch(() => {
             this._clearInterval();
           });
         }
       },
-      _changeMobile() {
+      resetPwd() {
         if (this._valid()) {
           this.loadFlag = true;
-          changeMobile(this.mobile, this.captcha)
+          resetPwd(this.mobile, this.captcha, this.pwd)
             .then(() => {
+              this.loadFlag = false;
               this.$refs.toast.show();
               setTimeout(() => {
                 this.$router.push('/login');
@@ -79,7 +88,8 @@
       _valid() {
         let r1 = this._mobileValid();
         let r2 = this._captValid();
-        return r1 && r2;
+        let r3 = this._pwdValid();
+        return r1 && r2 && r3;
       },
       _mobileValid() {
         let result = mobileValid(this.mobile);
@@ -89,6 +99,11 @@
       _captValid() {
         let result = captValid(this.captcha);
         this.captErr = result.msg;
+        return !result.err;
+      },
+      _pwdValid() {
+        let result = pwdValid(this.pwd);
+        this.pwdErr = result.msg;
         return !result.err;
       },
       _setInterval() {

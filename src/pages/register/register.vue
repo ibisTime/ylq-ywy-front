@@ -63,7 +63,7 @@
       sendCaptcha() {
         if (this._mobileValid()) {
           this.sending = true;
-          sendCaptcha(this.mobile, 805061).then(() => {
+          sendCaptcha(this.mobile, 805041).then(() => {
             this._setInterval();
           }).catch(() => {
             this._clearInterval();
