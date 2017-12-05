@@ -7,7 +7,7 @@
 </template>
 
 <script type="text/ecmascript-6">
-  import noImg from './no-result.png';
+  import noImg from './no-result@2x.png';
 
   export default {
     props: {
