@@ -21,6 +21,16 @@ const Login = () => import('pages/login/login');
 const Register = () => import('pages/register/register');
 // 找回密码
 const FindPwd = () => import('pages/find-pwd/find-pwd');
+// 暂无客户
+const noCustomer = () => import('components/no-customer/no-customer');
+// 资信报告
+const myTemplet = () => import('components/my-templet/my-templet');
+// 模板详情
+const templetDetails = () => import('components/templet-details/templet-details');
+// 接口详情
+const interfaceDetails = () => import('components/interface-details/interface-details');
+// 联系商务
+const contactBusiness = () => import('components/contact-business/contact-business');
 
 export default new Router({
   routes: [
@@ -33,6 +43,21 @@ export default new Router({
       component: Home
     },
     {
+      path: '/no-customer',
+      component: noCustomer
+    }, {
+      path: '/my-templet',
+      component: myTemplet
+    }, {
+      path: '/templet-details',
+      component: templetDetails
+    }, {
+      path: '/interface-details',
+      component: interfaceDetails
+    }, {
+      path: '/contact-business',
+      component: contactBusiness
+    }, {
       path: '/user',
       component: User,
       children: [

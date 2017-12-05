@@ -12,7 +12,7 @@
           <span>发送报告</span>
           <img src="./发送报告@2x.png" alt="" class="fr">
         </div>
-        <div id="myClient" class="fl">
+        <div id="myClient" class="fl" @click="haha">
           <span>我的客户</span>
           <img src="./我的客户@2x.png" alt="" class="fr">
         </div>
@@ -23,15 +23,15 @@
       </div>
       <div id="blank"></div>
       <div id="smallIcons">
-        <div v-for="item in items1" class="fl item">
+        <div v-for="item in items1" class="fl item" @click="$router.push(item.to);">
           <img v-bind:src="item.src" alt=""><br>
           <span>{{item.text}}</span>
         </div>
-        <div v-for="item in items2" class="fl item">
+        <div v-for="item in items2" class="fl item" @click="$router.push(item.to);">
           <img v-bind:src="item.src" alt=""><br>
           <span>{{item.text}}</span>
         </div>
-        <div v-for="item in items3" class="fl item">
+        <div v-for="item in items3" class="fl item" @click="$router.push(item.to);">
           <img v-bind:src="item.src" alt=""><br>
           <span>{{item.text}}</span>
         </div>
@@ -53,7 +53,8 @@
         }],
         items1: [{
           text: '资信报告',
-          src: require('./资信报告@2x.png')
+          src: require('./资信报告@2x.png'),
+          to: '/my-templet'
         }, {
           text: '资信跟踪',
           src: require('./信息跟踪@2x.png')
@@ -80,7 +81,8 @@
           src: require('./存管@2x.png')
         }, {
           text: '更多',
-          src: require('./more@2x.png')
+          src: require('./more@2x.png'),
+          to: '/contact-business'
         }]
       };
     },
@@ -94,11 +96,13 @@
     },
     methods: {
       getImgSyl(imgs) {
-        console.log(imgs);
         return {
 //          backgroundImage: `url(${formatImg(imgs)})`
           backgroundImage: `url(${imgs})`
         };
+      },
+      haha () {
+        this.$router.push(`/no-customer`);
       }
     },
     components: {
@@ -126,8 +130,6 @@
       float: right;
     }
     #banner{
-      /*width: 7.5rem;*/
-      /*height: 3.5rem;*/
       position: relative;
       .home-slider{
         a{
@@ -137,28 +139,6 @@
         }
 
       }
-      /*#dots{*/
-        /*!*background-color: yellow;*!*/
-        /*width: 0.92rem;*/
-        /*height: 0.14rem;*/
-        /*position: absolute;*/
-        /*bottom: 0.2rem;*/
-        /*margin-left: 3.29rem;*/
-        /*ul{*/
-          /*list-style: none;*/
-        /*}*/
-        /*.dot{*/
-          /*width: 0.14rem;*/
-          /*height: 0.14rem;*/
-          /*background: #fff;*/
-          /*opacity: 0.6;*/
-          /*margin-right: 0.12rem;*/
-          /*border-radius: 50%;*/
-        /*}*/
-        /*.dot:last-child{*/
-          /*margin-right:0;*/
-        /*}*/
-      /*}*/
     }
     #middle{
       width: 100%;
