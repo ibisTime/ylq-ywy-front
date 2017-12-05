@@ -233,3 +233,45 @@
   -webkit-box-orient: vertical;
   word-break: break-all;
 }
+
+.cd-flexbox {
+  display: flex;
+}
+
+.cd-flex1 {
+  flex: 1;
+}
+
+.cd-align-center {
+  align-items: center;
+}
+
+.full-screen-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cd-avatar-box {
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.cd-h100 {
+  height: 100%;
+}
+
+.cd-w100 {
+  width: 100%;
+}
+
+.cd-bg-fff {
+  background-color: #fff;
+}

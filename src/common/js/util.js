@@ -107,7 +107,7 @@ export function formatImg(imgs, suffix = '?imageMogr2/auto-orient') {
 // 格式化头像
 export function formatAvatar(img, suffix = '?imageMogr2/auto-orient') {
   if (!img) {
-    let avatar = require('../image/avatar@2x.png');
+    let avatar = require('../image/avatar.png');
     if (/^http|^data:image/i.test(avatar)) {
       return avatar;
     }

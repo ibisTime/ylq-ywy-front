@@ -15,7 +15,7 @@
 <script type="text/ecmascript-6">
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
-  import {isLogin, setUser, getWxMobAndCapt} from 'common/js/util';
+  import {setUser, getWxMobAndCapt} from 'common/js/util';
   import {getAppId} from 'api/general';
   import {wxLogin} from 'api/user';
 
