@@ -1,15 +1,15 @@
 <template>
     <div class="full-screen-wrapper user-wrapper">
-      <header>
+      <router-link tag="div" to="/user/setting" class="header">
         <div class="cd-flexbox cd-align-center">
           <div class="cd-avatar-box user-avatar"><img src="./avatar.png"></div>
           <div class="cd-flex1 user-message">
-            <p>某某</p>
+            <p class="over-hide">某某</p>
             <p>15555555555</p>
           </div>
           <div class="right-arrow"></div>
         </div>
-      </header>
+      </router-link>
       <div class="main-cont cd-bg-fff">
         <div class="line-item cd-flexbox cd-align-center">
           <div class="icon-money"></div>
@@ -21,10 +21,20 @@
           <div class="price cd-flex1"><label>账单</label></div>
           <div class="right-arrow right-arrow-gray"></div>
         </div>
-        <div class="bill-flow">
-          <div class="bill-item"></div>
+        <div class="bill-flow border-top-1px">
+          <div class="bill-item cd-flexbox">
+            <div class="bill-name">激将法</div>
+            <div class="bill-price cd-flex1">-2444444.00元</div>
+            <div class="bill-datetime">2017-10-11 12:11</div>
+          </div>
+          <div class="bill-item cd-flexbox">
+            <div class="bill-name">激将法</div>
+            <div class="bill-price cd-flex1">-2444444.00元</div>
+            <div class="bill-datetime">2017-10-11 12:11</div>
+          </div>
         </div>
       </div>
+      <router-view></router-view>
     </div>
 </template>
 <script>
@@ -35,16 +45,18 @@
   @import "~common/scss/variable";
 
   .user-wrapper {
-    header {
+    .header {
       padding: 0.45rem 0.3rem;
       background-color: $primary-color;
     }
     .user-avatar {
       width: 1.1rem;
       height: 1.1rem;
+      flex: 0 0 1.1rem;
     }
     .user-message {
       margin-left: 0.2rem;
+      margin-right: 0.2rem;
       font-size: $font-size-large-ss;
       color: #fff;
       p+p {
@@ -55,6 +67,7 @@
     .right-arrow {
       height: 1.1rem;
       width: 0.16rem;
+      flex: 0 0 0.16rem;
       @include bg-image('more');
       background-repeat: no-repeat;
       background-position: center;
@@ -62,7 +75,7 @@
 
       &.right-arrow-gray {
         height: 100%;
-        @include bg-image('more');
+        @include bg-image('more-gray');
       }
     }
 
@@ -93,6 +106,17 @@
         label {
           padding-right: 0.3rem;
           font-size: $font-size-medium-x;
+        }
+      }
+    }
+    .bill-flow {
+      padding: 0.05rem 0;
+      @include border-top-1px($color-border);
+      .bill-item {
+        line-height: 0.56rem;
+        font-size: $font-size-medium-s;
+        .bill-price {
+          text-align: center;
         }
       }
     }

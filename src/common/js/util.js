@@ -35,42 +35,12 @@ export function getUserId() {
 export function setUser(data) {
   setCookie('userId', data.userId);
   setCookie('token', data.token);
-  setCookie('__sig__', data.sig);
-  setCookie('__accountType__', data.accountType);
-  setCookie('__txAppCode__', data.txAppCode);
-}
-
-// 获取腾讯云登录的sig
-export function getSig () {
-  return getCookie('__sig__') || '';
-}
-
-// 获取腾讯云登录的accountType
-export function getAccountType () {
-  return getCookie('__accountType__') || '';
-}
-
-// 获取腾讯云登录的txAppCode
-export function getTxAppCode () {
-  return getCookie('__txAppCode__') || '';
-}
-
-// 获取腾讯云登录的参数
-export function getTencentParams () {
-  return {
-    sig: getSig(),
-    accountType: getAccountType(),
-    txAppCode: getTxAppCode()
-  };
 }
 
 // 删除用户登录信息
 export function clearUser() {
   delCookie('userId');
   delCookie('token');
-  delCookie('__sig__');
-  delCookie('__accountType__');
-  delCookie('__txAppCode__');
 }
 
 // 是否登录
@@ -286,8 +256,8 @@ export function mobileValid(mobile) {
   return result;
 }
 
-// 支付密码校验
-export function tradeValid(trade) {
+// 密码校验
+export function pwdValid(trade) {
   let result = {
     err: 0,
     msg: ''
@@ -297,7 +267,7 @@ export function tradeValid(trade) {
     result.msg = '不能为空';
   } else if (trade.length < 6) {
     result.err = 1;
-    result.msg = '长度不能小于6位';
+    result.msg = '不能少于6位';
   }
   return result;
 }
