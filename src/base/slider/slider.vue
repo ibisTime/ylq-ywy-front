@@ -224,7 +224,8 @@
         background: rgba(255,255,255,0.6);
 
         &.active {
-          background: $primary-color;
+          background: rgb(255,255,255);
+          /*<!--background: $primary-color;-->*/
         }
       }
     }
