@@ -9,13 +9,15 @@
       </div>
     </div>
     <toast :text="text" ref="toast"></toast>
+
   </div>
+
 </template>
 
 <script type="text/ecmascript-6">
   import Loading from 'base/loading/loading';
   import Toast from 'base/toast/toast';
-  import {isLogin, setUser, getWxMobAndCapt} from 'common/js/util';
+  import {setUser, getWxMobAndCapt} from 'common/js/util';
   import {getAppId} from 'api/general';
   import {wxLogin} from 'api/user';
 
@@ -123,4 +125,10 @@
       transform: translate3d(0, -50%, 0);
     }
   }
+
+
+
+
+
+
 </style>
