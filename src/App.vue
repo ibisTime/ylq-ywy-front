@@ -8,18 +8,11 @@
         <loading title=""></loading>
       </div>
     </div>
-    <toast :text="text" ref="toast"></toast>
-
   </div>
-
 </template>
 
 <script type="text/ecmascript-6">
   import Loading from 'base/loading/loading';
-  import Toast from 'base/toast/toast';
-  import {setUser, getWxMobAndCapt} from 'common/js/util';
-  import {getAppId} from 'api/general';
-  import {wxLogin} from 'api/user';
 
   export default {
     data() {
@@ -30,82 +23,15 @@
     },
     created() {
 //      if (!isLogin()) {
-//        if (/code=([^&]+)&state=/.exec(location.href)) {
-//          let code = RegExp.$1;
-//          let userReferee = '';
-//          let activityCode = '';
-//          if (/(?:\?|&)userReferee=([^&$]+)/.test(location.hash)) {
-//            userReferee = RegExp.$1;
-//          }
-//          if (/(?:\?|&)activityCode=([^&$]+)/.test(location.hash)) {
-//            activityCode = RegExp.$1;
-//          }
-//          this.wxLogin(code, userReferee, activityCode);
-//        } else {
-//          this.getAppId();
-//        }
+//        this.$router.replace('/login');
 //      } else {
-//        if (/\/#\//.test(location.href)) {
-//          let hash = window.location.hash;
-//          let path = hash;
-//          if (hash === '' || hash === '#/') {
-//            path = '#/home';
-//          }
-//          path = path.substr(1);
-//          this.timer = setInterval(() => {
-//            if (this.$route.fullPath !== '/') {
-//              clearInterval(this.timer);
-//              if (/\/user\/recommend/.test(hash)) {
-//                location.replace(`${location.origin}/?#/home`);
-//              } else {
-//                location.replace(`${location.origin}/?#${path}`);
-//              }
-//            }
-//          }, 20);
-//        } else {
-//          this.loadingFlag = false;
-//        }
+//        this.loadingFlag = false;
 //      }
     },
     methods: {
-      wxLogin(code, userReferee, activityCode) {
-        let mobAndCapt = getWxMobAndCapt();
-        let mobile;
-        let smsCaptcha;
-        if (mobAndCapt) {
-          mobile = mobAndCapt.mobile;
-          smsCaptcha = mobAndCapt.captcha;
-        }
-        wxLogin(code, userReferee, activityCode, mobile, smsCaptcha).then((data) => {
-          if (data.isNeedMobile === '1') {
-            this.text = '微信登录需要先绑定手机号';
-            this.$refs.toast.show();
-//            this.$refs.bindMobile.show();
-          } else {
-            setUser(data);
-            if (this.$route.path === '/home/recommend') {
-              location.replace(`${location.origin}/?#/home`);
-            } else {
-              location.replace(`${location.origin}/?#${this.$route.fullPath}`);
-            }
-          }
-        }).catch(() => {});
-      },
-      getAppId() {
-        getAppId().then((data) => {
-          let appId = data.cvalue;
-          let redirectUri = encodeURIComponent(`${location.origin}?${location.hash}`);
-          let url = 'https://open.weixin.qq.com/connect/oauth2/authorize';
-          let suffix = '&response_type=code&scope=snsapi_userinfo#wechat_redirect';
-          setTimeout(() => {
-            location.replace(`${url}?appid=${appId}&redirect_uri=${redirectUri}${suffix}`);
-          }, 100);
-        });
-      }
     },
     components: {
-      Loading,
-      Toast
+      Loading
     }
   };
 </script>
@@ -125,10 +51,4 @@
       transform: translate3d(0, -50%, 0);
     }
   }
-
-
-
-
-
-
 </style>

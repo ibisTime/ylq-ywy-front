@@ -27,10 +27,11 @@
     left: 0;
     width: 100%;
     height: 100%;
+    z-index: 1000;
 
     .full-loading {
       position: absolute;
-      top: 50%;
+      top: 44%;
       left: 50%;
       max-width: 5rem;
       transform: translate(-50%, -50%);
