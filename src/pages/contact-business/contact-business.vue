@@ -1,7 +1,7 @@
 <template>
   <div class="head-wrapper" @click.stop>
     <img src="./联系商务@2x.png" alt="">
-    <div id="tips">
+    <div class="tips">
       <p>此功能暂不对您开放</p>
       <p>如有需要请联系商务人员</p>
       <p>姓名：宓永宝</p>
@@ -31,7 +31,7 @@
       margin-bottom: 0.46rem;
       width: 2.5rem;
     }
-    #tips{
+    .tips{
       p:first-child{
         font-size: 0.34rem;
         color: $primary-color;

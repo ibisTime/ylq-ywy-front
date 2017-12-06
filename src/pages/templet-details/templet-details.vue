@@ -7,20 +7,22 @@
     <div class='templet'>
       <span class="type">使用的接口</span>
     </div>
-    <div id="interfaces">
-      <div class="interface" @click="$router.push(`/interface-details`);
-">
+    <div class="interfaces">
+      <div class="interface" >
         <img src="./基本信息@2x.png" alt="" class="littleIcon">
         <span class="type">基本信息</span>
-        <img src="./more-gray@2x.png" alt="" class="fr">
+        <img src="./more-gray@2x.png" alt="" class="fr vh">
         <span class="status fr">使用中</span>
       </div>
       <div class="interface">
         <img src="./芝麻认证@2x.png" alt="" class="littleIcon">
         <span class="type">芝麻认证</span>
-        <img src="./more-gray@2x.png" alt="" class="fr">
+        <img src="./more-gray@2x.png" alt="" class="fr vh">
+        <span class="status fr">使用中</span>
+
       </div>
-      <div class="interface">
+      <div class="interface" @click="$router.push(`/interface-details`)
+">
         <img src="./芝麻分@2x.png" alt="" class="littleIcon">
         <span class="type">芝麻分</span>
         <img src="./more-gray@2x.png" alt="" class="fr">
@@ -41,18 +43,22 @@
         <img src="./more-gray@2x.png" alt="" class="fr">
       </div>
     </div>
-    <div id="text">
+    <div class="text">
       <span>目前报告价格为<span>25</span>元</span>
     </div>
-    <div id="down">
+    <div class="down">
       <button><span>发送客户</span></button>
     </div>
 
   </div>
 </template>
 <script>
-  export default {
+  import {setTitle} from 'common/js/util';
 
+  export default {
+    created() {
+      setTitle('模板详情');
+    }
   };
 </script>
 <style lang="scss" scoped>
@@ -67,6 +73,9 @@
     height: 100%;
     .fr{
       float: right;
+    }
+    .vh{
+      visibility: hidden;
     }
     div{
       background: #fff;
@@ -85,48 +94,49 @@
         color: $primary-color;
       }
       img{
-        width: 0.25rem;
-        height: 0.28rem;
+        width: 0.15rem;
         margin-left: 0.2rem;
       }
-    }
-    .templet:nth-child(2){
-      height: 0.6rem;
-      padding-top: 0.23rem;
-      background: transparent;
-      .type{
-        font-size: 0.24rem;
-        color: #999;
+      &:nth-child(2){
+        height: 0.6rem;
+        padding-top: 0.23rem;
+        background: transparent;
+        .type{
+          font-size: 0.24rem;
+          color: #999;
+        }
       }
     }
-    #interfaces{
+
+    .interfaces{
       margin-bottom: 0.6rem;
       .interface{
         padding:0.35rem 0.3rem 0.35rem 0.4rem;
         border-bottom:0.01rem solid #eee;
         .littleIcon{
-          width: 0.3rem;
-          height: 0.3rem;
+          width: 0.25rem;
+          height: 0.25rem;
           margin-right: 0.2rem;
           margin-left:0;
+          margin-top: 0.05rem;
         }
         .type{
           font-size: 0.3rem;
           color: #484848;
         }
         img{
-          width: 0.25rem;
-          height: 0.28rem;
+          width: 0.15rem;
           margin-left: 0.26rem;
+          margin-top: 0.03rem;
         }
         .status{
           font-size: 0.24rem;
           color: #484848;
-          margin-top: 0.03rem;
+          margin-top: 0.05rem;
         }
       }
     }
-#text{
+.text{
   text-align: center;
   margin-bottom: 1.4rem;
   background: transparent;
@@ -139,7 +149,7 @@
     }
   }
 }
-    #down{
+    .down{
       padding:0 0.3rem;
       background: transparent;
       button{

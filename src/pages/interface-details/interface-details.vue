@@ -1,17 +1,21 @@
 <template>
   <div class="home-wrapper">
-    <div id="content">
+    <div class="content">
 
     </div>
-    <div id="buttons">
-      <button id="start">启用</button>
-      <button id="stop">停用</button>
+    <div class="buttons">
+      <button class="start">启用</button>
+      <button class="stop">停用</button>
     </div>
   </div>
 </template>
 <script>
-  export default {
+  import {setTitle} from 'common/js/util';
 
+  export default {
+    created() {
+      setTitle('接口详情');
+    }
   };
 </script>
 <style lang="scss" scoped>
@@ -27,13 +31,13 @@
     .fr{
       float: right;
     }
-    #content{
+    .content{
        width: 100%;
        height: 6rem;
        background: skyblue;
        padding: 0.3rem;
      }
-    #buttons{
+    .buttons{
       width: 100%;
       height: 1.3rem;
       position: fixed;
@@ -49,11 +53,11 @@
         font-size: 0.36rem;
         color: #fff;
       }
-      #start{
+      .start{
         background: $primary-color;
         margin-right: 0.2rem;
       }
-      #stop{
+      .stop{
         background: #ffae00;
       }
     }

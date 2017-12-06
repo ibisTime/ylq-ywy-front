@@ -16,15 +16,19 @@
       <img src="./more-gray@2x.png" alt="" class="fr">
       <span class="fr price">128元</span>
     </div>
-    <div id="down">
+    <div class="down">
       <button><span>创建模板</span></button>
     </div>
 
   </div>
 </template>
 <script>
-  export default {
+  import {setTitle} from 'common/js/util';
 
+  export default {
+    created() {
+      setTitle('资信报告');
+    }
   };
 </script>
 <style lang="scss" scoped>
@@ -57,18 +61,18 @@
         color: $primary-color;
       }
       img{
-        width: 0.25rem;
-        height: 0.28rem;
+        width: 0.15rem;
         margin-left: 0.2rem;
       }
+      &:nth-child(2){
+        margin-bottom: 0.2rem;
+      }
+      &:nth-child(3){
+        margin-bottom: 0.8rem;
+      }
     }
-    .templet:nth-child(2){
-      margin-bottom: 0.2rem;
-    }
-    .templet:nth-child(3){
-      margin-bottom: 0.8rem;
-    }
-    #down{
+
+    .down{
       padding:0 0.3rem;
       background: transparent;
       button{

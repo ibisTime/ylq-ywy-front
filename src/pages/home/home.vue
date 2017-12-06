@@ -16,7 +16,8 @@
           <span>我的客户</span>
           <img src="./我的客户@2x.png" alt="" class="fr">
         </div>
-        <div id="personalCenter" class="fl">
+        <div id="personalCenter" class="fl" @click="$router.push(`/user`);
+">
           <span>个人中心</span>
           <img src="./个人中心@2x.png" alt="" class="fr">
         </div>
@@ -41,6 +42,7 @@
 <script>
   import slider from 'base/slider/slider';
 //  import {formatImg} from 'common/js/util';
+  import {setTitle} from 'common/js/util';
   export default {
     data() {
       return {
@@ -85,6 +87,9 @@
           to: '/contact-business'
         }]
       };
+    },
+    created() {
+      setTitle('首页');
     },
     computed: {
       showDots() {

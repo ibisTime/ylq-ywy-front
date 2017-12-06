@@ -26,7 +26,13 @@
     </div>
 </template>
 <script>
-  export default {};
+  import {setTitle} from 'common/js/util';
+
+  export default {
+    created() {
+      setTitle('设置');
+    }
+  };
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/mixin";
