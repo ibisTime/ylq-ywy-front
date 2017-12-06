@@ -15,14 +15,16 @@ const ChangeMobile = () => import('pages/change-mobile/change-mobile');
 // 修改密码
 const ChangePwd = () => import('pages/change-pwd/change-pwd');
 
+// 我的客户
+const Customers = () => import('pages/customers/customers');
+// 联系客服
+const Service = () => import('pages/service/service');
 // 登录
 const Login = () => import('pages/login/login');
 // 注册
 const Register = () => import('pages/register/register');
 // 找回密码
 const FindPwd = () => import('pages/find-pwd/find-pwd');
-// 暂无客户
-const noCustomer = () => import('pages/no-customer/no-customer');
 // 资信报告
 const myTemplet = () => import('pages/my-templet/my-templet');
 // 模板详情
@@ -37,14 +39,9 @@ export default new Router({
     {
       path: '/',
       redirect: '/home'
-    },
-    {
+    }, {
       path: '/home',
       component: Home
-    },
-    {
-      path: '/no-customer',
-      component: noCustomer
     }, {
       path: '/my-templet',
       component: myTemplet
@@ -76,16 +73,19 @@ export default new Router({
           ]
         }
       ]
-    },
-    {
+    }, {
+      path: '/customers',
+      component: Customers
+    }, {
+      path: '/service',
+      component: Service
+    }, {
       path: '/login',
       component: Login
-    },
-    {
+    }, {
       path: '/register',
       component: Register
-    },
-    {
+    }, {
       path: '/find-pwd',
       component: FindPwd
     }

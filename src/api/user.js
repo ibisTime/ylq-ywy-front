@@ -115,6 +115,21 @@ export function setTradePwd(tradePwd, smsCaptcha) {
 }
 
 /**
+ * 重置登录密码
+ * @param {string} mobile
+ * @param {string} smsCaptcha
+ * @param {string} newLoginPwd
+ */
+export function resetPwd(mobile, smsCaptcha, newLoginPwd) {
+  return fetch(805063, {
+    kind: USER_KIND,
+    mobile,
+    smsCaptcha,
+    newLoginPwd
+  });
+}
+
+/**
  * 修改昵称
  * @param {string} nickname
  */
