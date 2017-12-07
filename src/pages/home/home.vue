@@ -12,7 +12,8 @@
           <span>发送报告</span>
           <img src="./发送报告@2x.png" alt="" class="fr">
         </div>
-        <div id="myClient" class="fl" @click="haha">
+        <div id="myClient" class="fl" @click="$router.push(`/customers`);
+">
           <span>我的客户</span>
           <img src="./我的客户@2x.png" alt="" class="fr">
         </div>
@@ -105,9 +106,6 @@
 //          backgroundImage: `url(${formatImg(imgs)})`
           backgroundImage: `url(${imgs})`
         };
-      },
-      haha () {
-        this.$router.push(`/no-customer`);
       }
     },
     components: {

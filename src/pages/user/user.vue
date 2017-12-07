@@ -11,7 +11,7 @@
         </div>
       </router-link>
       <div class="main-cont cd-bg-fff">
-        <div class="line-item cd-flexbox cd-align-center">
+        <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/service')">
           <div class="icon-money"></div>
           <div class="price cd-flex1"><label>橙券</label>6444.13</div>
           <div class="right-arrow right-arrow-gray"></div>

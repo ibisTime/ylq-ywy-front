@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <div class='templet' @click="$router.push(`/templet-details`)">
+    <div class='templet' @click="$router.push(`/my-templet/templet-details`)">
       <span class="type">基础模板</span>
       <img src="./more-gray@2x.png" alt="" class="fr">
       <span class="fr price">345元</span>
@@ -19,6 +19,7 @@
     <div class="down">
       <button><span>创建模板</span></button>
     </div>
+    <router-view></router-view>
 
   </div>
 </template>

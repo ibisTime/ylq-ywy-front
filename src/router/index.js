@@ -29,11 +29,13 @@ const FindPwd = () => import('pages/find-pwd/find-pwd');
 const myTemplet = () => import('pages/my-templet/my-templet');
 // 模板详情
 const templetDetails = () => import('pages/templet-details/templet-details');
+// 修改模板名称
+const changeTempletName = () => import('pages/change-templetname/change-templetname');
 // 接口详情
 const interfaceDetails = () => import('pages/interface-details/interface-details');
 // 联系商务
 const contactBusiness = () => import('pages/contact-business/contact-business');
-
+//
 export default new Router({
   routes: [
     {
@@ -44,13 +46,23 @@ export default new Router({
       component: Home
     }, {
       path: '/my-templet',
-      component: myTemplet
-    }, {
-      path: '/templet-details',
-      component: templetDetails
-    }, {
-      path: '/interface-details',
-      component: interfaceDetails
+      component: myTemplet,
+      children: [
+        {
+          path: 'templet-details',
+          name: 'templet-details',
+          component: templetDetails,
+          children: [{
+            path: 'interface-details',
+            name: 'interface-details',
+            component: interfaceDetails
+          }, {
+            path: 'change-templetname',
+            name: 'change-templetname',
+            component: changeTempletName
+          }]
+        }
+      ]
     }, {
       path: '/contact-business',
       component: contactBusiness

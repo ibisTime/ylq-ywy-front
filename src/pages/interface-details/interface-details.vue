@@ -1,11 +1,12 @@
 <template>
   <div class="home-wrapper">
     <div class="content">
-
+      {{name}}
+      {{status}}
     </div>
     <div class="buttons">
-      <button class="start">启用</button>
-      <button class="stop">停用</button>
+      <button class="start" @click="changeStatus(true)">启用</button>
+      <button class="stop" @click="changeStatus(false)">停用</button>
     </div>
   </div>
 </template>
@@ -13,8 +14,27 @@
   import {setTitle} from 'common/js/util';
 
   export default {
+    data() {
+      return {
+        name: null,
+        status: null
+      };
+    },
     created() {
       setTitle('接口详情');
+      let name = this.$route.params.name;
+      let status = this.$route.params.status;
+      // 将数据放在当前组件的数据内
+      this.name = name;
+      this.status = status;
+    },
+    methods: {
+      changeStatus(status) {
+        if(this.status && !status || !this.status && status) {         // 进来的时候是使用中，点击了停用
+          this.$router.go(-1);
+        }
+        this.$emit('changeTemplet', {name: this.name, status: status});
+      }
     }
   };
 </script>

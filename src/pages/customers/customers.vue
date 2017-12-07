@@ -28,10 +28,10 @@
   import Scroll from 'base/scroll/scroll';
   import NoResult from 'base/no-result/no-result';
   import {prefixStyle} from 'common/js/dom';
+  import {setTitle} from 'common/js/util';
 
   const transform = prefixStyle('transform');
   const transitionDuration = prefixStyle('transitionDuration');
-
   export default {
     data() {
       return {
@@ -43,6 +43,7 @@
     },
     created() {
       this.touch = {};
+      setTitle('我的客户');
     },
     computed: {
       noResult() {
