@@ -65,17 +65,15 @@
       padding:0.2rem 0.3rem;
 
       button{
-        -webkit-border-radius: 0.1rem;
-        -moz-border-radius: 0.1rem;
         border-radius: 0.1rem;
-        width: 3.3rem;
+        width: 48%;
         height: 0.9rem;
         font-size: 0.36rem;
         color: #fff;
       }
       .start{
         background: $primary-color;
-        margin-right: 0.2rem;
+        margin-right: 2%;
       }
       .stop{
         background: #ffae00;

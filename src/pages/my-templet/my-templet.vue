@@ -1,22 +1,12 @@
 <template>
   <div class="home-wrapper">
-    <div class='templet' @click="$router.push(`/my-templet/templet-details`)">
-      <span class="type">基础模板</span>
+    <div class='templet' @click="$router.push({name:urlName,params:{changeFlag:false}})" v-for='item in templets'>
+      <span class="type">{{item.name}}</span>
       <img src="./more-gray@2x.png" alt="" class="fr">
-      <span class="fr price">345元</span>
+      <span class="fr price">{{item.price}}元</span>
 
     </div>
-    <div class='templet'>
-      <span class="type">小贷模板</span>
-      <img src="./more-gray@2x.png" alt="" class="fr">
-      <span class="fr price">456元</span>
-    </div>
-    <div class='templet'>
-      <span class="type">我的模板</span>
-      <img src="./more-gray@2x.png" alt="" class="fr">
-      <span class="fr price">128元</span>
-    </div>
-    <div class="down">
+    <div class="down" @click="$router.push({name:urlName,params:{changeFlag:true}})">
       <button><span>创建模板</span></button>
     </div>
     <router-view></router-view>
@@ -27,6 +17,21 @@
   import {setTitle} from 'common/js/util';
 
   export default {
+    data() {
+      return {
+        urlName: 'templet-details',
+        templets: [{
+          name: '基础模板',
+          price: 345
+        }, {
+          name: '小贷模板',
+          price: 456
+        }, {
+          name: '我的模板',
+          price: 128
+        }]
+      };
+    },
     created() {
       setTitle('资信报告');
     }

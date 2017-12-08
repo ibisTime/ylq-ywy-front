@@ -47,7 +47,8 @@
         newPwd: '',
         newErr: '',
         rePwd: '',
-        reErr: ''
+        reErr: '',
+        setting: false
       };
     },
     created() {

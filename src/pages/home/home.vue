@@ -8,7 +8,7 @@
         </slider>
       </div>
       <div id="middle">
-        <div id="sendReport" class="fl">
+        <div id="sendReport" class="fl" @click="$router.push({name:'templet-details',params:{changeFlag:false}})">
           <span>发送报告</span>
           <img src="./发送报告@2x.png" alt="" class="fr">
         </div>
@@ -60,28 +60,35 @@
           to: '/my-templet'
         }, {
           text: '资信跟踪',
-          src: require('./信息跟踪@2x.png')
+          src: require('./信息跟踪@2x.png'),
+          to: '/contact-business'
 
         }, {
           text: '资信联动',
-          src: require('./资信联动@2x.png')
+          src: require('./资信联动@2x.png'),
+          to: '/contact-business'
         }],
         items2: [{
           text: '资金代收',
-          src: require('./资金代收@2x.png')
+          src: require('./资金代收@2x.png'),
+          to: '/contact-business'
         }, {
           text: '资金代付',
-          src: require('./资金代付@2x.png')
+          src: require('./资金代付@2x.png'),
+          to: '/contact-business'
         }, {
           text: '资金账本',
-          src: require('./资金账本@2x.png')
+          src: require('./资金账本@2x.png'),
+          to: '/contact-business'
         }],
         items3: [{
           text: '补合同',
-          src: require('./合同@2x.png')
+          src: require('./合同@2x.png'),
+          to: '/contact-business'
         }, {
           text: '合同存管',
-          src: require('./存管@2x.png')
+          src: require('./存管@2x.png'),
+          to: '/contact-business'
         }, {
           text: '更多',
           src: require('./more@2x.png'),
