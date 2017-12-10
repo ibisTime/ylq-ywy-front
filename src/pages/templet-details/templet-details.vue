@@ -1,10 +1,21 @@
 <template>
   <div class="home-wrapper">
-    <scroll :hasMore="hasMore" :data="interfaces">
+    <scroll :hasMore="hasMore" :data="interface">
       <div class='templet' @click="changeFlag?toChangeName(templetName):nothing()">
         <span class="type">模板名称</span>
         <img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">
         <span class="status fr">{{templetName}}</span>
+      </div>
+      <div class='templet' >
+        <span class="type">是否默认</span>
+        <img src="./more-gray@2x.png" alt="" class="fr vh" >
+        <switch-option class="fr" style="position:relative;right: -5.8rem;
+    bottom: 0.3rem;" :value="haha" @update:value="haha1" v-if="changeFlag">
+
+        </switch-option>
+        <span class="status fr" v-if="!changeFlag">{{default1}}</span>
+        <!--<img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">-->
+        <!--<span class="status fr">{{isDefault}}</span>-->
       </div>
       <div class='templet'>
         <span class="type">使用的接口</span>
@@ -29,21 +40,22 @@
           <img src="./more-gray@2x.png" alt="" class="fr vh">
           <span class="status fr">使用中</span>
         </div>
-        <div class="interface" v-model="item.status" v-for="item in interfaces"
-             @click="changeFlag?toInterfaceDetail(item.name,item.status):nothing()">
-          <img :src="item.src" alt="" class="littleIcon">
+        <div class="interface" v-model="item.status" v-for="item in interface"
+             @click="changeFlag?toInterfaceDetail(item.name,item.status):nothing()"
+             >
+          <img :src=item.src alt="" class="littleIcon">
           <span class="type">{{item.text}}</span>
-          <img src="./more-gray@2x.png" alt="" class="fr" v-if=changeFlag>
+          <img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">
           <span class="status fr" v-if="item.status">使用中</span>
 
         </div>
       </div>
       <div class="text">
-        <span>目前报告价格为<span>25</span>元</span>
+        <span>目前报告价格为<span>{{totalPrice | formatAmount}}</span>元</span>
       </div>
       <div class="down">
-        <button v-if=!changeFlag @click="$router.push({name:'send-to-client',params:{reportId:'123'}})"><span>发送客户</span></button>
-        <button v-if=changeFlag><span>保存</span></button>
+        <button v-if=!changeFlag @click="$router.push({name:'send-to-client',params:{code:templetCode}})"><span>发送客户</span></button>
+        <button v-if=changeFlag @click="xiugai?edit():addTemplet()"><span>保存</span></button>
       </div>
     </scroll>
 
@@ -53,85 +65,173 @@
 </template>
 <script>
   import Scroll from 'base/scroll/scroll';
+  import SwitchOption from 'base/switch-option/switch-option';
   import {setTitle} from 'common/js/util';
-
+  import {queryTempletDetail, addTemplet, editTemplet, queryMoren} from 'api/biz';
+  import {commonMixin} from 'common/js/mixin';
   export default {
+    mixins: [commonMixin],
     data () {
       return {
-        interfaces: [
+        interfaces: [],
+        interface: [
           {
             // 1.身份证正反面
-            name: 'id',
+            name: 'PID1',
             status: false,
-            src: require('./身份证@2x.png'),
-            text: '身份证正反面'
+            text: '身份证正反面',
+            src: require('./身份证@2x.png')
           }, {
             // 2.强制定位
-            name: 'dingwei',
+            name: 'PDW2',
             status: false,
-            src: require('./定位@2x.png'),
-            text: '强制定位'
+            text: '强制定位',
+            src: require('./定位@2x.png')
           }, {
             // 3.通讯录认证
-            name: 'addressList',
+            name: 'PTXL3',
             stats: false,
-            src: require('./通讯录@2x.png'),
-            text: '通讯录认证'
+            text: '通讯录认证',
+            src: require('./通讯录@2x.png')
           }, {
             // 4.运营商认证
-            name: 'provider',
+            name: 'PYYS4',
             status: false,
-            src: require('./运营商@2x.png'),
-            text: '运营商认证'
+            text: '运营商认证',
+            src: require('./运营商@2x.png')
           }, {
             // 5.芝麻信用认证
-            name: 'zhimaxinyong',
+            name: 'PZM5',
             status: false,
-            src: require('./芝麻分@2x.png'),
-            text: '芝麻信用认证'
+            text: '芝麻信用认证',
+            src: require('./芝麻分@2x.png')
           }, {
             // 6.行业关注清单认证
-            name: 'hangyeguanzhu',
+            name: 'PZM6',
             status: false,
-            src: require('./行业关注名单@2x.png'),
-            text: '行业关注清单认证'
+            text: '行业关注清单认证',
+            src: require('./行业关注名单@2x.png')
           }, {
             // 7.欺诈三接口认证
-            name: 'qizha',
+            name: 'PZM7',
             status: false,
-            src: require('./欺诈认证@2x.png'),
-            text: '欺诈三接口认证'
+            text: '欺诈三接口认证',
+            src: require('./欺诈认证@2x.png')
           }, {
             // 8.同盾认证
-            name: 'tongdun',
+            name: 'PTD8',
             status: null,
-            src: require('./同盾@2x.png'),
-            text: '同盾认证'
+            text: '同盾认证',
+            src: require('./同盾@2x.png')
           }
         ],
         // name用来接收接口详情返回的接口名称
         name: null,
-        //  status用来接收接口详情返回的接口名称
+        //  status用来接收接口详情返回的接口状态
         status: null,
         // 模板名称
         templetName: '模板一',
         // 从哪里进来的模板详情页面，创建模板则为true，意为可修改
         changeFlag: null,
-        hasMore: true
+        hasMore: true,
+        // 从模板点进来的时候的名字
+        name1: '',
+        portList: '',
+        isDefault: '是',
+        totalPrice: '',
+        haha: '',
+        // 创建模板时所有启用的接口
+        openInterface: '',
+        // 获取的是否默认
+        default1: '',
+        xiugai: '',
+        xiugaiportList: '',
+        templetCode: ''
       };
     },
     created() {
-      this.changeFlag = this.$route.params.changeFlag;
-      if(this.changeFlag) {
-        setTitle('创建模板');
+      if(this.$route.params.moren) {
+        queryMoren().then((data) => {
+          this.templetName = data.name;
+          this.templetCode = data.code;
+          if(data.isDefault === '1') {
+            this.default1 = '是';
+          }else{
+            this.default1 = '否';
+          }
+          for (let v of this.interface) {
+            if (data.portList.indexOf(v.name) !== -1) {
+              v.status = true;
+            }
+          }
+          this.totalPrice = data.totalPrice;
+        });
       }else{
-        setTitle('模板详情');
+        this.templetCode = this.$route.params.code || '';
+        // 如果是进来修改的
+        this.xiugai = this.$route.params.xiugai || '';
+        // 判断是创建模板进来的还是从模板点进来的
+        if (this.$route.params.changeFlag) {
+          this.changeFlag = this.$route.params.changeFlag;
+        } else {
+          if (this.$route.params.isSys === '1') {        // 1系统不可改
+            this.changeFlag = false;
+          } else {
+            this.changeFlag = true;
+            queryTempletDetail(this.templetCode).then((data) => {
+              if (data.isDefault) {
+                this.default1 = '是';
+              } else {
+                this.default1 = '否';
+              }
+              this.name1 = data.name;
+              this.portList = data.portList;
+              this.xiugaiportList = data.portList;
+              this.templetName = data.name;
+              this.interfaces = data.portList;
+              this.totalPrice = data.totalPrice;
+              for (let v of this.interface) {
+                if (this.interfaces.indexOf(v.name) !== -1) {
+                  v.status = true;
+                }
+              }
+            });
+          }
+        }
+
+        if (this.changeFlag) {
+          setTitle('创建模板');
+        } else {
+          setTitle('模板详情');
+        }
+        if (this.changeFlag === false) {
+          queryTempletDetail(this.templetCode).then((data) => {
+            if (data.isDefault) {
+              this.default1 = '是';
+            } else {
+              this.default1 = '否';
+            }
+            this.templetName = data.name;
+            this.interfaces = data.portList;
+            this.totalPrice = data.totalPrice;
+            this.xiugaiportList = data.portList;
+            for (let v of this.interface) {
+              if (this.interfaces.indexOf(v.name) !== -1) {
+                v.status = true;
+              }
+            }
+          });
+        }
       }
     },
+
     methods: {
       // 去接口的启用与停用页面，传递接口名与使用情况
       toInterfaceDetail(n, m) {
-        this.$router.push({name: 'interface-details', params: {name: n, status: m}});
+//        console.log(this.code);
+        console.log(n);
+        console.log(m);
+        this.$router.push({name: 'interface-details', params: {code: n, status: m}});
       },
       // 去修改模板名称页面，传递当前模板名称
       toChangeName(name) {
@@ -139,9 +239,10 @@
       },
       // 接口的启用与停用
       changeTemplet(n) {
-        this.name = n.name || '';
-        for (let v of this.interfaces) {
-          if(v.name === this.name) {
+        console.log(n);
+        this.code = n.code || '';
+        for (let v of this.interface) {
+          if (v.name === this.code) {
             v.status = n.status || false;
           }
         }
@@ -151,10 +252,39 @@
         this.templetName = n.name;
       },
       nothing() {
+      },
+      addTemplet() {
+        for (let v of this.interface) {
+          if (v.status) {
+            this.openInterface += v.name + ',';
+          }
+        }
+        console.log(this.openInterface);
+        if(this.openInterface) {
+          this.openInterface = 'F1,F2,F3,' + this.openInterface;
+          this.openInterface = this.openInterface.substring(0, this.openInterface.length - 1);
+        }else{
+          this.openInterface = 'F1,F2,F3' + this.openInterface;
+        }
+//        console.log(this.openInterface);
+        addTemplet(this.isDefault, this.templetName, this.openInterface).then((data) => {
+        });
+      },
+      haha1(val) {
+        if (val) {
+          this.isDefault = 1;
+        } else {
+          this.isDefault = 0;
+        }
+      },
+      edit() {
+        editTemplet(this.templetCode, this.templetName, this.xiugaiportList).then((data) => {
+        });
       }
     },
     components: {
-      Scroll
+      Scroll,
+      SwitchOption
     }
   };
 </script>
@@ -200,7 +330,7 @@
         color: #484848;
         margin-top: 0.05rem;
       }
-      &:nth-child(2){
+      &:nth-child(3){
         height: 0.6rem;
         padding-top: 0.23rem;
         background: rgb(245,245,245);

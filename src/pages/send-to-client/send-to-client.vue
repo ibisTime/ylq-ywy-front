@@ -25,6 +25,7 @@
       <toast ref="toast" text="修改成功"></toast>
       <full-loading v-show="loadFlag" title="修改中..."></full-loading>
     </div>
+    <toast ref="toast" text="发送成功!"></toast>
   </div>
 </template>
 <script>
@@ -35,6 +36,7 @@
   import {directiveMixin} from 'common/js/mixin';
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
+  import {sendToClient} from 'api/biz';
 
   export default {
     mixins: [directiveMixin],
@@ -46,17 +48,20 @@
         captErr: '',
         captBtnText: '获取验证码',
         mobile: '',
-        mobErr: ''
+        mobErr: '',
+        modelCode: ''
       };
     },
     created() {
       setTitle('修改手机号');
+//      console.log(this.$route.params.code);
+      this.modelCode = this.$route.params.code;
     },
     methods: {
       sendCaptcha() {
         if (this._mobileValid()) {
           this.sending = true;
-          sendCaptcha(this.mobile, 805061).then(() => {
+          sendCaptcha(this.mobile, 805250).then(() => {
             this._setInterval();
           }).catch(() => {
             this._clearInterval();
@@ -65,9 +70,12 @@
       },
       sendToCilent() {
         if (this._valid()) {
-          // 0.判断验证码是否正确
-          // 1.调用接口，传递手机号
-          // 3.返回网址或二维码
+          sendToClient(this.captcha, this.mobile, this.modelCode).then((data) => {
+            this.$refs.toast.show();
+            setTimeout(() => {
+              this.$router.back();
+            }, 500);
+          });
         }
       },
       _valid() {

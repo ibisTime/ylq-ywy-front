@@ -31,6 +31,8 @@ const myTemplet = () => import('pages/my-templet/my-templet');
 const templetDetails = () => import('pages/templet-details/templet-details');
 // 修改模板名称
 const changeTempletName = () => import('pages/change-templetname/change-templetname');
+// 修改是否默认
+const changeDefault = () => import('pages/change-default/change-default');
 // 发送客户
 const sendToClient = () => import('pages/send-to-client/send-to-client');
 // 接口详情
@@ -62,6 +64,10 @@ export default new Router({
             path: 'change-templetname',
             name: 'change-templetname',
             component: changeTempletName
+          }, {
+            path: 'change-default',
+            name: 'change-default',
+            component: changeDefault
           }, {
             path: 'send-to-client',
             name: 'send-to-client',

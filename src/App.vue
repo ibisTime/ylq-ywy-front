@@ -13,7 +13,7 @@
 
 <script type="text/ecmascript-6">
   import Loading from 'base/loading/loading';
-
+import {isLogin} from 'common/js/util';
   export default {
     data() {
       return {
@@ -22,11 +22,11 @@
       };
     },
     created() {
-//      if (!isLogin()) {
-//        this.$router.replace('/login');
-//      } else {
-//        this.loadingFlag = false;
-//      }
+      if (!isLogin()) {
+        this.$router.replace('/login');
+      } else {
+        this.loadingFlag = false;
+      }
     },
     methods: {
     },

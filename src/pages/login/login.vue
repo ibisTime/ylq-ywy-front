@@ -71,7 +71,7 @@
         return !result.err;
       },
       mobileValid() {
-        let result = mobileValid(this.newPwd);
+        let result = mobileValid(this.mobile);
         this.mobErr = result.msg;
         return !result.err;
       }
