@@ -31,7 +31,7 @@
     },
     created() {
       setTitle('接口详情');
-      let name = this.$route.params.name;
+      let name = this.$route.query.name;
       // 将数据放在当前组件的数据内
       this.name = name;
     },

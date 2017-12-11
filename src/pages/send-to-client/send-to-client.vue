@@ -22,7 +22,6 @@
       <div class="form-btn">
         <button @click="sendToCilent">发送</button>
       </div>
-      <toast ref="toast" text="修改成功"></toast>
       <full-loading v-show="loadFlag" title="修改中..."></full-loading>
     </div>
     <toast ref="toast" text="发送成功!"></toast>
@@ -55,7 +54,7 @@
     created() {
       setTitle('修改手机号');
 //      console.log(this.$route.params.code);
-      this.modelCode = this.$route.params.code;
+      this.modelCode = this.$route.query.code;
     },
     methods: {
       sendCaptcha() {

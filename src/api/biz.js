@@ -30,7 +30,7 @@ export function queryTempletDetail(templetCode) {
 
 export function addTemplet(isDefault, name, portList) {
   return fetch(805230, {
-    isDefault: 0,
+    isDefault: isDefault,
     userId: getUserId(),
     updater: getUserId(),
     name: name,
@@ -79,6 +79,16 @@ export function sendToClient(captcha, mobile, modelCode) {
 
 export function queryMoren() {
   return fetch(805237, {
+    userId: getUserId()
+  });
+}
+
+/*
+* 查询用户
+ */
+
+export function queryUser() {
+  return fetch(805121, {
     userId: getUserId()
   });
 }

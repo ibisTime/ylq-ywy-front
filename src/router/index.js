@@ -8,6 +8,8 @@ const Home = () => import('pages/home/home');
 
 // 用户
 const User = () => import('pages/user/user');
+// 账单
+const Bills = () => import('pages/bills/bills');
 // 设置
 const Setting = () => import('pages/setting/setting');
 // 修改手机号
@@ -83,6 +85,9 @@ export default new Router({
       component: User,
       children: [
         {
+          path: 'bills',
+          component: Bills
+        }, {
           path: 'setting',
           component: Setting,
           children: [

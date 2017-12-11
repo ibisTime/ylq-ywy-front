@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <scroll :hasMore="hasMore" :data="interface">
+    <scroll :hasMore="hasMore" :data="interface" :pullUpLoad="pullUpLoad">
       <div class='templet' @click="changeFlag?toChangeName(templetName):nothing()">
         <span class="type">模板名称</span>
         <img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">
@@ -10,12 +10,9 @@
         <span class="type">是否默认</span>
         <img src="./more-gray@2x.png" alt="" class="fr vh" >
         <switch-option class="fr" style="position:relative;right: -5.8rem;
-    bottom: 0.3rem;" :value="haha" @update:value="haha1" v-if="changeFlag">
-
+    bottom: 0.3rem;" :value="haha" @update:value="haha1" v-if="changeFlag && !xiugai">
         </switch-option>
-        <span class="status fr" v-if="!changeFlag">{{default1}}</span>
-        <!--<img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">-->
-        <!--<span class="status fr">{{isDefault}}</span>-->
+        <span class="status fr" v-if="!changeFlag || xiugai">{{default1}}</span>
       </div>
       <div class='templet'>
         <span class="type">使用的接口</span>
@@ -54,11 +51,20 @@
         <span>目前报告价格为<span>{{totalPrice | formatAmount}}</span>元</span>
       </div>
       <div class="down">
-        <button v-if=!changeFlag @click="$router.push({name:'send-to-client',params:{code:templetCode}})"><span>发送客户</span></button>
-        <button v-if=changeFlag @click="xiugai?edit():addTemplet()"><span>保存</span></button>
+        <div v-if="isSys!=='0'" class="one">
+        <!--<button v-if="!changeFlag " @click="$router.push({name:'send-to-client',params:{code:templetCode}})"><span>发送客户</span></button>-->
+        <button v-if="!changeFlag " @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
+        <button v-if="changeFlag " @click="xiugai?edit():addTemplet()"><span>保存</span></button>
+        </div>
+        <div v-if="isSys==='0'" class="two">
+        <!--<button @click="$router.push({name:'send-to-client',params:{code:templetCode}})" ><span>发送客户</span></button>-->
+        <button @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)" ><span>发送客户</span></button>
+        <button @click="xiugai?edit():addTemplet()"><span>保存</span></button>
+        </div>
       </div>
     </scroll>
-
+    <toast ref="toast" text="修改成功!"></toast>
+    <toast ref="toast1" text="创建成功!"></toast>
     <router-view @changeTemplet="changeTemplet" @changeName="changeName"></router-view>
 
   </div>
@@ -66,8 +72,9 @@
 <script>
   import Scroll from 'base/scroll/scroll';
   import SwitchOption from 'base/switch-option/switch-option';
+  import Toast from 'base/toast/toast';
   import {setTitle} from 'common/js/util';
-  import {queryTempletDetail, addTemplet, editTemplet, queryMoren} from 'api/biz';
+  import {queryTempletDetail, queryMoren, editTemplet, addTemplet} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
   export default {
     mixins: [commonMixin],
@@ -133,12 +140,13 @@
         templetName: '模板一',
         // 从哪里进来的模板详情页面，创建模板则为true，意为可修改
         changeFlag: null,
-        hasMore: true,
+        hasMore: false,
+        pullUpLoad: null,
         // 从模板点进来的时候的名字
         name1: '',
         portList: '',
-        isDefault: '是',
-        totalPrice: '',
+        isDefault: '0',
+        totalPrice: '21000',
         haha: '',
         // 创建模板时所有启用的接口
         openInterface: '',
@@ -146,11 +154,12 @@
         default1: '',
         xiugai: '',
         xiugaiportList: '',
-        templetCode: ''
+        templetCode: '',
+        isSys: ''
       };
     },
     created() {
-      if(this.$route.params.moren) {
+      if(this.$route.query.moren) {
         queryMoren().then((data) => {
           this.templetName = data.name;
           this.templetCode = data.code;
@@ -167,19 +176,24 @@
           this.totalPrice = data.totalPrice;
         });
       }else{
-        this.templetCode = this.$route.params.code || '';
+        this.templetCode = this.$route.query.code || '';
         // 如果是进来修改的
-        this.xiugai = this.$route.params.xiugai || '';
+        this.xiugai = this.$route.query.xiugai || '';
+        // 如果是系统模板的话
+        this.isSys = this.$route.query.isSys || '';
         // 判断是创建模板进来的还是从模板点进来的
-        if (this.$route.params.changeFlag) {
-          this.changeFlag = this.$route.params.changeFlag;
+        if (this.$route.query.changeFlag) {
+          this.changeFlag = this.$route.query.changeFlag;
         } else {
-          if (this.$route.params.isSys === '1') {        // 1系统不可改
+            // 模板点进来的话
+          if (this.isSys === '1') {
+              // 1系统模板不可改
             this.changeFlag = false;
           } else {
+               // 用户模板，可以改
             this.changeFlag = true;
             queryTempletDetail(this.templetCode).then((data) => {
-              if (data.isDefault) {
+              if (data.isDefault === '1') {
                 this.default1 = '是';
               } else {
                 this.default1 = '否';
@@ -228,19 +242,18 @@
     methods: {
       // 去接口的启用与停用页面，传递接口名与使用情况
       toInterfaceDetail(n, m) {
-//        console.log(this.code);
-        console.log(n);
-        console.log(m);
-        this.$router.push({name: 'interface-details', params: {code: n, status: m}});
+//        this.$router.push({name: 'interface-details', params: {code: n, status: m}});
+        this.$router.push('/my-templet/templet-details/interface-details?code=' + n + '&status=' + m);
       },
       // 去修改模板名称页面，传递当前模板名称
       toChangeName(name) {
-        this.$router.push({name: 'change-templetname', params: {name: name}});
+//        this.$router.push({name: 'change-templetname', params: {name: name}});
+        this.$router.push('/my-templet/templet-details/change-templetname?name=' + name);
       },
       // 接口的启用与停用
       changeTemplet(n) {
-        console.log(n);
         this.code = n.code || '';
+        this.totalPrice = (+this.totalPrice) + n.price + '';
         for (let v of this.interface) {
           if (v.name === this.code) {
             v.status = n.status || false;
@@ -254,20 +267,12 @@
       nothing() {
       },
       addTemplet() {
-        for (let v of this.interface) {
-          if (v.status) {
-            this.openInterface += v.name + ',';
-          }
-        }
-        console.log(this.openInterface);
-        if(this.openInterface) {
-          this.openInterface = 'F1,F2,F3,' + this.openInterface;
-          this.openInterface = this.openInterface.substring(0, this.openInterface.length - 1);
-        }else{
-          this.openInterface = 'F1,F2,F3' + this.openInterface;
-        }
-//        console.log(this.openInterface);
+        this.getOpenInterface();
         addTemplet(this.isDefault, this.templetName, this.openInterface).then((data) => {
+          this.$refs.toast1.show();
+          setTimeout(() => {
+            this.$router.push('/my-templet');
+          }, 500);
         });
       },
       haha1(val) {
@@ -278,13 +283,34 @@
         }
       },
       edit() {
-        editTemplet(this.templetCode, this.templetName, this.xiugaiportList).then((data) => {
+        this.getOpenInterface();
+//        let that = this;
+        editTemplet(this.templetCode, this.templetName, this.openInterface).then((data) => {
+          this.$refs.toast.show();
+          setTimeout(() => {
+            this.$router.push('/my-templet');
+          }, 500);
         });
+      },
+      // 获取打开的接口
+      getOpenInterface() {
+        for (let v of this.interface) {
+          if (v.status) {
+            this.openInterface += v.name + ',';
+          }
+        }
+        if(this.openInterface) {
+          this.openInterface = 'F1,F2,F3,' + this.openInterface;
+          this.openInterface = this.openInterface.substring(0, this.openInterface.length - 1);
+        }else{
+          this.openInterface = 'F1,F2,F3' + this.openInterface;
+        }
       }
     },
     components: {
       Scroll,
-      SwitchOption
+      SwitchOption,
+      Toast
     }
   };
 </script>
@@ -305,9 +331,6 @@
     .vh{
       visibility: hidden;
     }
-    div{
-      background: #fff;
-    };
     .templet{
       width: 100%;
       height: 1rem;
@@ -342,6 +365,7 @@
     }
 
     .interfaces{
+      background: #fff;
       .interface{
         padding:0.35rem 0.3rem 0.35rem 0.4rem;
         border-bottom:0.01rem solid #eee;
@@ -384,17 +408,39 @@
 }
     .down{
       padding:0 0.3rem;
-      background: transparent;
-      button{
-        width: 100%;
-        height: 0.9rem;
-        background: $primary-color;
-        border-radius: 0.1rem ;
-        span{
-          color:#fff;
-          font-size: 0.36rem;
+      background: $color-background;
+      padding-bottom: 1.2rem;
+      .one{
+        button{
+          width: 100%;
+          height: 0.9rem;
+          background: $primary-color;
+          border-radius: 0.1rem ;
+          span{
+            color:#fff;
+            font-size: 0.36rem;
+          }
         }
       }
+      .two{
+        button{
+          border-radius: 0.1rem;
+          width: 48%;
+          height: 0.9rem;
+          font-size: 0.36rem;
+          color: #fff;
+          background: $primary-color;
+          &:nth-child(1){
+            margin-right: 2%;
+          }
+          span{
+            color:#fff;
+            font-size: 0.36rem;
+          }
+
+        }
+      }
+
     }
 
   }

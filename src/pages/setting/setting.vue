@@ -4,7 +4,7 @@
         <div class="cd-flexbox cd-align-center">
           <div class="cd-avatar-box user-avatar"><img src="./avatar.png"></div>
           <div class="cd-flex1">
-            <p>15555555555</p>
+            <p>{{mobile}}</p>
           </div>
         </div>
       </header>
@@ -19,18 +19,32 @@
           实名认证<i class="right-arrow-gray"></i>
         </div>
       </div>
-      <div class="button-wrapper">
+      <div class="button-wrapper" @click="logout">
         <button>退出登录</button>
       </div>
       <router-view></router-view>
     </div>
 </template>
 <script>
-  import {setTitle} from 'common/js/util';
-
+  import {setTitle, clearUser} from 'common/js/util';
+  import {queryUser} from 'api/biz';
   export default {
+    data() {
+      return {
+        mobile: ''
+      };
+    },
     created() {
       setTitle('设置');
+      queryUser().then((data) => {
+        this.mobile = data.mobile;
+      });
+    },
+    methods: {
+      logout() {
+        clearUser();
+        this.$router.push('/login');
+      }
     }
   };
 </script>

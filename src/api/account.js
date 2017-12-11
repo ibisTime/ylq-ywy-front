@@ -38,12 +38,11 @@ export function withdraw(params) {
 }
 
 // 分页查询流水
-export function getPageFlow(start, limit, accountNumber, bizType) {
+export function getPageFlow(start, limit, accountNumber) {
   return fetch(802524, {
     start,
     limit,
-    accountNumber,
-    bizType
+    accountNumber
   });
 }
 
@@ -101,3 +100,5 @@ export function getSignIntegral(accountNumber, bizType) {
     bizType
   });
 }
+
+//

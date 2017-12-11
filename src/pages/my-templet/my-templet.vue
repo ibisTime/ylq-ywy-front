@@ -1,12 +1,14 @@
 <template>
   <div class="home-wrapper">
-    <div class='templet' @click="$router.push({name:urlName,params:{isSys:item.isSystem,code:item.code,xiugai:true}})" v-for='item in templets'>
+    <!--<div class='templet' @click="$router.push({name:urlName,params:{isSys:item.isSystem,code:item.code,xiugai:true}})" v-for='item in templets'>-->
+    <div class='templet' @click="$router.push('/my-templet/templet-details?isSys='+item.isSystem+'&code='+item.code+'&xiugai='+true)" v-for='item in templets'>
       <span class="type">{{item.name}}</span>
       <img src="./more-gray@2x.png" alt="" class="fr">
       <span class="fr price">{{item.totalPrice | formatAmount}}元</span>
 
     </div>
-    <div class="down" @click="$router.push({name:urlName,params:{changeFlag:true}})">
+    <!--<div class="down" @click="$router.push({name:urlName,params:{changeFlag:true}})">-->
+    <div class="down" @click="$router.push('/my-templet/templet-details?changeFlag='+true)">
       <button><span>创建模板</span></button>
     </div>
     <router-view></router-view>

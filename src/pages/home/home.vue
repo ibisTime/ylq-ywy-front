@@ -8,7 +8,8 @@
         </slider>
       </div>
       <div id="middle">
-        <div id="sendReport" class="fl" @click="$router.push({name:'templet-details',params:{changeFlag:false,moren:true}})">
+        <!--<div id="sendReport" class="fl" @click="$router.push({name:'templet-details',params:{changeFlag:false,moren:true}})">-->
+        <div id="sendReport" class="fl" @click="$router.push('/my-templet/templet-details?changeFlag='+false+'&moren='+true)">
           <span>发送报告</span>
           <img src="./发送报告@2x.png" alt="" class="fr">
         </div>

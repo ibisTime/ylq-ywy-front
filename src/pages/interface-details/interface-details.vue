@@ -4,8 +4,8 @@
       {{description}}
     </div>
     <div class="buttons">
-      <button class="start" @click="changeStatus(true)">启用</button>
-      <button class="stop" @click="changeStatus(false)">停用</button>
+      <button class="start color1" @click="changeStatus(true)" >启用</button>
+      <button class="stop color2" @click="changeStatus(false)" >停用</button>
     </div>
   </div>
 </template>
@@ -18,28 +18,45 @@
       return {
         name: null,
         status: null,
-        description: ''
+        description: '',
+        price: '',
+        grey1: false,
+        grey2: false
       };
     },
     created() {
       setTitle('接口详情');
-      let code = this.$route.params.code;
-      let status = this.$route.params.status;
-      console.log(code);
+      let code = this.$route.query.code;
+      let status1 = this.$route.query.status;
       // 将数据放在当前组件的数据内
       this.code = code;
-      this.status = status;
+      if(status1 === 'true') {
+        this.status = true;
+      }else{
+        this.status = false;
+      }
+      if(this.status) {
+        // 使用中
+        this.grey2 = true;
+      }else{
+        this.grey1 = true;
+      }
       queryInterface(this.code).then((data) => {
-//        console.log(data.description);
         this.description = data.description;
+        this.price = data.price;
       });
     },
     methods: {
       changeStatus(status) {
-        if(this.status && !status || !this.status && status) {         // 进来的时候是使用中，点击了停用
-          this.$router.go(-1);
+        if((this.status && !status) || (!this.status && status)) {       // 进来的时候是使用中，点击了停用
+          this.$router.back();
+          if(status) {
+            // 如果是点了启用，就传正数的价格
+            this.$emit('changeTemplet', {code: this.code, status: status, price: this.price});
+          }else{
+            this.$emit('changeTemplet', {code: this.code, status: status, price: -(this.price)});
+          }
         }
-        this.$emit('changeTemplet', {code: this.code, status: status});
       }
     }
   };
@@ -56,6 +73,12 @@
     height: 100%;
     .fr{
       float: right;
+    }
+    .color1{
+      background: $primary-color;
+    }
+    .color2{
+      background: #ffae00;
     }
     .content{
        width: 100%;
@@ -75,13 +98,14 @@
         height: 0.9rem;
         font-size: 0.36rem;
         color: #fff;
+        /*background: #444;*/
       }
       .start{
-        background: $primary-color;
+        /*<!--background: $primary-color;-->*/
         margin-right: 2%;
       }
       .stop{
-        background: #ffae00;
+        /*background: #ffae00;*/
       }
     }
   }
