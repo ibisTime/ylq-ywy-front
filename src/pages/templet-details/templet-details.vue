@@ -14,7 +14,7 @@
         </switch-option>
         <span class="status fr" v-if="!changeFlag || xiugai">{{default1}}</span>
       </div>
-      <div class='templet'>
+      <div class='openInterfaceTip'>
         <span class="type">使用的接口</span>
       </div>
       <div class="interfaces">
@@ -39,7 +39,7 @@
         </div>
         <div class="interface" v-model="item.status" v-for="item in interface"
              @click="changeFlag?toInterfaceDetail(item.name,item.status):nothing()"
-             >
+        v-if="(item.status || changeFlag) ">
           <img :src=item.src alt="" class="littleIcon">
           <span class="type">{{item.text}}</span>
           <img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">
@@ -53,13 +53,13 @@
       <div class="down">
         <div v-if="isSys!=='0'" class="one">
         <!--<button v-if="!changeFlag " @click="$router.push({name:'send-to-client',params:{code:templetCode}})"><span>发送客户</span></button>-->
-        <button v-if="!changeFlag " @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
+        <button v-if="!changeFlag" @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
         <button v-if="changeFlag " @click="xiugai?edit():addTemplet()"><span>保存</span></button>
         </div>
         <div v-if="isSys==='0'" class="two">
         <!--<button @click="$router.push({name:'send-to-client',params:{code:templetCode}})" ><span>发送客户</span></button>-->
         <button @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)" ><span>发送客户</span></button>
-        <button @click="xiugai?edit():addTemplet()"><span>保存</span></button>
+        <button @click="edit()"><span>保存</span></button>
         </div>
       </div>
     </scroll>
@@ -159,87 +159,38 @@
       };
     },
     created() {
-      if(this.$route.query.moren) {
-        queryMoren().then((data) => {
-          this.templetName = data.name;
-          this.templetCode = data.code;
-          if(data.isDefault === '1') {
-            this.default1 = '是';
-          }else{
-            this.default1 = '否';
-          }
-          for (let v of this.interface) {
-            if (data.portList.indexOf(v.name) !== -1) {
-              v.status = true;
-            }
-          }
-          this.totalPrice = data.totalPrice;
-        });
-      }else{
-        this.templetCode = this.$route.query.code || '';
-        // 如果是进来修改的
-        this.xiugai = this.$route.query.xiugai || '';
-        // 如果是系统模板的话
-        this.isSys = this.$route.query.isSys || '';
-        // 判断是创建模板进来的还是从模板点进来的
-        if (this.$route.query.changeFlag) {
-          this.changeFlag = this.$route.query.changeFlag;
-        } else {
-            // 模板点进来的话
-          if (this.isSys === '1') {
-              // 1系统模板不可改
-            this.changeFlag = false;
+      this.first = true;
+      this.getInitData();
+    },
+    updated() {
+      this.getInitData();
+    },
+    methods: {
+      shouldGetData() {
+        if (this.$route.path === '/my-templet/templet-details') {
+          if (this.changeFlag) {
+            setTitle('创建模板');
           } else {
-               // 用户模板，可以改
-            this.changeFlag = true;
-            queryTempletDetail(this.templetCode).then((data) => {
-              if (data.isDefault === '1') {
-                this.default1 = '是';
-              } else {
-                this.default1 = '否';
-              }
-              this.name1 = data.name;
-              this.portList = data.portList;
-              this.xiugaiportList = data.portList;
-              this.templetName = data.name;
-              this.interfaces = data.portList;
-              this.totalPrice = data.totalPrice;
-              for (let v of this.interface) {
-                if (this.interfaces.indexOf(v.name) !== -1) {
-                  v.status = true;
-                }
-              }
-            });
+            setTitle('模板详情');
           }
+          return this.first;
         }
-
-        if (this.changeFlag) {
-          setTitle('创建模板');
-        } else {
-          setTitle('模板详情');
-        }
-        if (this.changeFlag === false) {
-          queryTempletDetail(this.templetCode).then((data) => {
-            if (data.isDefault) {
-              this.default1 = '是';
-            } else {
-              this.default1 = '否';
-            }
-            this.templetName = data.name;
-            this.interfaces = data.portList;
-            this.totalPrice = data.totalPrice;
-            this.xiugaiportList = data.portList;
-            for (let v of this.interface) {
-              if (this.interfaces.indexOf(v.name) !== -1) {
-                v.status = true;
-              }
-            }
+        return false;
+      },
+      getInitData() {
+        console.log(this.shouldGetData());
+        if (this.shouldGetData()) {
+          this.first = false;
+          this.loadingFlag = true;
+          Promise.all([
+            this.createMethod()
+          ]).then(() => {
+            this.loadingFlag = false;
+          }).catch(() => {
+            this.loadingFlag = false;
           });
         }
-      }
-    },
-
-    methods: {
+      },
       // 去接口的启用与停用页面，传递接口名与使用情况
       toInterfaceDetail(n, m) {
 //        this.$router.push({name: 'interface-details', params: {code: n, status: m}});
@@ -272,6 +223,7 @@
           this.$refs.toast1.show();
           setTimeout(() => {
             this.$router.push('/my-templet');
+            this.$emit('addTemplet');
           }, 500);
         });
       },
@@ -289,6 +241,7 @@
           this.$refs.toast.show();
           setTimeout(() => {
             this.$router.push('/my-templet');
+            this.$emit('editTemplet');
           }, 500);
         });
       },
@@ -304,6 +257,93 @@
           this.openInterface = this.openInterface.substring(0, this.openInterface.length - 1);
         }else{
           this.openInterface = 'F1,F2,F3' + this.openInterface;
+        }
+      },
+      // 调用查询默认模板的接口
+      morenTemplet() {
+        queryMoren().then((data) => {
+          this.templetName = data.name;
+          this.templetCode = data.code;
+          if(data.isDefault === '1') {
+            this.default1 = '是';
+          }else{
+            this.default1 = '否';
+          }
+          for (let v of this.interface) {
+            if (data.portList.indexOf(v.name) !== -1) {
+              v.status = true;
+            }
+          }
+          this.totalPrice = data.totalPrice;
+        });
+      },
+      // 从用户模板点进去查询用户模板
+      userTemplet() {
+        queryTempletDetail(this.templetCode).then((data) => {
+          if (data.isDefault === '1') {
+            this.default1 = '是';
+          } else {
+            this.default1 = '否';
+          }
+          this.name1 = data.name;
+          this.portList = data.portList;
+          this.xiugaiportList = data.portList;
+          this.templetName = data.name;
+          this.interfaces = data.portList;
+          this.totalPrice = data.totalPrice;
+          for (let v of this.interface) {
+            if (this.interfaces.indexOf(v.name) !== -1) {
+              v.status = true;
+            }
+          }
+        });
+      },
+      // 从系统模板点进去查询系统模板
+      sysTemplet() {
+        queryTempletDetail(this.templetCode).then((data) => {
+          if (data.isDefault) {
+            this.default1 = '是';
+          } else {
+            this.default1 = '否';
+          }
+          this.templetName = data.name;
+          this.interfaces = data.portList;
+          this.totalPrice = data.totalPrice;
+          this.xiugaiportList = data.portList;
+          for (let v of this.interface) {
+            if (this.interfaces.indexOf(v.name) !== -1) {
+              v.status = true;
+            }
+          }
+        });
+      },
+      createMethod() {
+        this.moren = this.$route.query.moren || '';
+        this.templetCode = this.$route.query.code || '';
+        this.xiugai = this.$route.query.xiugai || '';
+        this.isSys = this.$route.query.isSys || '';
+        if (this.$route.query.changeFlag) {
+          if(this.$route.query.changeFlag === 'true') {
+            this.changeFlag = true;
+          }else{
+            this.changeFlag = false;
+          }
+        } else {
+          // 模板点进来的话
+          if (this.isSys === '1') {
+            // 1系统模板不可改
+            this.changeFlag = false;
+            this.sysTemplet();
+          } else {
+            // 用户模板，可以改
+            this.changeFlag = true;
+            this.userTemplet();
+          }
+        }
+        console.log('111111111111' + typeof (this.changeFlag));
+        if (this.$route.query.moren) {
+          // 默认模板发送客户
+          this.morenTemplet();
         }
       }
     },
@@ -336,6 +376,7 @@
       height: 1rem;
       padding: 0.35rem 0.3rem;
       border-bottom:0.01rem solid #eee;
+      background: #fff;
       .type{
         font-size: 0.3rem;
         color: #484848;
@@ -353,17 +394,17 @@
         color: #484848;
         margin-top: 0.05rem;
       }
-      &:nth-child(3){
+    }
+    .openInterfaceTip{
         height: 0.6rem;
         padding-top: 0.23rem;
         background: rgb(245,245,245);
+        padding-left: 0.3rem;
         .type{
           font-size: 0.24rem;
           color: #999;
         }
-      }
     }
-
     .interfaces{
       background: #fff;
       .interface{
@@ -392,7 +433,7 @@
         }
       }
     }
-.text{
+    .text{
   padding-top: 0.6rem;
   text-align: center;
   padding-bottom: 1.4rem;

@@ -28,8 +28,6 @@
   </div>
 </template>
 <script>
-  import {mapMutations} from 'vuex';
-  import {SET_USER_MOBILE} from 'store/mutation-types';
   import {sendCaptcha} from 'api/general';
   import {mobileValid, captValid, setTitle} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
@@ -108,10 +106,7 @@
           this.sending = false;
           this.captBtnText = '获取验证码';
         }
-      },
-      ...mapMutations({
-        setUserMobile: SET_USER_MOBILE
-      })
+      }
     },
     beforeDestroy() {
       this.timer && clearInterval(this.timer);

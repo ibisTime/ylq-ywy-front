@@ -74,6 +74,7 @@
               this.setUserMobile(this.mobile);
               setTimeout(() => {
                 this.$router.back();
+//                this.$emit('chengeMpbile');
               }, 500);
             }).catch(() => {
               this.loadFlag = false;

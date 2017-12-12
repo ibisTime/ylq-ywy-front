@@ -112,3 +112,13 @@ export function getPageCustomers(start, limit) {
 export function getReport(reportCode) {
   return fetch(805331, {reportCode});
 }
+/***
+ *
+ * @param templetCode
+ */
+
+export function delTemplet(templetCode) {
+  return fetch(805231, {
+    code: templetCode
+  });
+}

@@ -1,50 +1,54 @@
 <template>
     <div class="home-wrapper">
-      <div id="banner">
-        <slider v-if="banners.length" :loop="loop" id="slider">
-          <div class="home-slider" v-for="item in banners" :key="item.code">
-            <a :href="item.url||'javascript:void(0)'" :style="getImgSyl(item.pic)"></a>
+      <scroll ref="scroll">
+        <div id="banner">
+          <slider v-if="banners.length" :loop="loop" id="slider">
+            <div class="home-slider" v-for="item in banners" :key="item.code">
+              <a :href="item.url||'javascript:void(0)'" :style="getImgSyl(item.pic)"></a>
+            </div>
+          </slider>
+        </div>
+        <div id="middle">
+          <!--<div id="sendReport" class="fl" @click="$router.push({name:'templet-details',params:{changeFlag:false,moren:true}})">-->
+          <div id="sendReport" class="fl" @click="$router.push('/my-templet/templet-details?changeFlag='+false+'&moren='+true)">
+            <span>发送报告</span>
+            <img src="./发送报告@2x.png" alt="" class="fr">
           </div>
-        </slider>
-      </div>
-      <div id="middle">
-        <!--<div id="sendReport" class="fl" @click="$router.push({name:'templet-details',params:{changeFlag:false,moren:true}})">-->
-        <div id="sendReport" class="fl" @click="$router.push('/my-templet/templet-details?changeFlag='+false+'&moren='+true)">
-          <span>发送报告</span>
-          <img src="./发送报告@2x.png" alt="" class="fr">
-        </div>
-        <div id="myClient" class="fl" @click="$router.push(`/customers`);
+          <div id="myClient" class="fl" @click="$router.push(`/customers`);
 ">
-          <span>我的客户</span>
-          <img src="./我的客户@2x.png" alt="" class="fr">
-        </div>
-        <div id="personalCenter" class="fl" @click="$router.push(`/user`);
+            <span>我的客户</span>
+            <img src="./我的客户@2x.png" alt="" class="fr">
+          </div>
+          <div id="personalCenter" class="fl" @click="$router.push(`/user`);
 ">
-          <span>个人中心</span>
-          <img src="./个人中心@2x.png" alt="" class="fr">
+            <span>个人中心</span>
+            <img src="./个人中心@2x.png" alt="" class="fr">
+          </div>
         </div>
-      </div>
-      <div id="blank"></div>
-      <div id="smallIcons">
-        <div v-for="item in items1" class="fl item" @click="$router.push(item.to);">
-          <img v-bind:src="item.src" alt=""><br>
-          <span>{{item.text}}</span>
+        <div id="blank"></div>
+        <div id="smallIcons">
+          <div v-for="item in items1" class="fl item" @click="$router.push(item.to);">
+            <img v-bind:src="item.src" alt=""><br>
+            <span>{{item.text}}</span>
+          </div>
+          <div v-for="item in items2" class="fl item" @click="$router.push(item.to);">
+            <img v-bind:src="item.src" alt=""><br>
+            <span>{{item.text}}</span>
+          </div>
+          <div v-for="item in items3" class="fl item" @click="$router.push(item.to);">
+            <img v-bind:src="item.src" alt=""><br>
+            <span>{{item.text}}</span>
+          </div>
         </div>
-        <div v-for="item in items2" class="fl item" @click="$router.push(item.to);">
-          <img v-bind:src="item.src" alt=""><br>
-          <span>{{item.text}}</span>
-        </div>
-        <div v-for="item in items3" class="fl item" @click="$router.push(item.to);">
-          <img v-bind:src="item.src" alt=""><br>
-          <span>{{item.text}}</span>
-        </div>
-      </div>
+      </scroll>
+
     </div>
 </template>
 <script>
   import slider from 'base/slider/slider';
 //  import {formatImg} from 'common/js/util';
   import {setTitle} from 'common/js/util';
+  import Scroll from 'base/scroll/scroll';
   export default {
     data() {
       return {
@@ -97,6 +101,13 @@
         }]
       };
     },
+    mounted: function () {
+      this.$nextTick(function () {
+        setTimeout(() => {
+          this.$refs.scroll.refresh();
+        }, 20);
+      });
+    },
     created() {
       setTitle('首页');
     },
@@ -117,7 +128,8 @@
       }
     },
     components: {
-      slider
+      slider,
+      Scroll
     }
   };
 </script>

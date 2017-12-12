@@ -4,7 +4,7 @@
         <div class="cd-flexbox cd-align-center">
           <div class="cd-avatar-box user-avatar"><img src="./avatar.png"></div>
           <div class="cd-flex1">
-            <p>{{mobile}}</p>
+            <p>{{user.mobile}}</p>
           </div>
         </div>
       </header>
@@ -22,17 +22,23 @@
       <div class="button-wrapper" @click="logout">
         <button>退出登录</button>
       </div>
-      <router-view></router-view>
+      <router-view ></router-view>
     </div>
 </template>
 <script>
   import {setTitle, clearUser} from 'common/js/util';
   import {queryUser} from 'api/biz';
+  import {mapGetters} from 'vuex';
+
   export default {
     data() {
       return {
-        mobile: ''
       };
+    },
+    computed: {
+      ...mapGetters([
+        'user'
+      ])
     },
     created() {
       setTitle('设置');
@@ -45,6 +51,11 @@
         clearUser();
         this.$router.push('/login');
       }
+//      changeMobile() {
+//        queryUser().then((data) => {
+//          this.mobile = data.mobile;
+//        });
+//      }
     }
   };
 </script>
