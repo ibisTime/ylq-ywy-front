@@ -4,65 +4,117 @@
         <div class="cd-flexbox cd-align-center">
           <div class="cd-avatar-box user-avatar"><img src="./avatar.png"></div>
           <div class="cd-flex1 user-message">
-            <p class="over-hide">{{nickName}}</p>
+            <p class="over-hide">{{nickname}}</p>
             <p>{{mobile}}</p>
           </div>
           <div class="right-arrow"></div>
         </div>
       </router-link>
       <div class="main-cont cd-bg-fff">
-        <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/service')">
+        <router-link to='/user/service' tag='div' class="line-item cd-flexbox cd-align-center">
           <div class="icon-money"></div>
-          <div class="price cd-flex1"><label>{{data.currency}}</label>{{data.amount}}</div>
+          <div class="price cd-flex1"><label>人民币</label>{{amount | formatAmount}}</div>
           <div class="right-arrow right-arrow-gray"></div>
-        </div>
+        </router-link>
         <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/bills')">
           <div class="icon-bill"></div>
           <div class="price cd-flex1"><label>账单</label></div>
           <div class="right-arrow right-arrow-gray"></div>
         </div>
-        <div class="bill-flow border-top-1px">
-          <div class="bill-item cd-flexbox" v-for="item in data1">
+        <div class="bill-flow border-top-1px" v-show="flowList.length">
+          <div class="bill-item cd-flexbox" v-for="item in flowList">
             <div class="bill-name">{{item.bizNote}}</div>
-            <div class="bill-price cd-flex1">{{item.transAmount}}</div>
-            <div class="bill-datetime">{{item.createDatetime}}</div>
+            <div class="bill-price cd-flex1">{{item.transAmount | formatFlowAmount}}</div>
+            <div class="bill-datetime">{{item.createDatetime | formatDate}}</div>
           </div>
         </div>
+        <full-loading v-show="loadingFlag"></full-loading>
       </div>
       <router-view></router-view>
     </div>
 </template>
 <script>
+  import {mapGetters, mapMutations} from 'vuex';
+  import {SET_USER} from 'store/mutation-types';
+  import FullLoading from 'base/full-loading/full-loading';
   import {setTitle} from 'common/js/util';
+  import {commonMixin} from 'common/js/mixin';
   import {queryUser} from 'api/biz';
   import {getAccount, getPageFlow} from 'api/account';
 
   export default {
+    mixins: [commonMixin],
     data() {
       return {
-        nickName: '',
-        mobile: '',
-        data: '',
-        data1: []
+        loadingFlag: false,
+        amount: '',
+        flowList: []
       };
     },
+    computed: {
+      nickname() {
+        return this.user ? this.user.nickname : '';
+      },
+      mobile() {
+        return this.user ? this.user.mobile : '';
+      },
+      ...mapGetters([
+        'user'
+      ])
+    },
     created() {
+      this.first = true;
       setTitle('个人中心');
-      queryUser().then((data) => {
-        this.nickName = data.nickname;
-        this.mobile = data.mobile;
-      });
-      getAccount().then((data) => {
-        for(let v of data) {
-          if(v.currency === 'CNY') {
-            this.data = v;
-            this.data.currency = '人民币';
-          }
+      this.getInitData();
+    },
+    updated() {
+      this.getInitData();
+    },
+    methods: {
+      shouldGetData() {
+        if (this.$route.path === '/user') {
+          setTitle('我的客户');
+          return this.first;
         }
-        getPageFlow(1, 10, this.data.accountNumber).then((data1) => {
-          this.data1 = data1.list;
+        return false;
+      },
+      getInitData() {
+        if (this.shouldGetData()) {
+          this.first = false;
+          this.loadingFlag = true;
+          Promise.all([
+            this.queryUser(),
+            this.getAccount()
+          ]).then(() => {
+            this.loadingFlag = false;
+          }).catch(() => {
+            this.loadingFlag = false;
+          });
+        }
+      },
+      queryUser() {
+        return queryUser().then((data) => {
+          this.setUser(data);
         });
-      });
+      },
+      getAccount() {
+        return getAccount().then((data) => {
+          for(let v of data) {
+            if (v.currency === 'CNY') {
+              this.amount = v.amount;
+            }
+          }
+          getPageFlow(1, 10, this.data.accountNumber).then((data) => {
+            this.flowList = data.list;
+          });
+        });
+      },
+      ...mapMutations({
+        'setUser': SET_USER
+      })
+    },
+    components: {
+      FullLoading
     }
   };
 </script>

@@ -92,3 +92,23 @@ export function queryUser() {
     userId: getUserId()
   });
 }
+
+/**
+ * 分页查询客户
+ * @param {string} start
+ * @param {string} limit
+ */
+export function getPageCustomers(start, limit) {
+  return fetch(805350, {
+    start,
+    limit,
+    salesUser: getUserId()
+  });
+}
+/**
+ * 详情查询报告单
+ * @param {string} reportCode
+ */
+export function getReport(reportCode) {
+  return fetch(805331, {reportCode});
+}

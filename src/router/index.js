@@ -19,6 +19,8 @@ const ChangePwd = () => import('pages/change-pwd/change-pwd');
 
 // 我的客户
 const Customers = () => import('pages/customers/customers');
+// 客户详情
+const Customer = () => import('pages/customer/customer');
 // 联系客服
 const Service = () => import('pages/service/service');
 // 登录
@@ -41,7 +43,7 @@ const sendToClient = () => import('pages/send-to-client/send-to-client');
 const interfaceDetails = () => import('pages/interface-details/interface-details');
 // 联系商务
 const contactBusiness = () => import('pages/contact-business/contact-business');
-//
+
 export default new Router({
   routes: [
     {
@@ -100,11 +102,21 @@ export default new Router({
               component: ChangePwd
             }
           ]
+        },
+        {
+          path: 'service',
+          component: Service
         }
       ]
     }, {
       path: '/customers',
-      component: Customers
+      component: Customers,
+      children: [
+        {
+          path: ':code',
+          component: Customer
+        }
+      ]
     }, {
       path: '/service',
       component: Service

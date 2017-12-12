@@ -16,6 +16,11 @@ export const commonMixin = {
     },
     formatAmount(price) {
       return formatAmount(price);
+    },
+    // 流水金额格式化
+    formatFlowAmount(amount) {
+      let prefix = +amount > 0 ? '+' : '';
+      return prefix + formatAmount(amount);
     }
   }
 };

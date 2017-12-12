@@ -1,5 +1,5 @@
 <template>
-  <div class="/head-wrapper" >
+  <div class="full-screen-wrapper head-wrapper">
     <div class="bill-item cd-flexbox" v-for="item in data1">
       <div class="bill-name">{{item.bizNote}}</div>
       <div class="bill-price cd-flex1">{{item.transAmount}}</div>
@@ -33,15 +33,10 @@
   };
 </script>
 <style lang="scss" scoped>
-  @import "~common/scss/mixin";
   @import "~common/scss/variable";
 
   .head-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    background-color: $color-background;
 
     .bill-item {
       line-height: 0.56rem;
