@@ -12,15 +12,21 @@ const User = () => import('pages/user/user');
 const Bills = () => import('pages/bills/bills');
 // 设置
 const Setting = () => import('pages/setting/setting');
+// 修改昵称
+const ChangeNickname = () => import('pages/change-nickname/change-nickname');
 // 修改手机号
 const ChangeMobile = () => import('pages/change-mobile/change-mobile');
 // 修改密码
 const ChangePwd = () => import('pages/change-pwd/change-pwd');
+// 关于我们
+const AboutUs = () => import('pages/about-us/about-us');
 
 // 我的客户
 const Customers = () => import('pages/customers/customers');
 // 客户详情
 const Customer = () => import('pages/customer/customer');
+// 转发报告
+const Transmit = () => import('pages/transmit/transmit');
 // 联系客服
 const Service = () => import('pages/service/service');
 // 登录
@@ -94,12 +100,20 @@ export default new Router({
           component: Setting,
           children: [
             {
+              path: 'change-nickname',
+              component: ChangeNickname
+            },
+            {
               path: 'change-mobile',
               component: ChangeMobile
             },
             {
               path: 'change-pwd',
               component: ChangePwd
+            },
+            {
+              path: 'about-us',
+              component: AboutUs
             }
           ]
         },
@@ -114,7 +128,11 @@ export default new Router({
       children: [
         {
           path: ':code',
-          component: Customer
+          component: Customer,
+          children: [{
+            path: 'transmit',
+            component: Transmit
+          }]
         }
       ]
     }, {

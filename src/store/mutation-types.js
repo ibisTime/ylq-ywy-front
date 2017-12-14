@@ -1,2 +1,4 @@
 export const SET_USER = 'SET_USER';
 export const SET_USER_MOBILE = 'SET_USER_MOBILE';
+export const SET_USER_NICKNAME = 'SET_USER_NICKNAME';
+export const SET_USER_AVATAR = 'SET_USER_AVATAR';

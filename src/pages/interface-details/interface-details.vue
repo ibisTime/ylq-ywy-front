@@ -1,8 +1,10 @@
 <template>
   <div class="home-wrapper">
-    <div class="content">
-      {{description}}
+    <scroll ref="scroll" class="about-content">
+    <div class="rich-text-description" ref="description">
+      <div class="content" v-html="description"></div>
     </div>
+    </scroll>
     <div class="buttons">
       <button class="start color1" @click="changeStatus(true)" >启用</button>
       <button class="stop color2" @click="changeStatus(false)" >停用</button>
@@ -12,7 +14,7 @@
 <script>
   import {setTitle} from 'common/js/util';
   import {queryInterface} from 'api/biz';
-
+  import Scroll from 'base/scroll/scroll';
   export default {
     data() {
       return {
@@ -57,7 +59,35 @@
             this.$emit('changeTemplet', {code: this.code, status: status, price: -(this.price)});
           }
         }
+      },
+      _refreshScroll() {
+        setTimeout(() => {
+          this.$refs.scroll.refresh();
+          let imgs = this.$refs.description.getElementsByTagName('img');
+          for (let i = 0; i < imgs.length; i++) {
+            let _img = imgs[i];
+            if (_img.complete) {
+              setTimeout(() => {
+                this.$refs.scroll.refresh();
+              }, 20);
+              continue;
+            }
+            _img.onload = () => {
+              setTimeout(() => {
+                this.$refs.scroll.refresh();
+              }, 20);
+            };
+          }
+        }, 20);
       }
+    },
+    watch: {
+      content() {
+        this._refreshScroll();
+      }
+    },
+    components: {
+      Scroll
     }
   };
 </script>
@@ -80,18 +110,13 @@
     .color2{
       background: #ffae00;
     }
-    .content{
-       width: 100%;
-       height: 6rem;
-       padding: 0.3rem;
-     }
     .buttons{
       width: 100%;
       height: 1.3rem;
       position: fixed;
       bottom: 0;
-      padding:0.2rem 0.3rem;
-
+      padding:0.2rem;
+      background: #fff;
       button{
         border-radius: 0.1rem;
         width: 48%;
@@ -108,6 +133,19 @@
         /*background: #ffae00;*/
       }
     }
+    .about-content{
+      .rich-text-description{
+        height: 100%;
+        padding: 0;
+        margin: 0;
+        .content{
+          width: 100%;
+          padding: 0.3rem;
+        }
+      }
+    }
+
+
   }
 
 

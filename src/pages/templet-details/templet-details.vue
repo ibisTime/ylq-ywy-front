@@ -9,10 +9,10 @@
       <div class='templet' >
         <span class="type">是否默认</span>
         <img src="./more-gray@2x.png" alt="" class="fr vh" >
-        <switch-option class="fr" style="position:relative;right: -5.8rem;
-    bottom: 0.3rem;" :value="haha" @update:value="haha1" v-if="changeFlag && !xiugai">
+        <switch-option ref="switch" class="fr" style="position:relative;right: -5.8rem;
+    bottom: 0.3rem;" :value="open" @update:value="open1" v-if="changeFlag || isSys === '1'">
         </switch-option>
-        <span class="status fr" v-if="!changeFlag || xiugai">{{default1}}</span>
+        <span class="status fr" v-if="moren">{{default1}}</span>
       </div>
       <div class='openInterfaceTip'>
         <span class="type">使用的接口</span>
@@ -65,6 +65,7 @@
     </scroll>
     <toast ref="toast" text="修改成功!"></toast>
     <toast ref="toast1" text="创建成功!"></toast>
+    <toast ref="toast2" text="不可取消默认模板！您可以将其他模板设置为默认模板"></toast>
     <router-view @changeTemplet="changeTemplet" @changeName="changeName"></router-view>
 
   </div>
@@ -74,7 +75,7 @@
   import SwitchOption from 'base/switch-option/switch-option';
   import Toast from 'base/toast/toast';
   import {setTitle} from 'common/js/util';
-  import {queryTempletDetail, queryMoren, editTemplet, addTemplet} from 'api/biz';
+  import {queryTempletDetail, queryMoren, addTemplet, editIsDefault, editTemplet} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
   export default {
     mixins: [commonMixin],
@@ -145,12 +146,15 @@
         // 从模板点进来的时候的名字
         name1: '',
         portList: '',
+        // 自己选择的默认开关
         isDefault: '0',
+        // 一开始点进来的时候的默认开关
+        default2: '',
         totalPrice: '21000',
-        haha: '',
+        open: '',
         // 创建模板时所有启用的接口
         openInterface: '',
-        // 获取的是否默认
+        // 获取的是否默认，展示出来为是/否
         default1: '',
         xiugai: '',
         xiugaiportList: '',
@@ -178,7 +182,6 @@
         return false;
       },
       getInitData() {
-        console.log(this.shouldGetData());
         if (this.shouldGetData()) {
           this.first = false;
           this.loadingFlag = true;
@@ -227,24 +230,54 @@
           }, 500);
         });
       },
-      haha1(val) {
+      // 修改是否默认时触发的事件，open1是普通修改变量，点击保存时才真正调用接口去修改模板
+      // open2的话是一点击按钮直接调用接口去修改模板
+      open1(val) {
+          // 情况1.1：默认模板进来，val为false,提示不允许，将open设置为true
+        // 情况2.1：非默认的系统模板进来，val为true,设置为默认模板
         if (val) {
           this.isDefault = 1;
+          if(this.default2 === '0' && this.isSys === '1') {
+            this.editSysTemplet();
+          }
         } else {
           this.isDefault = 0;
+          if(this.default2 === '1') {
+            this.$refs.toast2.show();
+            this.$refs.switch.clickSwitch();
+          }
         }
       },
+      // 修改模板
       edit() {
         this.getOpenInterface();
-//        let that = this;
-        editTemplet(this.templetCode, this.templetName, this.openInterface).then((data) => {
+        if(this.isDefault === 1 && this.default2 === '0') {
+          editIsDefault(this.templetCode).then((data) => {
+            editTemplet(this.templetCode, this.templetName, this.openInterface).then((data) => {
+              this.$refs.toast.show();
+              setTimeout(() => {
+                this.$router.push('/my-templet');
+                this.$emit('editTemplet');
+              }, 500);
+            });
+          });
+        }else{
+          editTemplet(this.templetCode, this.templetName, this.openInterface).then((data) => {
+            this.$refs.toast.show();
+            setTimeout(() => {
+              this.$router.push('/my-templet');
+              this.$emit('editTemplet');
+            }, 500);
+          });
+        }
+      },
+      // 修改默认模板，只能修改是否默认
+      editSysTemplet() {
+        editIsDefault(this.templetCode).then((data) => {
           this.$refs.toast.show();
-          setTimeout(() => {
-            this.$router.push('/my-templet');
-            this.$emit('editTemplet');
-          }, 500);
         });
       },
+
       // 获取打开的接口
       getOpenInterface() {
         for (let v of this.interface) {
@@ -281,10 +314,13 @@
       userTemplet() {
         queryTempletDetail(this.templetCode).then((data) => {
           if (data.isDefault === '1') {
-            this.default1 = '是';
+            this.open = true;
+            this.default2 = true;
           } else {
-            this.default1 = '否';
+            this.open = false;
+            this.default2 = false;
           }
+          this.default2 = data.isDefault;
           this.name1 = data.name;
           this.portList = data.portList;
           this.xiugaiportList = data.portList;
@@ -301,11 +337,14 @@
       // 从系统模板点进去查询系统模板
       sysTemplet() {
         queryTempletDetail(this.templetCode).then((data) => {
-          if (data.isDefault) {
-            this.default1 = '是';
+          if (data.isDefault === '1') {
+            this.open = true;
+            this.default2 = true;
           } else {
-            this.default1 = '否';
+            this.open = false;
+            this.default2 = false;
           }
+          this.default2 = data.isDefault;
           this.templetName = data.name;
           this.interfaces = data.portList;
           this.totalPrice = data.totalPrice;
@@ -340,7 +379,6 @@
             this.userTemplet();
           }
         }
-        console.log('111111111111' + typeof (this.changeFlag));
         if (this.$route.query.moren) {
           // 默认模板发送客户
           this.morenTemplet();

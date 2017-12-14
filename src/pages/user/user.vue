@@ -2,7 +2,7 @@
     <div class="full-screen-wrapper user-wrapper">
       <router-link tag="div" to="/user/setting" class="header">
         <div class="cd-flexbox cd-align-center">
-          <div class="cd-avatar-box user-avatar"><img src="./avatar.png"></div>
+          <div class="cd-avatar-box user-avatar"><img :src="getAvatar()"></div>
           <div class="cd-flex1 user-message">
             <p class="over-hide">{{nickname}}</p>
             <p>{{mobile}}</p>
@@ -37,7 +37,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_USER} from 'store/mutation-types';
   import FullLoading from 'base/full-loading/full-loading';
-  import {setTitle} from 'common/js/util';
+  import {setTitle, formatAvatar} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
   import {queryUser} from 'api/biz';
   import {getAccount, getPageFlow} from 'api/account';
@@ -48,7 +48,8 @@
       return {
         loadingFlag: false,
         amount: '',
-        flowList: []
+        flowList: [],
+        accountNumber: ''
       };
     },
     computed: {
@@ -102,12 +103,19 @@
           for(let v of data) {
             if (v.currency === 'CNY') {
               this.amount = v.amount;
+              this.accountNumber = v.accountNumber;
             }
           }
-          getPageFlow(1, 10, this.data.accountNumber).then((data) => {
-            this.flowList = data.list;
+          getPageFlow(1, 10, this.accountNumber).then((data1) => {
+            this.flowList = data1.list;
           });
         });
+      },
+      getAvatar() {
+        if (!this.user) {
+          return require('./avatar.png');
+        }
+        return formatAvatar(this.preview || this.user.photo);
       },
       ...mapMutations({
         'setUser': SET_USER

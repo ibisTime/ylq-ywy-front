@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen-wrapper report-wrapper">
-    <scroll ref="scroll" :pullUpLoad="pullUpLoad">
+    <scroll ref="scroll" :pullUpLoad="pullUpLoad" class="scroll">
       <jbxx-list :data="jbxxList" :dict="hygzDict" @reload="refresh"></jbxx-list>
       <!-- <div class="split-bar border-bottom-1px">身份证照片</div>
       <div class="split-bar border-bottom-1px">通讯录认证</div>
@@ -8,9 +8,14 @@
       <div class="split-bar border-bottom-1px">芝麻分认证</div> -->
       <hygz-list :data="hygzList" @reload="refresh"></hygz-list>
     </scroll>
+    <div class="button">
+      <button @click="toTransmit" ><span>转发报告</span></button>
+    </div>
+
     <!-- <div class="split-bar border-bottom-1px">欺诈三接口</div>
     <div class="split-bar border-bottom-1px">同盾认证</div> -->
     <full-loading v-show="loadFlag"></full-loading>
+    <router-view></router-view>
   </div>
 </template>
 <script>
@@ -96,6 +101,9 @@
         setTimeout(() => {
           this.$refs.scroll.refresh();
         }, 20);
+      },
+      toTransmit() {
+        this.$router.push(this.$route.path + '/transmit');
       }
     },
     components: {
@@ -112,6 +120,27 @@
 
   .report-wrapper {
     background: $color-background;
+    .scroll{
+      height: 90%;
+    }
+    .button{
+      width: 100%;
+      padding: 1rem 0.3rem 0.3rem 0.3rem;
+      position: fixed;
+      bottom: 0;
+      button{
+        width: 100%;
+        height: 0.9rem;
+        background: $primary-color;
+        border-radius: 0.1rem ;
+
+        span{
+          color:#fff;
+          font-size: 0.36rem;
+        }
+      }
+    }
+
     .split-bar {
       padding: 0 0.3rem;
       line-height: 0.8rem;

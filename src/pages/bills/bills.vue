@@ -41,6 +41,10 @@
     .bill-item {
       line-height: 0.56rem;
       font-size: $font-size-medium-s;
+      height: 1.2rem;
+      border-bottom:1px solid #eee;
+      background: #fff;
+      padding: 0.3rem;
       .bill-price {
         text-align: center;
       }

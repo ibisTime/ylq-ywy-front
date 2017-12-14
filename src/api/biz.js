@@ -50,6 +50,18 @@ export function editTemplet(code, name, portList, updater) {
   });
 }
 
+/***
+ *设置默认模板
+ * @param code
+ * @param updater
+ */
+export function editIsDefault(code, updater) {
+  return fetch(805233, {
+    code: code,
+    updater: getUserId()
+  });
+}
+
 /*
 *查询接口
  */
@@ -122,3 +134,18 @@ export function delTemplet(templetCode) {
     code: templetCode
   });
 }
+
+/***
+ * 转发报告
+ * @param mobile
+ * @param pwd
+ * @param code
+ */
+export function transmitReport(mobile, pwd, code) {
+  return fetch(805300, {
+    mobile: mobile,
+    password: pwd,
+    reportCode: code
+  });
+}
+

@@ -4,16 +4,15 @@
     <div class='templet' v-for='(item,index) in templets'>
       <div class="inner cd-flexbox"
            ref="customer"
-           @touchstart.stop.prevent="touchstart(index,$event)"
-           @touchmove.stop.prevent="touchmove($event)"
-           @touchend.stop.prevent="touchend($event)"
-           @click="$router.push('/my-templet/templet-details?isSys='+item.isSystem+'&code='+item.code+'&xiugai='+true)"
-      >
+           @touchstart.stop.prevent="item.isSystem === '0'?touchstart(index,$event):toTempletDetail(item.isSystem, item.code)"
+           @touchmove.stop.prevent="item.isSystem === '0'?touchmove($event):toTempletDetail(item.isSystem, item.code)"
+           @touchend.stop.prevent="item.isSystem === '0'?touchend($event):toTempletDetail(item.isSystem, item.code)"
+           @click="toTempletDetail(item.isSystem, item.code)">
         <span class="type">{{item.name}}</span>
         <img src="./more-gray@2x.png" alt="" class="fr">
         <span class="fr price">{{item.totalPrice | formatAmount}}元</span>
       </div>
-      <div class="delete" ref="deleteEle" @click="deleteItem(item)">删除</div>
+      <div class="delete" ref="deleteEle" @click="deleteItem(item)" v-if="item.isSystem === '0'">删除</div>
 
     </div>
     <!--<div class="down" @click="$router.push({name:urlName,params:{changeFlag:true}})">-->
@@ -75,6 +74,11 @@
           queryTemplet().then((data) => {
             this.loadFlag = false;
             this.templets = data.list;
+            for(let v of this.templets) {
+              if(v.isSystem === '0') {
+
+              }
+            }
           });
         }
       },
@@ -91,6 +95,10 @@
       deleteItem(item) {
         delTemplet(item.code).then((data) => {
           this.$refs.toast.show();
+          queryTemplet().then((data) => {
+            this.loadFlag = false;
+            this.templets = data.list;
+          });
         });
       },
       touchstart(index, event) {
@@ -163,6 +171,12 @@
           currentElem.style[transitionDuration] = '0ms';
         });
         this.$refs.deleteEle[index].style['zIndex'] = zIndex;
+      },
+      // 从模板点击进入模板详情
+      toTempletDetail(m, n) {
+        this.$router.push('/my-templet/templet-details?isSys=' + m + '&code=' + n + '&xiugai=' + true);
+      },
+      nothing() {
       }
     },
     components: {
@@ -202,6 +216,7 @@
       padding-left:0.3rem;
       border-bottom:0.01rem solid #eee;
       background: #fff;
+      position: relative;
       .type{
         font-size: 0.3rem;
         color: #484848;
