@@ -49,7 +49,6 @@
     },
     methods: {
       transmitReport() {
-        console.log(this.$route.path);
         if (this._valid()) {
           this.loadFlag = true;
           transmitReport(this.mobile, this.pwd, this.$route.path.split('/')[2])
@@ -76,7 +75,6 @@
       },
       _pwdValid() {
         let result = pwdValid(this.pwd);
-        console.log(result);
         this.pwdErr = result.msg;
         return !result.err;
       }

@@ -7,10 +7,14 @@
                  ref="customer"
                  @touchstart.stop.prevent="touchstart(index,$event)"
                  @touchmove.stop.prevent="touchmove($event)"
-                 @touchend.stop.prevent="touchend($event)">
+                 @touchend.stop.prevent="touchend($event)" v-if="item.status === '0' || item.status === '1'">
               <div class="status-icon">
-                <i class="circle-icon"></i>
-                <div class="cd-avatar-box"><img src="./avatar.png" /></div>
+                <i class="circle-icon" v-show="item.status === '0'"></i>
+                <div class="cd-avatar-box">
+                  <!--<img src="./avatar.png" />-->
+                  <div class="status unread" v-if="item.status === '0'"></div>
+                  <div class="status read" v-if="item.status === '1'"></div>
+                </div>
               </div>
               <div class="cd-flex1 cus-info">
                 <!-- 12222222222 男 29岁 芝麻分555分 浙江省杭州市余杭区梦想小镇天使村8号楼宜车叮叮2楼橙袋科技 -->
@@ -43,7 +47,8 @@
         start: 1,
         limit: 20,
         hasMore: true,
-        customerList: []
+        customerList: [],
+        realName: ''
       };
     },
     created() {
@@ -86,16 +91,33 @@
         if (item['F2']) {
           return JSON.parse(item['F2']).realName;
         }
-        return JSON.parse(item['F1']).mobile;
+        return '';
       },
       getUserInfo(item) {
         let mobile = JSON.parse(item['F1']).mobile;
         let address = '';
+        let sex = ' ';
+        let age = ' ';
         if (item['F3']) {
           let f3 = JSON.parse(item['F3']);
           address = ' ' + f3.provinceCity + f3.address;
         }
-        return mobile + address;
+        if (item['F2']) {
+          let f2 = JSON.parse(item['F2']);
+          if(f2.idNo.length === 15) {
+            sex += f2.idNo[14] % 2 === 0 ? '女' : '男';
+            let nowyear = new Date().getFullYear();
+            let birthyear = '19' + f2.idNo.substr(6, 2);
+            age += nowyear - birthyear + '岁';
+          }
+          if(f2.idNo.length === 18) {
+            sex += f2.idNo[16] % 2 === 0 ? '女' : '男';
+            let nowyear = new Date().getFullYear();
+            let birthyear = f2.idNo.substr(6, 4);
+            age += nowyear - birthyear + '岁';
+          }
+        }
+        return mobile + sex + age + address;
       },
       selectItem(item) {
         this.$router.push('/customers/' + item.code);
@@ -214,11 +236,23 @@
             .cd-avatar-box {
               width: 100%;
               height: 0.9rem;
+              .status{
+                border-radius: 50%;
+                width: 100%;
+                height: 100%;
+              }
+              .unread{
+                background: #5ea3f2;
+              }
+              .read{
+                background: #0cb8ae;
+              }
             }
           }
           .cus-info {
             .top {
               font-size: $font-size-medium-xx;
+              height: 0.36rem;
               span {
                 float: right;
                 font-size: $font-size-medium;

@@ -6,7 +6,7 @@
         <img src="./more-gray@2x.png" alt="" class="fr" :class="{vh:!changeFlag}">
         <span class="status fr">{{templetName}}</span>
       </div>
-      <div class='templet' >
+      <div class='templet' v-if="!moren">
         <span class="type">是否默认</span>
         <img src="./more-gray@2x.png" alt="" class="fr vh" >
         <switch-option ref="switch" class="fr" style="position:relative;right: -5.8rem;

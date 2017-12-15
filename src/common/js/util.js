@@ -460,3 +460,8 @@ export function formatChatDate(timeStamp, param) {
   }
   return param ? week[before.getDay()] + ' ' + formatDate(timeStamp, 'hh:mm') : week[before.getDay()];
 }
+
+// 获取报告单的编号
+export function getReportCode() {
+  return sessionStorage['reportCode'] || '';
+}

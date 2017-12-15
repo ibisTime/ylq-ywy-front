@@ -24,7 +24,7 @@ const AboutUs = () => import('pages/about-us/about-us');
 // 我的客户
 const Customers = () => import('pages/customers/customers');
 // 客户详情
-const Customer = () => import('pages/customer/customer');
+const Report = () => import('pages/report/report');
 // 转发报告
 const Transmit = () => import('pages/transmit/transmit');
 // 联系客服
@@ -128,7 +128,7 @@ export default new Router({
       children: [
         {
           path: ':code',
-          component: Customer,
+          component: Report,
           children: [{
             path: 'transmit',
             component: Transmit

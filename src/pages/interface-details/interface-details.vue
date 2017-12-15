@@ -134,10 +134,11 @@
       }
     }
     .about-content{
+      height: 90%;
       .rich-text-description{
-        height: 100%;
         padding: 0;
         margin: 0;
+        /*background: #000;*/
         .content{
           width: 100%;
           padding: 0.3rem;

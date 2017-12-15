@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen-wrapper report-wrapper">
-    <scroll ref="scroll" :pullUpLoad="pullUpLoad" class="scroll">
+    <scroll ref="scroll" class="scroll">
       <jbxx-list :data="jbxxList" :dict="hygzDict" @reload="refresh"></jbxx-list>
       <!-- <div class="split-bar border-bottom-1px">身份证照片</div>
       <div class="split-bar border-bottom-1px">通讯录认证</div>
@@ -37,7 +37,6 @@
       };
     },
     created() {
-      this.pullUpLoad = null;
       setTitle('调查报告');
       Promise.all([
         this.getReport(),

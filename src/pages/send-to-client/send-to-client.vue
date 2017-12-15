@@ -20,19 +20,22 @@
       </div>
 
       <div class="form-btn">
-        <button @click="sendToCilent">发送</button>
+        <button @click="sendCilent">发送</button>
       </div>
       <full-loading v-show="loadFlag" title="修改中..."></full-loading>
     </div>
     <toast ref="toast" text="发送成功!"></toast>
+    <confirm ref="confirm" text="确定发送报告吗？" @confirm="sendToClient()"></confirm>
   </div>
 </template>
 <script>
+  import Toast from 'base/toast/toast';
+  import FullLoading from 'base/full-loading/full-loading';
+  import Confirm from 'base/confirm/confirm';
   import {sendCaptcha} from 'api/general';
   import {mobileValid, captValid, setTitle} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
-  import Toast from 'base/toast/toast';
-  import FullLoading from 'base/full-loading/full-loading';
+
   import {sendToClient} from 'api/biz';
 
   export default {
@@ -50,7 +53,7 @@
       };
     },
     created() {
-      setTitle('修改手机号');
+      setTitle('发送客户');
 //      console.log(this.$route.params.code);
       this.modelCode = this.$route.query.code;
     },
@@ -65,15 +68,18 @@
           });
         }
       },
-      sendToCilent() {
+      sendCilent() {
         if (this._valid()) {
-          sendToClient(this.captcha, this.mobile, this.modelCode).then((data) => {
-            this.$refs.toast.show();
-            setTimeout(() => {
-              this.$router.back();
-            }, 500);
-          });
+          this.$refs.confirm.show();
         }
+      },
+      sendToClient() {
+        sendToClient(this.captcha, this.mobile, this.modelCode).then((data) => {
+          this.$refs.toast.show();
+          setTimeout(() => {
+            this.$router.back();
+          }, 500);
+        });
       },
       _valid() {
         let r1 = this._mobileValid();
@@ -113,7 +119,8 @@
     },
     components: {
       Toast,
-      FullLoading
+      FullLoading,
+      Confirm
     }
   };
 </script>

@@ -1,6 +1,6 @@
 <template>
     <div class="home-wrapper">
-      <scroll ref="scroll">
+      <scroll ref="scroll" :pullUpLoad="pullUpLoad">
         <div id="banner">
           <slider v-if="banners.length" :loop="loop" id="slider">
             <div class="home-slider" v-for="item in banners" :key="item.code">
@@ -98,7 +98,8 @@
           text: '更多',
           src: require('./more@2x.png'),
           to: '/contact-business'
-        }]
+        }],
+        pullUpLoad: null
       };
     },
     mounted: function () {
@@ -170,7 +171,6 @@
       #sendReport{
         width: 50%;
         height: 100%;
-        /*background: green;*/
         display: inline-block;
         padding-top:0.55rem;
         padding-right: 0.36rem;

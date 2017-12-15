@@ -1,6 +1,6 @@
 <template>
   <div class="home-wrapper">
-    <scroll ref="scroll" class="about-content">
+    <scroll ref="scroll" class="about-content" :pullUpLoad="pullUpLoad">
       <div class="rich-text-description" ref="description">
         <div class="content" v-html="cvalue"></div>
       </div>
@@ -14,7 +14,8 @@
   export default {
     data() {
       return {
-        cvalue: ''
+        cvalue: '',
+        pullUpLoad: null
       };
     },
     created() {
