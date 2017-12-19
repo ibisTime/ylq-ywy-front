@@ -41,6 +41,10 @@
           关于我们<i class="right-arrow-gray"></i>
         </router-link>
       </div>
+      <div class="service">
+        <span>{{serviceTime.remark}}:{{serviceTime.cvalue}}</span><br>
+        <span>{{serviceTel.remark}}:{{serviceTel.cvalue}}</span>
+      </div>
       <div class="button-wrapper" @click="logout">
         <button>退出登录</button>
       </div>
@@ -59,7 +63,7 @@
   import {SET_USER, SET_USER_AVATAR} from 'store/mutation-types';
   import {setTitle, clearUser, formatAvatar, getImgData} from 'common/js/util';
   import {getUser, changeAvatar} from 'api/user';
-  import {getQiniuToken} from 'api/general';
+  import {getQiniuToken, getServiceTime, getServiceTel} from 'api/general';
   import {mapGetters, mapMutations} from 'vuex';
 
   export default {
@@ -68,7 +72,9 @@
         token: '',
         imgType: '',
         imgUrl: '',
-        preview: ''
+        preview: '',
+        serviceTime: '',
+        serviceTel: ''
       };
     },
     computed: {
@@ -81,6 +87,7 @@
       this.multiple = false;
       if (this.shouldGetData()) {
         this._getUser();
+        this.getService();
       }
     },
     methods: {
@@ -105,6 +112,14 @@
         }
         return getUser().then((data) => {
           this.setUser(data);
+        });
+      },
+      getService() {
+        getServiceTime('time').then((data) => {
+          this.serviceTime = data;
+          getServiceTel('telephone').then((data) => {
+            this.serviceTel = data;
+          });
         });
       },
       logout() {
@@ -224,6 +239,10 @@
       padding-left: 0.3rem;
       font-size: $font-size-medium-x;
       background-color: #fff;
+      i{
+        position: absolute;
+        right: 0.3rem;
+      }
     }
     .line-item {
       padding-right: 0.3rem;
@@ -298,6 +317,16 @@
         font-size: $font-size-large-s;
         color: #fff;
         background-color: $primary-color;
+      }
+    }
+    .service{
+      margin-top: 0.5rem;
+      width: 100%;
+      height: 1rem;
+      text-align: center;
+      span{
+        line-height: 0.5rem;
+        font-size: 0.28rem;
       }
     }
   }

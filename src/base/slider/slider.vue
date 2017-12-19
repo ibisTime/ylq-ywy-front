@@ -129,6 +129,7 @@
         });
       },
       _onScrollEnd() {
+//        debugger;
         let pageIndex = this.slider.getCurrentPage().pageX;
         if(this.loop) {
           pageIndex -= 1;

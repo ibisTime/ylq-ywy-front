@@ -104,7 +104,7 @@ export function getDictList(parentKey) {
 export function getBannerList() {
   return fetch(805806, {
     type: 2,
-    belong: 0
+    belong: 1
   });
 }
 
@@ -125,5 +125,18 @@ export function getPageSysNotices(start, limit) {
 export function getTradeIconRule(key) {
   return fetch(808917, {
     key
+  });
+}
+
+// 获取服务时间
+export function getServiceTime(time) {
+  return fetch(805917, {
+    ckey: time
+  });
+}
+// 获取服务电话
+export function getServiceTel(telephone) {
+  return fetch(805917, {
+    ckey: telephone
   });
 }

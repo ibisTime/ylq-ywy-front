@@ -52,12 +52,10 @@
       </div>
       <div class="down">
         <div v-if="isSys!=='0'" class="one">
-        <!--<button v-if="!changeFlag " @click="$router.push({name:'send-to-client',params:{code:templetCode}})"><span>发送客户</span></button>-->
         <button v-if="!changeFlag" @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
         <button v-if="changeFlag " @click="xiugai?edit():addTemplet()"><span>保存</span></button>
         </div>
         <div v-if="isSys==='0'" class="two">
-        <!--<button @click="$router.push({name:'send-to-client',params:{code:templetCode}})" ><span>发送客户</span></button>-->
         <button @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)" ><span>发送客户</span></button>
         <button @click="edit()"><span>保存</span></button>
         </div>

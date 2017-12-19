@@ -9,7 +9,6 @@
           </slider>
         </div>
         <div id="middle">
-          <!--<div id="sendReport" class="fl" @click="$router.push({name:'templet-details',params:{changeFlag:false,moren:true}})">-->
           <div id="sendReport" class="fl" @click="$router.push('/my-templet/templet-details?changeFlag='+false+'&moren='+true)">
             <span>发送报告</span>
             <img src="./发送报告@2x.png" alt="" class="fr">
@@ -46,19 +45,13 @@
 </template>
 <script>
   import slider from 'base/slider/slider';
-//  import {formatImg} from 'common/js/util';
-  import {setTitle} from 'common/js/util';
+  import {formatImg, setTitle} from 'common/js/util';
   import Scroll from 'base/scroll/scroll';
+  import {getBannerList} from 'api/general';
   export default {
     data() {
       return {
-        banners: [{
-          pic: require('./banner@2x.png')
-        }, {
-          pic: require('./banner@2x.png')
-        }, {
-          pic: require('./banner@2x.png')
-        }],
+        banners: [],
         items1: [{
           text: '资信报告',
           src: require('./资信报告@2x.png'),
@@ -110,7 +103,12 @@
       });
     },
     created() {
+      this.first = true;
       setTitle('首页');
+      this.getInitData();
+    },
+    updated() {
+      this.getInitData();
     },
     computed: {
       showDots() {
@@ -121,11 +119,33 @@
       }
     },
     methods: {
+      shouldGetData() {
+        if (this.$route.path === '/home') {
+          setTitle('首页');
+          return this.first;
+        }
+        return false;
+      },
+      getInitData() {
+        if (this.shouldGetData()) {
+          this.first = false;
+          this.loadingFlag = true;
+          this.getBanners().then(() => {
+            this.loadingFlag = false;
+          }).catch(() => {
+            this.loadingFlag = false;
+          });
+        }
+      },
       getImgSyl(imgs) {
         return {
-//          backgroundImage: `url(${formatImg(imgs)})`
-          backgroundImage: `url(${imgs})`
+          backgroundImage: `url(${formatImg(imgs)})`
         };
+      },
+      getBanners() {
+        return getBannerList('index_banner').then((data) => {
+          this.banners = data;
+        });
       }
     },
     components: {
