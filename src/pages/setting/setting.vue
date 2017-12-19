@@ -2,9 +2,7 @@
     <div class="full-screen-wrapper setting-wrapper">
       <header>
         <div class="cd-flexbox cd-align-center">
-          <!--<div class="cd-avatar-box user-avatar"><img src="./avatar.png"></div>-->
           <div class="setting-item border-bottom-1px">
-            <!--<h2>头像</h2>-->
             <img :src="getAvatar()"/>
             <qiniu
               ref="qiniu"
@@ -28,7 +26,7 @@
         <router-link tag="div" to="/user/setting/change-nickname" class="line-item border-bottom-1px">
           修改昵称<i class="right-arrow-gray"></i>
         </router-link>
-        <router-link tag="div" to="/user/setting/change-mobile" class="line-item border-bottom-1px">
+        <router-link tag="div" to="/user/setting/change-valid" class="line-item border-bottom-1px">
           修改手机号<i class="right-arrow-gray"></i>
         </router-link>
         <router-link tag="div" to="/user/setting/change-pwd" class="line-item border-bottom-1px">
@@ -189,16 +187,10 @@
         setAvatar: SET_USER_AVATAR,
         setUser: SET_USER
       })
-//      changeMobile() {
-//        getUser().then((data) => {
-//          this.mobile = data.mobile;
-//        });
-//      }
     },
     components: {
       Qiniu,
       ClipImg
-
     }
   };
 </script>
@@ -217,6 +209,11 @@
         height: 1rem;
         flex: 0 0 1rem;
         margin-right: 0.2rem;
+      }
+      .cd-flex1 {
+        p+p {
+          padding-top: 0.2rem;
+        }
       }
     }
     .main-cont {

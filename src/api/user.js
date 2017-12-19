@@ -74,7 +74,14 @@ export function bindMobile(mobile, smsCaptcha, isSendSms = '0') {
     userId: getUserId()
   });
 }
-
+// 修改手机号旧手机验证码校验
+export function changeMobCaptValid (mobile, captcha, bizType) {
+  return fetch(804082, {
+    mobile,
+    captcha,
+    bizType
+  });
+}
 /**
  * 修改手机号
  * @param {string} newMobile

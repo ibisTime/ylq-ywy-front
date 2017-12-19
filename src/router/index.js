@@ -14,6 +14,8 @@ const Bills = () => import('pages/bills/bills');
 const Setting = () => import('pages/setting/setting');
 // 修改昵称
 const ChangeNickname = () => import('pages/change-nickname/change-nickname');
+// 修改手机号校验
+const ChangeValid = () => import('pages/change-valid/change-valid');
 // 修改手机号
 const ChangeMobile = () => import('pages/change-mobile/change-mobile');
 // 修改密码
@@ -102,6 +104,10 @@ export default new Router({
             {
               path: 'change-nickname',
               component: ChangeNickname
+            },
+            {
+              path: 'change-valid',
+              component: ChangeValid
             },
             {
               path: 'change-mobile',

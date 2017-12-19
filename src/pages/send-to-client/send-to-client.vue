@@ -4,15 +4,15 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" v-model="mobile" @change="_mobileValid" placeholder="请输入您要发送的手机号">
-          <span v-show="mobErr" class="error-tip">{{mobErr}}</span>
+          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入您要发送的手机号">
+          <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
         </div>
       </div>
       <div class="form-item">
         <div class="item-label">验证码</div>
         <div class="item-input-wrapper">
-          <input type="tel" class="item-input" v-model="captcha" @change="_captValid" placeholder="请输入验证码">
-          <span v-show="captErr" class="error-tip">{{captErr}}</span>
+          <input type="tel" class="item-input" name="captcha" v-model="captcha" v-validate="'required|captcha'" placeholder="请输入验证码">
+          <span v-show="errors.has('captcha')" class="error-tip">{{errors.first('captcha')}}</span>
         </div>
         <div class="item-btn border-left-1px">
           <button :disabled="sending" @click="sendCaptcha">{{captBtnText}}</button>
@@ -25,7 +25,7 @@
       <full-loading v-show="loadFlag" title="修改中..."></full-loading>
     </div>
     <toast ref="toast" text="发送成功!"></toast>
-    <confirm ref="confirm" text="确定发送报告吗？" @confirm="sendToClient()"></confirm>
+    <confirm ref="confirm" text="确定发送报告吗？" @confirm="sendToClient"></confirm>
   </div>
 </template>
 <script>
@@ -33,7 +33,7 @@
   import FullLoading from 'base/full-loading/full-loading';
   import Confirm from 'base/confirm/confirm';
   import {sendCaptcha} from 'api/general';
-  import {mobileValid, captValid, setTitle} from 'common/js/util';
+  import {setTitle} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
 
   import {sendToClient} from 'api/biz';
@@ -45,56 +45,42 @@
         sending: false,
         loadFlag: false,
         captcha: '',
-        captErr: '',
         captBtnText: '获取验证码',
         mobile: '',
-        mobErr: '',
         modelCode: ''
       };
     },
     created() {
       setTitle('发送客户');
-//      console.log(this.$route.params.code);
       this.modelCode = this.$route.query.code;
     },
     methods: {
       sendCaptcha() {
-        if (this._mobileValid()) {
-          this.sending = true;
-          sendCaptcha(this.mobile, 805250).then(() => {
-            this._setInterval();
-          }).catch(() => {
-            this._clearInterval();
-          });
-        }
+        this.$validator.validate('mobile').then((result) => {
+          if (result) {
+            this.sending = true;
+            sendCaptcha(this.mobile, 805250).then(() => {
+              this._setInterval();
+            }).catch(() => {
+              this._clearInterval();
+            });
+          }
+        });
       },
       sendCilent() {
-        if (this._valid()) {
-          this.$refs.confirm.show();
-        }
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.$refs.confirm.show();
+          }
+        });
       },
       sendToClient() {
-        sendToClient(this.captcha, this.mobile, this.modelCode).then((data) => {
+        sendToClient(this.captcha, this.mobile, this.modelCode).then(() => {
           this.$refs.toast.show();
           setTimeout(() => {
             this.$router.back();
           }, 500);
         });
-      },
-      _valid() {
-        let r1 = this._mobileValid();
-        let r2 = this._captValid();
-        return r1 && r2;
-      },
-      _mobileValid() {
-        let result = mobileValid(this.mobile);
-        this.mobErr = result.msg;
-        return !result.err;
-      },
-      _captValid() {
-        let result = captValid(this.captcha);
-        this.captErr = result.msg;
-        return !result.err;
       },
       _setInterval() {
         let i = 60;

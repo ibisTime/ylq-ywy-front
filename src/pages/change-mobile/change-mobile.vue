@@ -2,23 +2,22 @@
   <div class="full-screen-wrapper change-mobile-wrapper">
     <div class="form-wrapper">
       <div class="form-item border-bottom-1px">
-        <div class="item-label">新手机号</div>
+        <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" v-model="mobile" @change="_mobileValid" placeholder="请输入新手机号">
-          <span v-show="mobErr" class="error-tip">{{mobErr}}</span>
+          <input type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入新手机号">
+          <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
         </div>
       </div>
       <div class="form-item">
         <div class="item-label">验证码</div>
         <div class="item-input-wrapper">
-          <input type="tel" class="item-input" v-model="captcha" @change="_captValid" placeholder="请输入验证码">
-          <span v-show="captErr" class="error-tip">{{captErr}}</span>
+          <input type="tel" class="item-input" name="captcha" v-model="captcha" v-validate="'required|captcha'" placeholder="请输入验证码">
+          <span v-show="errors.has('captcha')" class="error-tip">{{errors.first('captcha')}}</span>
         </div>
         <div class="item-btn border-left-1px">
           <button :disabled="sending" @click="sendCaptcha">{{captBtnText}}</button>
         </div>
       </div>
-
       <div class="form-btn">
         <button @click="_changeMobile">保存</button>
       </div>
@@ -32,7 +31,7 @@
   import {SET_USER_MOBILE} from 'store/mutation-types';
   import {sendCaptcha} from 'api/general';
   import {changeMobile} from 'api/user';
-  import {mobileValid, captValid, setTitle} from 'common/js/util';
+  import {setTitle} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
@@ -44,10 +43,8 @@
         sending: false,
         loadFlag: false,
         captcha: '',
-        captErr: '',
         captBtnText: '获取验证码',
-        mobile: '',
-        mobErr: ''
+        mobile: ''
       };
     },
     created() {
@@ -55,46 +52,34 @@
     },
     methods: {
       sendCaptcha() {
-        if (this._mobileValid()) {
-          this.sending = true;
-          sendCaptcha(this.mobile, 805061).then(() => {
-            this._setInterval();
-          }).catch(() => {
-            this._clearInterval();
-          });
-        }
+        this.$validator.validate('mobile').then((result) => {
+          if (result) {
+            this.sending = true;
+            sendCaptcha(this.mobile, 805061).then(() => {
+              this._setInterval();
+            }).catch(() => {
+              this._clearInterval();
+            });
+          }
+        });
       },
       _changeMobile() {
-        if (this._valid()) {
-          this.loadFlag = true;
-          changeMobile(this.mobile, this.captcha)
-            .then(() => {
-              this.$refs.toast.show();
-              this.loadFlag = false;
-              this.setUserMobile(this.mobile);
-              setTimeout(() => {
-                this.$router.back();
-//                this.$emit('chengeMpbile');
-              }, 500);
-            }).catch(() => {
-              this.loadFlag = false;
-            });
-        }
-      },
-      _valid() {
-        let r1 = this._mobileValid();
-        let r2 = this._captValid();
-        return r1 && r2;
-      },
-      _mobileValid() {
-        let result = mobileValid(this.mobile);
-        this.mobErr = result.msg;
-        return !result.err;
-      },
-      _captValid() {
-        let result = captValid(this.captcha);
-        this.captErr = result.msg;
-        return !result.err;
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.loadFlag = true;
+            changeMobile(this.mobile, this.captcha)
+              .then(() => {
+                this.$refs.toast.show();
+                this.loadFlag = false;
+                this.setUserMobile(this.mobile);
+                setTimeout(() => {
+                  this.$router.back();
+                }, 500);
+              }).catch(() => {
+                this.loadFlag = false;
+              });
+          }
+        });
       },
       _setInterval() {
         let i = 60;

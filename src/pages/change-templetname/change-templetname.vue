@@ -4,8 +4,8 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">模板名称</div>
         <div class="item-input-wrapper">
-          <input type="text" class="item-input" v-model="name" placeholder="请输入模板名称" @change="nameValid">
-          <span v-show="nameErr" class="error-tip">{{nameErr}}</span>
+          <input type="text" class="item-input" name="name" v-model="name" v-validate="'required|max:32'" placeholder="请输入模板名称">
+          <span v-show="errors.has('name')" class="error-tip">{{errors.first('name')}}</span>
         </div>
       </div>
       <div class="form-btn">
@@ -19,7 +19,7 @@
 <script>
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
-  import {setTitle, emptyValid} from 'common/js/util';
+  import {setTitle} from 'common/js/util';
 
   export default {
     data() {
@@ -37,19 +37,12 @@
     },
     methods: {
       changeName() {
-        if(this.valid()) {
-          this.$emit('changeName', {name: this.name});
-          this.$router.go(-1);
-        }
-      },
-      nameValid() {
-        let result = emptyValid(this.name);
-        this.nameErr = result.msg;
-        return !result.err;
-      },
-      valid() {
-        let r1 = this.nameValid();
-        return r1;
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.$emit('changeName', {name: this.name});
+            this.$router.go(-1);
+          }
+        });
       }
     },
     components: {
