@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="full-screen-wrapper change-templetname-wrapper">
     <div class="form-wrapper">
       <div class="form-item border-bottom-1px">
         <div class="item-label">模板名称</div>
@@ -59,16 +59,11 @@
   };
 </script>
 <style lang="scss" scoped>
-  @import "~common/scss/mixin";
   @import "~common/scss/variable";
 
-  .home-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    .fr{
+  .change-templetname-wrapper {
+    background-color: $color-background;
+    .fr {
       float: right;
     }
   }
