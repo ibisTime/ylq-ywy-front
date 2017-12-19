@@ -1,106 +1,107 @@
-/**
- * Created by Administrator on 2017/12/10 0010.
- */
 import fetch from 'common/js/fetch';
 import {getUserId} from 'common/js/util';
+
 /**
  * 分页查询模板
-  */
-
-export function queryTemplet(userId, limit, start) {
+ * @param {string} limit
+ * @param {string} start
+ */
+export function queryTemplet(start = 1, limit = 10) {
   return fetch(805235, {
-    userId: getUserId(),
-    limit: 10,
-    start: 1
-  });
-}
-
-/*
- * 详情查询模板
- */
-export function queryTempletDetail(templetCode) {
-  return fetch(805236, {
-    code: templetCode
-  });
-}
-
-/*
-*新增模板
-*/
-
-export function addTemplet(isDefault, name, portList) {
-  return fetch(805230, {
-    isDefault: isDefault,
-    userId: getUserId(),
-    updater: getUserId(),
-    name: name,
-    portList: portList
-  });
-}
-/*
-*修改模板
- */
-
-export function editTemplet(code, name, portList, updater) {
-  return fetch(805232, {
-    code: code,
-    updater: getUserId(),
-    name: name,
-    portList: portList
-  });
-}
-
-/***
- *设置默认模板
- * @param code
- * @param updater
- */
-export function editIsDefault(code, updater) {
-  return fetch(805233, {
-    code: code,
-    updater: getUserId()
-  });
-}
-
-/*
-*查询接口
- */
-
-export function queryInterface(code) {
-  return fetch(805226, {
-    code: code
-  });
-}
-
-/*
-* 发送客户
- */
-
-export function sendToClient(captcha, mobile, modelCode) {
-  return fetch(805250, {
-    captcha: captcha,
-    mobile: mobile,
-    modelCode: modelCode,
-    salesUser: getUserId()
-  });
-}
-
-/*
-* 查询默认模板
- */
-
-export function queryMoren() {
-  return fetch(805237, {
+    limit,
+    start,
     userId: getUserId()
   });
 }
 
-/*
-* 查询用户
+/**
+ * 详情查询模板
+ * @param {string} code
  */
+export function queryTempletDetail(code) {
+  return fetch(805236, { code });
+}
 
-export function queryUser() {
-  return fetch(805121, {
+/**
+ * 新增模板
+ * @param {string} isDefault
+ * @param {string} name
+ * @param {string} portList
+ */
+export function addTemplet(isDefault, name, portList) {
+  return fetch(805230, {
+    isDefault,
+    name,
+    portList,
+    userId: getUserId(),
+    updater: getUserId()
+  });
+}
+
+/**
+ * 修改模板
+ * @param {string} code
+ * @param {string} name
+ * @param {string} portList
+ * @param {string} updater
+ */
+export function editTemplet(code, name, portList) {
+  return fetch(805232, {
+    code,
+    name,
+    portList,
+    updater: getUserId()
+  });
+}
+
+/**
+ * 设置默认模板
+ * @param {string} code
+ * @param {string} updater
+ */
+export function editIsDefault(code) {
+  return fetch(805233, {
+    code,
+    updater: getUserId()
+  });
+}
+
+/**
+ * 删除模版
+ * @param templetCode
+ */
+export function delTemplet(code) {
+  return fetch(805231, { code });
+}
+
+/**
+ * 查询接口
+ * @param {string} code
+ */
+export function queryInterface(code) {
+  return fetch(805226, { code });
+}
+
+/**
+ * 发送客户
+ * @param {string} captcha
+ * @param {string} mobile
+ * @param {string} modelCode
+ */
+export function sendToClient(captcha, mobile, modelCode) {
+  return fetch(805250, {
+    captcha,
+    mobile,
+    modelCode,
+    salesUser: getUserId()
+  });
+}
+
+/**
+ * 查询默认模板
+ */
+export function queryMoren() {
+  return fetch(805237, {
     userId: getUserId()
   });
 }
@@ -117,6 +118,7 @@ export function getPageCustomers(start, limit) {
     salesUser: getUserId()
   });
 }
+
 /**
  * 详情查询报告单
  * @param {string} reportCode
@@ -124,28 +126,18 @@ export function getPageCustomers(start, limit) {
 export function getReport(reportCode) {
   return fetch(805331, {reportCode});
 }
-/***
- *
- * @param templetCode
- */
 
-export function delTemplet(templetCode) {
-  return fetch(805231, {
-    code: templetCode
-  });
-}
-
-/***
+/**
  * 转发报告
- * @param mobile
- * @param pwd
- * @param code
+ * @param {string} mobile
+ * @param {string} password
+ * @param {string} reportCode
  */
-export function transmitReport(mobile, pwd, code) {
+export function transmitReport(mobile, password, reportCode) {
   return fetch(805300, {
-    mobile: mobile,
-    password: pwd,
-    reportCode: code
+    mobile,
+    password,
+    reportCode
   });
 }
 

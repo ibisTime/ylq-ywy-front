@@ -17,8 +17,8 @@
                    accept="image/*"/>
           </div>
           <div class="cd-flex1">
-            <p>{{user && user.nickname}}</p>
-            <p>{{user && user.mobile}}</p>
+            <p>{{nickname}}</p>
+            <p>{{mobile}}</p>
           </div>
         </div>
       </header>
@@ -32,16 +32,16 @@
         <router-link tag="div" to="/user/setting/change-pwd" class="line-item border-bottom-1px">
           修改登录密码<i class="right-arrow-gray"></i>
         </router-link>
-        <div class="line-item border-bottom-1px">
-          实名认证<i class="right-arrow-gray"></i>
+        <div @click="goCertification" class="line-item border-bottom-1px">
+          实名认证<span v-if="realName">已认证</span><i class="right-arrow-gray"></i>
         </div>
         <router-link tag="div" to="/user/setting/about-us" class="line-item border-bottom-1px">
           关于我们<i class="right-arrow-gray"></i>
         </router-link>
       </div>
       <div class="service">
-        <span>{{serviceTime.remark}}:{{serviceTime.cvalue}}</span><br>
-        <span>{{serviceTel.remark}}:{{serviceTel.cvalue}}</span>
+        <span>{{serviceTime.remark}}：{{serviceTime.cvalue}}</span><br>
+        <span>{{serviceTel.remark}}：{{serviceTel.cvalue}}</span>
       </div>
       <div class="button-wrapper" @click="logout">
         <button>退出登录</button>
@@ -51,6 +51,7 @@
                 ref="clipImg"
                 :imgType="imgType"
                 :imgUrl="imgUrl"></clip-img>
+      <full-loading v-show="loadingFlag" :title="title"></full-loading>
       <router-view ></router-view>
     </div>
 </template>
@@ -58,6 +59,7 @@
   import Qiniu from 'base/qiniu/qiniu';
   import EXIF from 'exif-js';
   import ClipImg from 'base/clip-img/clip-img';
+  import FullLoading from 'base/full-loading/full-loading';
   import {SET_USER, SET_USER_AVATAR} from 'store/mutation-types';
   import {setTitle, clearUser, formatAvatar, getImgData} from 'common/js/util';
   import {getUser, changeAvatar} from 'api/user';
@@ -72,37 +74,59 @@
         imgUrl: '',
         preview: '',
         serviceTime: '',
-        serviceTel: ''
+        serviceTel: '',
+        loadingFlag: false,
+        title: '加载中...'
       };
     },
     computed: {
+      nickname() {
+        return this.user && this.user.nickname || '';
+      },
+      mobile() {
+        return this.user && this.user.mobile || '';
+      },
+      realName() {
+        return this.user && this.user.realName || '';
+      },
       ...mapGetters([
         'user'
       ])
     },
     created() {
+      this.first = true;
       this.uploadUrl = 'http://upload-na0.qiniu.com';
       this.multiple = false;
-      if (this.shouldGetData()) {
-        this._getUser();
-        this.getService();
-      }
+      this.getInitData();
+    },
+    updated() {
+      this.getInitData();
     },
     methods: {
+      getInitData() {
+        if (this.shouldGetData()) {
+          this.first = false;
+          this._getUser();
+          this.getService();
+        }
+      },
       shouldGetData() {
         if (/\/user\/setting$/.test(this.$route.path)) {
           setTitle('设置');
-          return !this.token;
+          return this.first;
         }
         return false;
       },
       _getUser() {
+        this.loadingFlag = true;
         Promise.all([
           this.getUser(),
           this.getQiniuToken()
         ]).then(() => {
           this.loadingFlag = false;
-        }).catch(() => {});
+        }).catch(() => {
+          this.loadingFlag = false;
+        });
       },
       getUser() {
         if (this.user) {
@@ -119,6 +143,13 @@
             this.serviceTel = data;
           });
         });
+      },
+      goCertification() {
+        if (this.realName) {
+          this.$router.push('/user/setting/certification?read=1');
+        } else {
+          this.$router.push('/user/setting/certification');
+        }
       },
       logout() {
         clearUser();
@@ -137,10 +168,8 @@
       },
       /**
        * 从相册中选择图片
-       * */
+       **/
       fileChange(e) {
-        this.title = '上传中...';
-        this.loadingFlag = true;
         let files;
         if (e.dataTransfer) {
           files = e.dataTransfer.files;
@@ -168,7 +197,6 @@
         };
         reader.readAsDataURL(file);
       },
-
       /**
        * 处理图片上传错误事件
        * @param error 错误信息
@@ -178,6 +206,8 @@
         this.$refs.toast.show();
       },
       updateImg(base64) {
+        this.title = '上传中...';
+        this.loadingFlag = true;
         this.preview = base64;
         this.$refs.qiniu.uploadByBase64(base64, this.imgKey).then(() => {
           this.editAvatar();
@@ -205,7 +235,8 @@
     },
     components: {
       Qiniu,
-      ClipImg
+      ClipImg,
+      FullLoading
     }
   };
 </script>
@@ -236,7 +267,7 @@
       padding-left: 0.3rem;
       font-size: $font-size-medium-x;
       background-color: #fff;
-      i{
+      i {
         position: absolute;
         right: 0.3rem;
       }
@@ -247,6 +278,11 @@
       @include border-bottom-1px($color-border);
       &:last-child {
         @include border-none();
+      }
+      span {
+        font-size: $font-size-medium-s;
+        float: right;
+        padding-right: 0.4rem;
       }
     }
     .right-arrow-gray {

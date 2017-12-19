@@ -50,19 +50,9 @@
         <span>目前报告价格为<span>{{totalPrice | formatAmount}}</span>元</span>
       </div>
       <div class="down">
-<<<<<<< HEAD
-        <div v-if="isSys!=='0'" class="one">
-        <button v-if="!changeFlag" @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
-        <button v-if="changeFlag " @click="xiugai?edit():addTemplet()"><span>保存</span></button>
-        </div>
-        <div v-if="isSys==='0'" class="two">
-        <button @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)" ><span>发送客户</span></button>
-        <button @click="edit()"><span>保存</span></button>
-=======
         <div class="two">
           <button v-if="showSend" @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
           <button v-if="showSave" @click="templetCode?edit():addTemplet()"><span>保存</span></button>
->>>>>>> 912dce7e8575e3def30420a89177025bfe93853d
         </div>
       </div>
     </scroll>

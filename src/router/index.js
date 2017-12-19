@@ -20,6 +20,8 @@ const ChangeValid = () => import('pages/change-valid/change-valid');
 const ChangeMobile = () => import('pages/change-mobile/change-mobile');
 // 修改密码
 const ChangePwd = () => import('pages/change-pwd/change-pwd');
+// 实名认证
+const Certification = () => import('pages/certification/certification');
 // 关于我们
 const AboutUs = () => import('pages/about-us/about-us');
 
@@ -53,6 +55,7 @@ const interfaceDetails = () => import('pages/interface-details/interface-details
 const contactBusiness = () => import('pages/contact-business/contact-business');
 
 export default new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -116,6 +119,10 @@ export default new Router({
             {
               path: 'change-pwd',
               component: ChangePwd
+            },
+            {
+              path: 'certification',
+              component: Certification
             },
             {
               path: 'about-us',

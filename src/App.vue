@@ -13,7 +13,8 @@
 
 <script type="text/ecmascript-6">
   import Loading from 'base/loading/loading';
-import {isLogin} from 'common/js/util';
+  import {isLogin} from 'common/js/util';
+
   export default {
     data() {
       return {
@@ -22,7 +23,8 @@ import {isLogin} from 'common/js/util';
       };
     },
     created() {
-      if (!isLogin()) {
+      if (!isLogin() && location.pathname !== '/find-pwd' &&
+        location.pathname !== '/login' && location.pathname !== '/register') {
         this.$router.replace('/login');
       } else {
         this.loadingFlag = false;

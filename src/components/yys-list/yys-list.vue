@@ -192,6 +192,9 @@
     methods: {
       toggle() {
         this.isHide = !this.isHide;
+        setTimeout(() => {
+          this.$emit('reload');
+        }, 300);
       },
       analyzeQzList(newData) {
         if (newData) {

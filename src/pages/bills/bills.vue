@@ -2,8 +2,8 @@
   <div class="full-screen-wrapper head-wrapper">
     <scroll :hasMore="hasMore" :data="list">
       <div class="bill-item cd-flexbox cd-align-center" v-for="item in list">
-        <div class="bill-name">{{item.bizNote}}</div>
-        <div class="bill-price cd-flex1">{{item.transAmount | formatAmount}}元</div>
+        <div class="bill-name cd-flex1">{{item.bizNote}}</div>
+        <div class="bill-price">{{item.transAmount | formatAmount}}元</div>
         <div class="bill-datetime">{{item.createDatetime | formatDate}}</div>
       </div>
     </scroll>
@@ -37,7 +37,7 @@
           }
         }
         getPageFlow(this.start, this.limit, accountNumber).then((res) => {
-//          this.list = this.list.concat(res.list);
+          this.list = this.list.concat(res.list);
           if (res.totalPage <= this.start) {
             this.hasMore = false;
           }

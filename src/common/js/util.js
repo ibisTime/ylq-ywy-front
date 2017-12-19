@@ -118,7 +118,7 @@ export function setTitle(title) {
     document.title = title;
     if (ISIOS) {
       let iframe = document.createElement('iframe');
-      iframe.src = '//m.baidu.com/favicon.ico';
+      iframe.src = '/static/zxzx.png';
       iframe.style.display = 'none';
       iframe.onload = () => {
         setTimeout(() => {

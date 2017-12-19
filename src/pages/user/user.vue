@@ -23,8 +23,8 @@
         </div>
         <div class="bill-flow border-top-1px" v-show="flowList.length">
           <div class="bill-item cd-flexbox cd-align-center" v-for="item in flowList">
-            <div class="bill-name">{{item.bizNote}}</div>
-            <div class="bill-price cd-flex1">{{item.transAmount | formatFlowAmount}}元</div>
+            <div class="bill-name cd-flex1">{{item.bizNote}}</div>
+            <div class="bill-price">{{item.transAmount | formatFlowAmount}}元</div>
             <div class="bill-datetime">{{item.createDatetime | formatDate}}</div>
           </div>
         </div>
@@ -39,7 +39,7 @@
   import FullLoading from 'base/full-loading/full-loading';
   import {setTitle, formatAvatar} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
-  import {queryUser} from 'api/biz';
+  import {getUser} from 'api/user';
   import {getAccount, getPageFlow} from 'api/account';
 
   export default {
@@ -94,7 +94,7 @@
         }
       },
       queryUser() {
-        return queryUser().then((data) => {
+        return getUser().then((data) => {
           this.setUser(data);
         });
       },

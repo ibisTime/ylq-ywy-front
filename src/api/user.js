@@ -159,6 +159,20 @@ export function changeAvatar(photo) {
 }
 
 /**
+ * 实名认证
+ * @param {string} realName
+ * @param {string} idNo
+ */
+export function certification (realName, idNo) {
+  return fetch(805190, {
+    realName,
+    idNo,
+    idKind: 1,
+    userId: getUserId()
+  });
+}
+
+/**
  * 保存登录日志
  */
 export function saveLoginLog () {

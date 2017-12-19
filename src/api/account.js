@@ -66,7 +66,10 @@ export function addBankCard(params) {
     ...params
   });
 }
-// 删除银行卡
+/**
+ * 删除银行卡
+ * @param {string} code
+ */
 export function deleteBankCard(code) {
   return fetch(802011, {
     code

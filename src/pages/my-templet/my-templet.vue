@@ -1,5 +1,5 @@
 <template>
-  <div class="home-wrapper">
+  <div class="full-screen-wrapper my-templet-wrapper">
     <div class='templet' v-for='(item,index) in templets'>
       <div class="inner cd-flexbox"
            ref="customer"
@@ -158,8 +158,6 @@
       // 从模板点击进入模板详情
       toTempletDetail(code) {
         this.$router.push('/my-templet/templet-details?code=' + code);
-      },
-      nothing() {
       }
     },
     components: {
@@ -172,13 +170,8 @@
   @import "~common/scss/mixin";
   @import "~common/scss/variable";
 
-  .home-wrapper {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    .fr{
+  .my-templet-wrapper {
+    .fr {
       float: right;
     }
     .delete {
@@ -194,45 +187,46 @@
       background-color: $color-red;
       color: #fff;
     }
-    .templet{
+    .templet {
       width: 100%;
       height: 1rem;
-      padding-left:0.3rem;
-      border-bottom:0.01rem solid #eee;
-      background: #fff;
+      border-bottom: 0.01rem solid $color-border;
       position: relative;
-      .type{
-        font-size: 0.3rem;
-        color: #484848;
-        line-height: 1rem;
+      .inner {
+        padding-left: 0.3rem;
+        background: #fff;
       }
-      .price{
-        font-size: 0.28rem;
-        color: $primary-color;
+      .type {
         line-height: 1rem;
+        font-size: $font-size-medium-x;
+      }
+      .price {
         position: absolute;
         right: 0.65rem;
+        line-height: 1rem;
+        font-size: $font-size-medium;
+        color: $primary-color;
       }
-      img{
+      img {
+        position: absolute;
         width: 0.15rem;
         height: 0.25rem;
-        margin: 0.35rem 0.3rem 0 0.2rem;
-        position: absolute;
         right: 0;
+        margin: 0.35rem 0.3rem 0 0.2rem;
       }
     }
 
-    .down{
+    .down {
       padding:0.8rem 0.3rem;
       background: transparent;
-      button{
+      button {
         width: 100%;
         height: 0.9rem;
         background: $primary-color;
         border-radius: 0.1rem ;
-        span{
-          color:#fff;
-          font-size: 0.36rem;
+        span {
+          color: #fff;
+          font-size: $font-size-large-s;
         }
       }
     }

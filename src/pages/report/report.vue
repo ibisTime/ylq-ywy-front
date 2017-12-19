@@ -1,30 +1,29 @@
 <template>
   <div class="full-screen-wrapper report-wrapper">
-    <div class="scroll">
-      <scroll ref="scroll" :pullUpLoad="pullUpLoad">
-          <sjrz-list :data="sjrzInfo" @reload="refresh"></sjrz-list>
-          <zmrz-list :data="zmrzInfo" @reload="refresh"></zmrz-list>
-          <jbxx-list :data="jbxxList" :dict="hygzDict" @reload="refresh"></jbxx-list>
-          <sfz-list :data="sfzPics" @reload="refresh"></sfz-list>
-          <dw-list :data="dwInfo" @reload="refresh"></dw-list>
-          <txl-list :data="txlList" @reload="refresh"></txl-list>
-          <yys-list :data="yysInfo" @reload="refresh"></yys-list>
-          <zmf-list :data="zmfInfo" @reload="refresh"></zmf-list>
-          <hygz-list :data="hygzList" @reload="refresh"></hygz-list>
-          <qz-list :data="qzList" @reload="refresh"></qz-list>
-          <td-list :data="tdInfo" @reload="refresh"></td-list>
-      </scroll>
-    </div>
+    <scroll ref="scroll" :pullUpLoad="pullUpLoad">
+      <sjrz-list :data="sjrzInfo" @reload="refresh"></sjrz-list>
+      <zmrz-list :data="zmrzInfo" @reload="refresh"></zmrz-list>
+      <jbxx-list :data="jbxxList" :dict="hygzDict" @reload="refresh"></jbxx-list>
+      <sfz-list :data="sfzPics" @reload="refresh"></sfz-list>
+      <dw-list :data="dwInfo" @reload="refresh"></dw-list>
+      <txl-list :data="txlList" @reload="refresh"></txl-list>
+      <yys-list :data="yysInfo" @reload="refresh"></yys-list>
+      <zmf-list :data="zmfInfo" @reload="refresh"></zmf-list>
+      <hygz-list :data="hygzList" @reload="refresh"></hygz-list>
+      <qz-list :data="qzList" @reload="refresh"></qz-list>
+      <td-list :data="tdInfo" @reload="refresh"></td-list>
+      <div class="inner-height"></div>
+    </scroll>
     <div class="button">
-      <button @click="toTransmit" ><span>转发报告</span></button>
+      <button @click="toTransmit"><span>转发报告</span></button>
     </div>
-    <full-loading v-show="loadFlag" @reload="refresh"></full-loading>
+    <full-loading v-show="loadFlag"></full-loading>
     <router-view></router-view>
   </div>
 </template>
 <script>
-  import Scroll from 'base/scroll/scroll';
   import FullLoading from 'base/full-loading/full-loading';
+  import Scroll from 'base/scroll/scroll';
   import SjrzList from 'components/sjrz-list/sjrz-list';
   import ZmrzList from 'components/zmrz-list/zmrz-list';
   import JbxxList from 'components/jbxx-list/jbxx-list';
@@ -65,7 +64,6 @@
         this.getReport(),
         this.getDictList()
       ]).then(() => {
-        this.refresh();
         this.loadFlag = false;
       }).catch(() => {
         this.loadFlag = false;
@@ -73,7 +71,8 @@
     },
     methods: {
       getReport() {
-        return getReport(this.$route.path.split('/')[2]).then((data) => {
+        let code = this.$route.params.code;
+        return getReport(code).then((data) => {
           // 手机认证
           this.sjrzInfo = this.getDataByKey('F1', data);
           // 芝麻认证
@@ -148,6 +147,7 @@
       }
     },
     components: {
+      Scroll,
       FullLoading,
       SjrzList,
       ZmrzList,
@@ -159,8 +159,7 @@
       ZmfList,
       HygzList,
       QzList,
-      TdList,
-      Scroll
+      TdList
     }
   };
 </script>
@@ -170,32 +169,27 @@
 
   .report-wrapper {
     background: $color-background;
-    .scroll{
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      bottom: 1.3rem;
+    .inner-height {
+      height: 1.3rem;
     }
-    .button{
+    .button {
       width: 100%;
-      padding: 0.2rem;
+      padding: 0.2rem 0.3rem;
       position: fixed;
       bottom: 0;
-      height: 1.3rem;
-      background: $color-background;
-      button{
+      button {
         width: 100%;
         height: 0.9rem;
         background: $primary-color;
         border-radius: 0.1rem ;
 
-        span{
-          color:#fff;
-          font-size: 0.36rem;
+        span {
+          color: #fff;
+          font-size: $font-size-large-s;
         }
       }
     }
+
     .split-bar {
       padding: 0 0.3rem;
       line-height: 0.8rem;
@@ -203,7 +197,6 @@
       background: $primary-color;
       color: #fff;
       @include border-bottom-1px(#fff);
-
     }
   }
 </style>

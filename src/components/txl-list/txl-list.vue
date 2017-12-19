@@ -28,6 +28,9 @@
     methods: {
       toggle() {
         this.isHide = !this.isHide;
+        setTimeout(() => {
+          this.$emit('reload');
+        }, 300);
       },
       analyzeTxlData(newData) {
         if (newData) {

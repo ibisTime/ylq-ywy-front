@@ -64,9 +64,6 @@
     methods: {
       toggle() {
         this.isHide = !this.isHide;
-        this.reloadAfterToggle();
-      },
-      reloadAfterToggle() {
         setTimeout(() => {
           this.$emit('reload');
         }, 300);
