@@ -13,7 +13,7 @@
       <div class="main-cont cd-bg-fff">
         <router-link to='/user/service' tag='div' class="line-item cd-flexbox cd-align-center">
           <div class="icon-money"></div>
-          <div class="price cd-flex1"><label>人民币</label>{{amount | formatAmount}}</div>
+          <div class="price cd-flex1"><label>人民币</label>{{amount | formatAmount}}元</div>
           <div class="right-arrow right-arrow-gray"></div>
         </router-link>
         <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/bills')">
@@ -22,9 +22,9 @@
           <div class="right-arrow right-arrow-gray"></div>
         </div>
         <div class="bill-flow border-top-1px" v-show="flowList.length">
-          <div class="bill-item cd-flexbox" v-for="item in flowList">
+          <div class="bill-item cd-flexbox cd-align-center" v-for="item in flowList">
             <div class="bill-name">{{item.bizNote}}</div>
-            <div class="bill-price cd-flex1">{{item.transAmount | formatFlowAmount}}</div>
+            <div class="bill-price cd-flex1">{{item.transAmount | formatFlowAmount}}元</div>
             <div class="bill-datetime">{{item.createDatetime | formatDate}}</div>
           </div>
         </div>
@@ -199,10 +199,16 @@
       padding: 0.05rem 0;
       @include border-top-1px($color-border);
       .bill-item {
-        line-height: 0.56rem;
+        line-height: 1.3;
+        padding: 0.1rem 0;
         font-size: $font-size-medium-s;
         .bill-price {
+          padding: 0 0.2rem;
           text-align: center;
+          white-space: nowrap;
+        }
+        .bill-datetime {
+          white-space: nowrap;
         }
       }
     }

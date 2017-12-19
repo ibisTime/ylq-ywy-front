@@ -4,15 +4,15 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" v-model="mobile" @change="_mobileValid" placeholder="请输入手机号">
-          <span v-show="mobErr" class="error-tip">{{mobErr}}</span>
+          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入手机号">
+          <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
         </div>
       </div>
       <div class="form-item">
         <div class="item-label">验证码</div>
         <div class="item-input-wrapper">
-          <input type="tel" class="item-input" v-model="captcha" @change="_captValid" placeholder="请输入验证码">
-          <span v-show="captErr" class="error-tip">{{captErr}}</span>
+          <input type="tel" class="item-input" name="captcha" v-model="captcha" v-validate="'required|captcha'" placeholder="请输入验证码">
+          <span v-show="errors.has('captcha')" class="error-tip">{{errors.first('captcha')}}</span>
         </div>
         <div class="item-btn border-left-1px">
           <button :disabled="sending" @click="sendCaptcha">{{captBtnText}}</button>
@@ -21,8 +21,8 @@
       <div class="form-item">
         <div class="item-label">密码</div>
         <div class="item-input-wrapper">
-          <input type="password" class="item-input" v-model="pwd" @change="_pwdValid" placeholder="密码不能少于6位">
-          <span v-show="pwdErr" class="error-tip">{{pwdErr}}</span>
+          <input type="password" class="item-input" name="pwd" v-model="pwd" v-validate="'required|min:6'" placeholder="密码不能少于6位">
+          <span v-show="errors.has('pwd')" class="error-tip">{{errors.first('pwd')}}</span>
         </div>
       </div>
       <div class="form-btn">
@@ -36,7 +36,7 @@
 <script>
   import {sendCaptcha} from 'api/general';
   import {register, login} from 'api/user';
-  import {mobileValid, captValid, pwdValid, setTitle, setUser} from 'common/js/util';
+  import {setTitle, setUser} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
@@ -48,12 +48,9 @@
         sending: false,
         loadFlag: false,
         captcha: '',
-        captErr: '',
         captBtnText: '获取验证码',
         mobile: '',
-        mobErr: '',
-        pwd: '',
-        pwdErr: ''
+        pwd: ''
       };
     },
     created() {
@@ -61,20 +58,22 @@
     },
     methods: {
       sendCaptcha() {
-        if (this._mobileValid()) {
-          this.sending = true;
-          sendCaptcha(this.mobile, 805041).then(() => {
-            this._setInterval();
-          }).catch(() => {
-            this._clearInterval();
-          });
-        }
+        this.$validator.validate('mobile').then((result) => {
+          if (result) {
+            this.sending = true;
+            sendCaptcha(this.mobile, 805041).then(() => {
+              this._setInterval();
+            }).catch(() => {
+              this._clearInterval();
+            });
+          }
+        });
       },
       register() {
-        if (this._valid()) {
-          this.loadFlag = true;
-          register(this.mobile, this.captcha, this.pwd)
-            .then(() => {
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.loadFlag = true;
+            register(this.mobile, this.captcha, this.pwd).then(() => {
               login(this.mobile, this.pwd).then((data) => {
                 setUser(data);
                 this.loadFlag = false;
@@ -92,28 +91,8 @@
             }).catch(() => {
               this.loadFlag = false;
             });
-        }
-      },
-      _valid() {
-        let r1 = this._mobileValid();
-        let r2 = this._captValid();
-        let r3 = this._pwdValid();
-        return r1 && r2 && r3;
-      },
-      _mobileValid() {
-        let result = mobileValid(this.mobile);
-        this.mobErr = result.msg;
-        return !result.err;
-      },
-      _captValid() {
-        let result = captValid(this.captcha);
-        this.captErr = result.msg;
-        return !result.err;
-      },
-      _pwdValid() {
-        let result = pwdValid(this.pwd);
-        this.pwdErr = result.msg;
-        return !result.err;
+          }
+        });
       },
       _setInterval() {
         let i = 60;

@@ -4,15 +4,15 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" v-model="mobile" @change="mobileValid" placeholder="请输入手机号">
-          <span v-show="mobErr" class="error-tip">{{mobErr}}</span>
+          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入手机号">
+          <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
         </div>
       </div>
       <div class="form-item">
         <div class="item-label">密码</div>
         <div class="item-input-wrapper">
-          <input type="password" class="item-input" v-model="pwd" @change="pwdValid" placeholder="请输入密码">
-          <span v-show="pwdErr" class="error-tip">{{pwdErr}}</span>
+          <input type="password" class="item-input" v-model="pwd" v-validate="'required|min:6'" placeholder="请输入密码">
+          <span v-show="errors.has('pwd')" class="error-tip">{{errors.first('pwd')}}</span>
         </div>
       </div>
       <div class="form-btn">
@@ -28,7 +28,7 @@
 </template>
 <script>
   import {login} from 'api/user';
-  import {mobileValid, emptyValid, setTitle, setUser} from 'common/js/util';
+  import {setTitle, setUser} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
   import FullLoading from 'base/full-loading/full-loading';
 
@@ -38,9 +38,7 @@
       return {
         loadFlag: false,
         mobile: '',
-        mobErr: '',
-        pwd: '',
-        pwdErr: ''
+        pwd: ''
       };
     },
     created() {
@@ -48,32 +46,18 @@
     },
     methods: {
       login() {
-        if (this.valid()) {
-          this.loadFlag = true;
-          login(this.mobile, this.pwd)
-            .then((data) => {
+        this.$validator.validateAll().then((result) => {
+          if (result) {
+            this.loadFlag = true;
+            login(this.mobile, this.pwd).then((data) => {
               setUser(data);
               this.loadFlag = false;
               this.$router.replace('/home');
             }).catch(() => {
               this.loadFlag = false;
             });
-        }
-      },
-      valid() {
-        let r1 = this.mobileValid();
-        let r2 = this.pwdValid();
-        return r1 && r2;
-      },
-      pwdValid() {
-        let result = emptyValid(this.pwd);
-        this.pwdErr = result.msg;
-        return !result.err;
-      },
-      mobileValid() {
-        let result = mobileValid(this.mobile);
-        this.mobErr = result.msg;
-        return !result.err;
+          }
+        });
       }
     },
     components: {

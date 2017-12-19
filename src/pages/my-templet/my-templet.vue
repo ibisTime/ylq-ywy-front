@@ -1,53 +1,41 @@
 <template>
   <div class="home-wrapper">
-    <!--<div class='templet' @click="$router.push({name:urlName,params:{isSys:item.isSystem,code:item.code,xiugai:true}})" v-for='item in templets'>-->
     <div class='templet' v-for='(item,index) in templets'>
       <div class="inner cd-flexbox"
            ref="customer"
-           @touchstart.stop.prevent="item.isSystem === '0'?touchstart(index,$event):toTempletDetail(item.isSystem, item.code)"
-           @touchmove.stop.prevent="item.isSystem === '0'?touchmove($event):toTempletDetail(item.isSystem, item.code)"
-           @touchend.stop.prevent="item.isSystem === '0'?touchend($event):toTempletDetail(item.isSystem, item.code)"
-           @click="toTempletDetail(item.isSystem, item.code)">
+           @touchstart.stop.prevent="item.isSystem === '0'?touchstart(index,$event):toTempletDetail(item.code)"
+           @touchmove.stop.prevent="item.isSystem === '0'?touchmove($event):toTempletDetail(item.code)"
+           @touchend.stop.prevent="item.isSystem === '0'?touchend($event):toTempletDetail(item.code)">
         <span class="type">{{item.name}}</span>
         <img src="./more-gray@2x.png" alt="" class="fr">
         <span class="fr price">{{item.totalPrice | formatAmount}}元</span>
       </div>
       <div class="delete" ref="deleteEle" @click="deleteItem(item)" v-if="item.isSystem === '0'">删除</div>
-
     </div>
-    <!--<div class="down" @click="$router.push({name:urlName,params:{changeFlag:true}})">-->
-    <div class="down" @click="$router.push('/my-templet/templet-details?changeFlag='+true)">
+    <router-link tag="div" to="/my-templet/templet-details" class="down">
       <button><span>创建模板</span></button>
-    </div>
+    </router-link>
     <toast ref="toast" text="删除成功"></toast>
+    <full-loading v-show="loadFlag"></full-loading>
     <router-view @addTemplet="addTemplet" @editTemplet="editTemplet"></router-view>
-
   </div>
 </template>
 <script>
   import Toast from 'base/toast/toast';
+  import FullLoading from 'base/full-loading/full-loading';
   import {setTitle} from 'common/js/util';
   import {queryTemplet, delTemplet} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
   import {prefixStyle} from 'common/js/dom';
+
   const transform = prefixStyle('transform');
   const transitionDuration = prefixStyle('transitionDuration');
   export default {
     mixins: [commonMixin],
     data() {
       return {
-        urlName: 'templet-details',
-        templets: [],
-        templet: [{
-          name: '基础模板',
-          price: 345
-        }, {
-          name: '小贷模板',
-          price: 456
-        }, {
-          name: '我的模板',
-          price: 128
-        }]
+        loadFlag: false,
+        templets: []
       };
     },
     created() {
@@ -70,15 +58,10 @@
       getInitData() {
         if (this.shouldGetData()) {
           this.first = false;
-          this.loadingFlag = true;
+          this.loadFlag = true;
           queryTemplet().then((data) => {
             this.loadFlag = false;
             this.templets = data.list;
-            for(let v of this.templets) {
-              if(v.isSystem === '0') {
-
-              }
-            }
           });
         }
       },
@@ -134,14 +117,14 @@
         this.$refs.customer[index].style[transform] = `translate3d(${offset}px,0,0)`;
         this.$refs.deleteEle[index].style['zIndex'] = -1;
       },
-      touchend(event) {
+      touchend() {
         const index = this.touch.currentIndex;
         let deltaX = this.touch[index].x2 - this.touch[index].x1;
 
         if (!this.touch.moved) {
           let deltaY = this.touch[index].y2 - this.touch[index].y1;
           if (Math.abs(deltaX) < 5 || Math.abs(deltaY)) {
-            this.$router.push('/my-templet/templet-details?isSys=' + this.templets[index].isSystem + '&code=' + this.templets[index].code + '&xiugai=' + true);
+            this.$router.push('/my-templet/templet-details?code=' + this.templets[index].code);
           }
           return;
         }
@@ -173,13 +156,14 @@
         this.$refs.deleteEle[index].style['zIndex'] = zIndex;
       },
       // 从模板点击进入模板详情
-      toTempletDetail(m, n) {
-        this.$router.push('/my-templet/templet-details?isSys=' + m + '&code=' + n + '&xiugai=' + true);
+      toTempletDetail(code) {
+        this.$router.push('/my-templet/templet-details?code=' + code);
       },
       nothing() {
       }
     },
     components: {
+      FullLoading,
       Toast
     }
   };

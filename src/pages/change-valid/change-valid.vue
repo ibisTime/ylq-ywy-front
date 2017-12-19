@@ -3,10 +3,7 @@
     <div class="form-wrapper">
       <div class="form-item border-bottom-1px">
         <div class="item-label">手机号</div>
-        <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入手机号">
-          <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
-        </div>
+        <div class="inner-label">{{mobile}}</div>
       </div>
       <div class="form-item">
         <div class="item-label">验证码</div>
@@ -18,67 +15,82 @@
           <button :disabled="sending" @click="sendCaptcha">{{captBtnText}}</button>
         </div>
       </div>
-      <div class="form-item border-bottom-1px">
-        <div class="item-label">新密码</div>
-        <div class="item-input-wrapper">
-          <input type="password" class="item-input" name="pwd" v-model="pwd" v-validate="'required|min:6'" placeholder="新密码不能少于6位">
-          <span v-show="errors.has('pwd')" class="error-tip">{{errors.first('pwd')}}</span>
-        </div>
-      </div>
       <div class="form-btn">
-        <button @click="resetPwd">重置</button>
+        <button @click="changeMobCaptValid">保存</button>
       </div>
-      <toast ref="toast" text="密码重置成功"></toast>
-      <full-loading v-show="loadFlag" title="重置中..."></full-loading>
+      <toast ref="toast" text="验证码错误"></toast>
+      <full-loading v-show="loadFlag" :title="loadText"></full-loading>
     </div>
   </div>
 </template>
 <script>
+  import {mapGetters, mapMutations} from 'vuex';
+  import {SET_USER} from 'store/mutation-types';
   import {sendCaptcha} from 'api/general';
-  import {resetPwd} from 'api/user';
+  import {getUser, changeMobCaptValid} from 'api/user';
   import {setTitle} from 'common/js/util';
   import {directiveMixin} from 'common/js/mixin';
-  import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
+  import Toast from 'base/toast/toast';
 
   export default {
     mixins: [directiveMixin],
     data() {
       return {
         sending: false,
-        loadFlag: false,
+        loadFlag: true,
+        loadText: '加载中...',
         captcha: '',
-        captBtnText: '获取验证码',
-        mobile: '',
-        pwd: ''
+        captBtnText: '获取验证码'
       };
     },
+    computed: {
+      mobile() {
+        return this.user && this.user.mobile || '';
+      },
+      ...mapGetters([
+        'user'
+      ])
+    },
     created() {
-      setTitle('找回密码');
+      setTitle('验证手机');
+      this.getUser().then(() => {
+        this.loadFlag = false;
+      }).catch(() => {
+        this.loadFlag = false;
+      });
     },
     methods: {
-      sendCaptcha() {
-        this.$validator.validate('mobile').then((result) => {
-          if (result) {
-            this.sending = true;
-            sendCaptcha(this.mobile, 805063).then(() => {
-              this._setInterval();
-            }).catch(() => {
-              this._clearInterval();
-            });
-          }
+      getUser() {
+        if (this.user) {
+          return Promise.resolve();
+        }
+        return getUser().then((data) => {
+          this.setUser(data);
         });
       },
-      resetPwd() {
+      sendCaptcha() {
+        if (this.mobile) {
+          this.sending = true;
+          sendCaptcha(this.mobile, 804082).then(() => {
+            this._setInterval();
+          }).catch(() => {
+            this._clearInterval();
+          });
+        }
+      },
+      changeMobCaptValid() {
         this.$validator.validateAll().then((result) => {
           if (result) {
+            this.loadText = '校验中...';
             this.loadFlag = true;
-            resetPwd(this.mobile, this.captcha, this.pwd).then(() => {
-              this.loadFlag = false;
-              this.$refs.toast.show();
-              setTimeout(() => {
-                this.$router.push('/login');
-              }, 500);
+            changeMobCaptValid(this.mobile, this.captcha, 804082).then((data) => {
+              if (data.isSuccess) {
+                this.loadFlag = false;
+                this.$router.replace('/user/setting/change-mobile');
+              } else {
+                this.$refs.toast.show();
+              }
             }).catch(() => {
               this.loadFlag = false;
             });
@@ -101,7 +113,10 @@
           this.sending = false;
           this.captBtnText = '获取验证码';
         }
-      }
+      },
+      ...mapMutations({
+        setUser: SET_USER
+      })
     },
     beforeDestroy() {
       this.timer && clearInterval(this.timer);
