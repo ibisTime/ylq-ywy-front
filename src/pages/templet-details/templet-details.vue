@@ -127,7 +127,7 @@
           }
         ],
         templetName: '我的模板',
-        totalPrice: '',
+        totalPrice: '21000',
         open: false,
         templetCode: '',
         isSys: '',
@@ -141,7 +141,7 @@
         return this.templetCode;
       },
       showSave() {
-        return this.isSys === '0' || !this.moren;
+        return this.isSys === '0' || (!this.moren && !this.templetCode);
       }
     },
     created() {
@@ -206,7 +206,8 @@
       },
       addTemplet() {
         this.getOpenInterface();
-        addTemplet(this.isDefault, this.templetName, this.openInterface).then(() => {
+        this.open = this.open ? '1' : '0';
+        addTemplet(this.open, this.templetName, this.openInterface).then(() => {
           this.showMsg('创建成功!');
           setTimeout(() => {
             this.$router.back();
@@ -242,9 +243,11 @@
       },
       // 修改默认模板
       editDefault() {
-        editIsDefault(this.templetCode).then(() => {
-          this.showMsg('修改成功!');
-        });
+        if(this.templetCode) {
+          editIsDefault(this.templetCode).then(() => {
+            this.showMsg('修改成功!');
+          });
+        }
       },
       // 获取打开的接口
       getOpenInterface() {

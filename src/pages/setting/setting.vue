@@ -41,7 +41,7 @@
       </div>
       <div class="service">
         <span>{{serviceTime.remark}}：{{serviceTime.cvalue}}</span><br>
-        <span>{{serviceTel.remark}}：{{serviceTel.cvalue}}</span>
+        <span>{{serviceTel.remark}}：<a :href="'tel:' +serviceTel.cvalue">{{serviceTel.cvalue}}</a></span>
       </div>
       <div class="button-wrapper" @click="logout">
         <button>退出登录</button>
