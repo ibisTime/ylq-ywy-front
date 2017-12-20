@@ -81,7 +81,10 @@
             this.loadFlag = true;
             this.loadText = '提交中...';
             certification(this.realname, this.idCard).then(() => {
-              this.setRealName(this.realname, this.idCard);
+              this.setRealName({
+                realName: this.realname,
+                idNo: this.idCard
+              });
               this.loadFlag = false;
               this.$refs.toast.show();
               setTimeout(() => {

@@ -22,7 +22,7 @@
       <div class="form-btn">
         <button @click="sendCilent">发送</button>
       </div>
-      <full-loading v-show="loadFlag" title="修改中..."></full-loading>
+      <full-loading v-show="loadFlag" title="发送中..."></full-loading>
     </div>
     <toast ref="toast" text="发送成功!"></toast>
     <confirm ref="confirm" text="确定发送报告吗？" @confirm="sendToClient"></confirm>
@@ -75,11 +75,15 @@
         });
       },
       sendToClient() {
+        this.loadFlag = true;
         sendToClient(this.captcha, this.mobile, this.modelCode).then(() => {
+          this.loadFlag = false;
           this.$refs.toast.show();
           setTimeout(() => {
             this.$router.back();
           }, 500);
+        }).catch(() => {
+          this.loadFlag = false;
         });
       },
       _setInterval() {

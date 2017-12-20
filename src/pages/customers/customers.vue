@@ -7,13 +7,12 @@
                  ref="customer"
                  @touchstart.stop.prevent="touchstart(index,$event)"
                  @touchmove.stop.prevent="touchmove($event)"
-                 @touchend.stop.prevent="touchend($event)" v-if="item.status === '0' || item.status === '1'">
+                 @touchend.stop.prevent="touchend($event)">
               <div class="status-icon">
                 <i class="circle-icon" v-show="item.status === '0'"></i>
                 <div class="cd-avatar-box">
-                  <!--<img src="./avatar.png" />-->
-                  <div class="status unread" v-if="item.status === '0'"></div>
-                  <div class="status read" v-if="item.status === '1'"></div>
+                  <div class="status unread" v-if="item.status === '0'">未读</div>
+                  <div class="status read" v-if="item.status === '1'">已读</div>
                 </div>
               </div>
               <div class="cd-flex1 cus-info">
@@ -236,15 +235,18 @@
             .cd-avatar-box {
               width: 100%;
               height: 0.9rem;
-              .status{
+              .status {
                 border-radius: 50%;
                 width: 100%;
                 height: 100%;
+                text-align: center;
+                line-height: 0.9rem;
+                color: #fff;
               }
-              .unread{
+              .unread {
                 background: #5ea3f2;
               }
-              .read{
+              .read {
                 background: #0cb8ae;
               }
             }

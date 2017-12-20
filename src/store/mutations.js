@@ -5,21 +5,25 @@ const mutations = {
     state.user = user;
   },
   [types.SET_USER_MOBILE](state, mobile) {
-    state.user = state.user || {};
-    state.user.mobile = mobile;
+    let user = state.user || {};
+    user.mobile = mobile;
+    state.user = user;
   },
   [types.SET_USER_NICKNAME](state, nickname) {
-    state.user = state.user || {};
-    state.user.nickname = nickname;
+    let user = state.user || {};
+    user.nickname = nickname;
+    state.user = user;
   },
   [types.SET_USER_AVATAR](state, photo) {
-    state.user = state.user || {};
-    state.user.photo = photo;
+    let user = state.user || {};
+    user.photo = photo;
+    state.user = user;
   },
-  [types.SET_USER_REALNAME](state, realName, idNo) {
-    state.user = state.user || {};
-    state.user.realName = realName;
-    state.user.idNo = idNo;
+  [types.SET_USER_REALNAME](state, { realName, idNo }) {
+    let user = state.user || {};
+    user.realName = realName;
+    user.idNo = idNo;
+    state.user = user;
   }
 };
 

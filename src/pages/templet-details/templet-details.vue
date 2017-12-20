@@ -39,7 +39,7 @@
              v-model="item.status"
              v-for="item in interface"
              @click="toInterfaceDetail(item.name,item.status)"
-             v-if="(item.status || showSave) ">
+             v-if="(item.status || showSave)">
           <img :src="item.src" class="littleIcon">
           <span class="type">{{item.text}}</span>
           <img src="./more-gray@2x.png" class="fr" :class="{vh:!showSave}">
@@ -172,7 +172,7 @@
             this.loadingFlag = false;
             setTimeout(() => {
               this.$refs.scroll.refresh();
-            }, 20);
+            }, 40);
           }).catch(() => {
             this.loadingFlag = false;
           });
@@ -206,8 +206,7 @@
       },
       addTemplet() {
         this.getOpenInterface();
-        this.open = this.open ? '1' : '0';
-        addTemplet(this.open, this.templetName, this.openInterface).then(() => {
+        addTemplet(this.open ? '1' : '0', this.templetName, this.openInterface).then(() => {
           this.showMsg('创建成功!');
           setTimeout(() => {
             this.$router.back();
