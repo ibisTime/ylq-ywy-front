@@ -65,7 +65,6 @@
     },
     created() {
       this.first = true;
-      setTitle('个人中心');
       this.getInitData();
     },
     updated() {
@@ -74,7 +73,7 @@
     methods: {
       shouldGetData() {
         if (this.$route.path === '/user') {
-          setTitle('我的客户');
+          setTitle('个人中心');
           return this.first;
         }
         return false;

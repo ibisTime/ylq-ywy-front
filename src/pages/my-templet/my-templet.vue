@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen-wrapper my-templet-wrapper">
-    <div class='templet' v-for='(item,index) in templets'>
+    <div class='templet' v-for='(item,index) in templets' :key="item.code">
       <div class="inner cd-flexbox"
            ref="customer"
            @touchstart.stop.prevent="item.isSystem === '0'?touchstart(index,$event):toTempletDetail(item.code)"
@@ -76,7 +76,7 @@
         });
       },
       deleteItem(item) {
-        delTemplet(item.code).then((data) => {
+        delTemplet(item.code).then(() => {
           this.$refs.toast.show();
           queryTemplet().then((data) => {
             this.loadFlag = false;

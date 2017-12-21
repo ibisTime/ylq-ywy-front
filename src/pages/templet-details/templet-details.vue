@@ -52,7 +52,7 @@
       <div class="down">
         <div class="two">
           <button v-if="showSend" @click="$router.push('/my-templet/templet-details/send-to-client?code='+templetCode)"><span>发送客户</span></button>
-          <button v-if="showSave" @click="templetCode?edit():addTemplet()"><span>保存</span></button>
+          <button v-if="showSave" class="needsclick" @click="save"><span>保存</span></button>
         </div>
       </div>
     </scroll>
@@ -66,6 +66,7 @@
   import FullLoading from 'base/full-loading/full-loading';
   import SwitchOption from 'base/switch-option/switch-option';
   import Toast from 'base/toast/toast';
+  import Loading from 'base/loading/loading';
   import {setTitle} from 'common/js/util';
   import {queryTempletDetail, queryMoren, addTemplet, editIsDefault, editTemplet} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
@@ -204,10 +205,14 @@
       changeName(n) {
         this.templetName = n.name;
       },
+      save() {
+        this.templetCode ? this.edit() : this.addTemplet();
+      },
       addTemplet() {
+        this.loadingFlag = true;
         this.getOpenInterface();
         addTemplet(this.open ? '1' : '0', this.templetName, this.openInterface).then(() => {
-          this.showMsg('创建成功!');
+          this.showMsg('创建成功!', 500);
           setTimeout(() => {
             this.$router.back();
           }, 500);
@@ -315,7 +320,8 @@
       Scroll,
       FullLoading,
       SwitchOption,
-      Toast
+      Toast,
+      Loading
     }
   };
 </script>
