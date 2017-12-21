@@ -57,7 +57,7 @@
       </div>
     </scroll>
     <toast ref="toast" :text="toastText" :delay="delay"></toast>
-    <full-loading v-show="loadingFlag"></full-loading>
+    <full-loading v-show="loadingFlag" text="保存中..."></full-loading>
     <router-view @changeTemplet="changeTemplet" @changeName="changeName"></router-view>
   </div>
 </template>
@@ -211,12 +211,15 @@
       addTemplet() {
         this.loadingFlag = true;
         this.getOpenInterface();
-        addTemplet(this.open ? '1' : '0', this.templetName, this.openInterface).then(() => {
+        addTemplet(this.open ? '1' : '0', this.templetName, this.openInterface).then((data) => {
+          this.loadingFlag = false;
           this.showMsg('创建成功!', 500);
           setTimeout(() => {
             this.$router.back();
           }, 500);
           this.$emit('addTemplet');
+        }).catch(() => {
+          this.loadingFlag = false;
         });
       },
       // 修改是否默认时触发的事件
@@ -236,13 +239,17 @@
       },
       // 修改模板
       edit() {
+        this.loadingFlag = true;
         this.getOpenInterface();
         editTemplet(this.templetCode, this.templetName, this.openInterface).then(() => {
+          this.loadingFlag = false;
           this.showMsg('修改成功!');
           setTimeout(() => {
             this.$router.back();
           }, 500);
           this.$emit('editTemplet');
+        }).catch(() => {
+          this.loadingFlag = false;
         });
       },
       // 修改默认模板

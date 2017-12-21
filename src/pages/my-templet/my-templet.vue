@@ -2,7 +2,7 @@
   <div class="full-screen-wrapper my-templet-wrapper">
     <div class='templet' v-for='(item,index) in templets' :key="item.code">
       <div class="inner cd-flexbox"
-           ref="customer"
+           :ref="'customer'+index"
            @touchstart.stop.prevent="item.isSystem === '0'?touchstart(index,$event):toTempletDetail(item.code)"
            @touchmove.stop.prevent="item.isSystem === '0'?touchmove($event):toTempletDetail(item.code)"
            @touchend.stop.prevent="item.isSystem === '0'?touchend($event):toTempletDetail(item.code)">
@@ -10,7 +10,7 @@
         <img src="./more-gray@2x.png" alt="" class="fr">
         <span class="fr price">{{item.totalPrice | formatAmount}}元</span>
       </div>
-      <div class="delete" ref="deleteEle" @click="deleteItem(item)" v-if="item.isSystem === '0'">删除</div>
+      <div class="delete" ref="deleteEle" @click="deleteItem(item, index)" v-if="item.isSystem === '0'">删除</div>
     </div>
     <router-link tag="div" to="/my-templet/templet-details" class="down">
       <button><span>创建模板</span></button>
@@ -75,8 +75,9 @@
           this.templets = data.list;
         });
       },
-      deleteItem(item) {
+      deleteItem(item, index) {
         delTemplet(item.code).then(() => {
+          this.touch[index].offset = 0;
           this.$refs.toast.show();
           queryTemplet().then((data) => {
             this.loadFlag = false;
@@ -114,7 +115,8 @@
           this.touch.moved = true;
         }
         let offset = this.touch[index].offset + deltaX;
-        this.$refs.customer[index].style[transform] = `translate3d(${offset}px,0,0)`;
+//        this.$refs.customer[index].style[transform] = `translate3d(${offset}px,0,0)`;
+        this.$refs['customer' + index][0].style[transform] = `translate3d(${offset}px,0,0)`;
         this.$refs.deleteEle[index].style['zIndex'] = -1;
       },
       touchend() {
@@ -128,7 +130,8 @@
           }
           return;
         }
-        const currentElem = this.$refs.customer[index];
+//        const currentElem = this.$refs.customer[index];
+        const currentElem = this.$refs['customer' + index][0];
         let zIndex = -1;
 
         if (deltaX <= 0) {
