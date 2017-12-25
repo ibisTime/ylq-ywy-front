@@ -75,11 +75,22 @@ export function delTemplet(code) {
 }
 
 /**
- * 查询接口
+ * 详情查询接口
  * @param {string} code
  */
 export function queryInterface(code) {
   return fetch(805226, { code });
+}
+
+/***
+ * 分页查接口
+ * @param name
+ */
+export function getInterface() {
+  return fetch(805225, {
+    start: 1,
+    limit: 100
+  });
 }
 
 /**
@@ -141,3 +152,10 @@ export function transmitReport(mobile, password, reportCode) {
   });
 }
 
+// export function transmitReport(mobile, password, reportCode) {
+//   return fetch(805300, {
+//     mobile,
+//     password,
+//     reportCode
+//   });
+// }

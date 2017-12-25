@@ -68,7 +68,7 @@
   import Toast from 'base/toast/toast';
   import Loading from 'base/loading/loading';
   import {setTitle} from 'common/js/util';
-  import {queryTempletDetail, queryMoren, addTemplet, editIsDefault, editTemplet} from 'api/biz';
+  import {queryTempletDetail, queryMoren, addTemplet, editIsDefault, editTemplet, getInterface} from 'api/biz';
   import {commonMixin} from 'common/js/mixin';
   export default {
     mixins: [commonMixin],
@@ -128,7 +128,7 @@
           }
         ],
         templetName: '我的模板',
-        totalPrice: '21000',
+        totalPrice: '',
         open: false,
         templetCode: '',
         isSys: '',
@@ -315,6 +315,13 @@
         if (this.moren) {
           return this.morenTemplet();
         }
+        getInterface().then((data) => {
+          for(let v of data.list) {
+            if(v.code === 'F1' || v.code === 'F2' || v.code === 'F3') {
+              this.totalPrice = (+this.totalPrice) + v.price;
+            }
+          }
+        });
         return Promise.resolve();
       },
       showMsg(msg, delay) {
