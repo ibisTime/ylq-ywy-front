@@ -5,7 +5,7 @@
       </slot>
     </div>
     <div class="dots" v-if="showDots">
-      <span class="dot" v-for="(item, index) in dots" :key="index" :class="{active: currentPageIndex === index}"></span>
+      <span class="dot" v-for="(item, index) in dots" :class="{active: currentPageIndex === index}"></span>
     </div>
   </div>
 </template>
@@ -44,18 +44,7 @@
       }
     },
     mounted() {
-      setTimeout(() => {
-        this._setSliderWidth();
-        if (this.showDots) {
-          this._initDots();
-        }
-        this._initSlider();
-
-        if(this.autoPlay) {
-          this._play();
-        }
-      }, 20);
-
+      this.update();
       window.addEventListener('resize', () => {
         if (!this.slider || !this.slider.enabled) {
           return;
@@ -74,12 +63,32 @@
       });
     },
     methods: {
+      update() {
+        if (this.slider) {
+          this.slider.destroy();
+        }
+        this.$nextTick(() => {
+          this.init();
+        });
+      },
       refresh() {
         this._setSliderWidth(true);
         this.slider.refresh();
       },
       next() {
         this.slider.next();
+      },
+      init() {
+        clearTimeout(this.timer);
+        this.currentPageIndex = 0;
+        this._setSliderWidth();
+        if (this.showDots) {
+          this._initDots();
+        }
+        this._initSlider();
+        if (this.autoPlay) {
+          this._play();
+        }
       },
       _setSliderWidth(isResize) {
         this.children = this.$refs.sliderGroup.children;
@@ -99,9 +108,6 @@
         }
         this.$refs.sliderGroup.style.width = width + 'px';
       },
-      _initDots() {
-        this.dots = new Array(this.children.length);
-      },
       _initSlider() {
         this.slider = new BScroll(this.$refs.slider, {
           scrollX: true,
@@ -112,6 +118,7 @@
             threshold: 0.3,
             speed: 400
           },
+          bounce: false,
           click: this.click
         });
         this.slider.on('scrollEnd', this._onScrollEnd);
@@ -129,22 +136,19 @@
         });
       },
       _onScrollEnd() {
-//        debugger;
         let pageIndex = this.slider.getCurrentPage().pageX;
-        if(this.loop) {
-          pageIndex -= 1;
-        }
         this.currentPageIndex = pageIndex;
-
         if(this.autoPlay) {
           this._play();
         }
       },
+      _initDots() {
+        this.dots = new Array(this.children.length);
+      },
       _play() {
-        let pageIndex = this.slider.getCurrentPage().pageX + 1;
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-          this.slider.goToPage(pageIndex, 0, 400);
+          this.slider.next();
         }, this.interval);
       }
     },
@@ -162,13 +166,7 @@
       }
       this.slider.enable();
       let pageIndex = this.slider.getCurrentPage().pageX;
-      if (pageIndex > this.dots.length) {
-        pageIndex = pageIndex % this.dots.length;
-      }
       this.slider.goToPage(pageIndex, 0, 0);
-      if (this.loop) {
-        pageIndex -= 1;
-      }
       this.currentPageIndex = pageIndex;
       if (this.autoPlay) {
         this._play();

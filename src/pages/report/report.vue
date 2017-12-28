@@ -12,18 +12,24 @@
       <hygz-list :data="hygzList" @reload="refresh"></hygz-list>
       <qz-list :data="qzList" @reload="refresh"></qz-list>
       <td-list :data="tdInfo" @reload="refresh"></td-list>
+      <remark-list :data="remarkList" @reload="refresh"></remark-list>
       <div class="inner-height"></div>
     </scroll>
-    <div class="button">
+    <div class="button cd-flexbox">
       <button @click="toTransmit"><span>转发报告</span></button>
+      <button @click="showRemark"><span>添加备注</span></button>
     </div>
-    <full-loading v-show="loadFlag"></full-loading>
+    <full-loading v-show="loadFlag" :title="loadTip"></full-loading>
+    <confirm ref="confirm" :text="remarkTpl" :isHtml="isHtml" @confirm="addRemark"></confirm>
+    <toast ref="toast" :text="tip"></toast>
     <router-view></router-view>
   </div>
 </template>
 <script>
   import FullLoading from 'base/full-loading/full-loading';
+  import Confirm from 'base/confirm/confirm';
   import Scroll from 'base/scroll/scroll';
+  import Toast from 'base/toast/toast';
   import SjrzList from 'components/sjrz-list/sjrz-list';
   import ZmrzList from 'components/zmrz-list/zmrz-list';
   import JbxxList from 'components/jbxx-list/jbxx-list';
@@ -35,14 +41,17 @@
   import HygzList from 'components/hygz-list/hygz-list';
   import QzList from 'components/qz-list/qz-list';
   import TdList from 'components/td-list/td-list';
+  import RemarkList from 'components/remark-list/remark-list';
   import {setTitle} from 'common/js/util';
-  import {getReport} from 'api/biz';
+  import {getReport, addRemark} from 'api/biz';
   import {getDictList} from 'api/general';
 
   export default {
     data() {
       return {
         loadFlag: true,
+        loadTip: '加载中...',
+        tip: '',
         sjrzInfo: null,
         zmrzInfo: null,
         jbxxList: null,
@@ -54,18 +63,26 @@
         hygzList: null,
         hygzDict: null,
         qzList: null,
-        tdInfo: null
+        tdInfo: null,
+        remarkList: null
       };
     },
     created() {
+      this.isHtml = true;
       this.pullUpLoad = null;
+      this.remarkTpl = '<textarea ref="textarea" class="cd-w100" rows="2" placeholder="请输入备注信息"></textarea>';
       setTitle('调查报告');
       Promise.all([
         this.getReport(),
         this.getDictList()
       ]).then(() => {
         this.loadFlag = false;
-      }).catch(() => {
+      }).catch((msg) => {
+        if (msg === '报告已过期,不能查看') {
+          setTimeout(() => {
+            this.$router.back();
+          }, 200);
+        }
         this.loadFlag = false;
       });
     },
@@ -95,6 +112,8 @@
           this.qzList = this.getDataByKey('PZM7', data);
           // 同盾
           this.tdInfo = this.getDataByKey('PTD8', data);
+          // 备注
+          this.remarkList = data['reportRemarkList'];
         });
       },
       getDictList() {
@@ -144,11 +163,47 @@
       },
       toTransmit() {
         this.$router.push(this.$route.path + '/transmit');
+      },
+      showRemark() {
+        this.$refs.confirm.show();
+        let $textarea = this.$refs.confirm.$el.getElementsByTagName('textarea')[0];
+        $textarea.value = '';
+        setTimeout(() => {
+          $textarea.focus();
+        }, 300);
+      },
+      addRemark() {
+        let value = this.$refs.confirm.$el.getElementsByTagName('textarea')[0].value;
+        if (value) {
+          this.loadTip = '添加中...';
+          this.loadFlag = true;
+          addRemark(value, this.$route.params.code).then((data) => {
+            this.loadFlag = false;
+            if (data.isSuccess) {
+              this.tip = '备注添加成功';
+              this.remarkList = this.remarkList || [];
+              this.remarkList.push({
+                createDatetime: Date.now(),
+                remark: value
+              });
+            } else {
+              this.tip = '备注添加失败';
+            }
+            this.$refs.toast.show();
+          }).catch(() => {
+            this.loadFlag = false;
+          });
+        } else {
+          this.tip = '备注不能为空';
+          this.$refs.toast.show();
+        }
       }
     },
     components: {
-      Scroll,
       FullLoading,
+      Confirm,
+      Scroll,
+      Toast,
       SjrzList,
       ZmrzList,
       JbxxList,
@@ -159,7 +214,8 @@
       ZmfList,
       HygzList,
       QzList,
-      TdList
+      TdList,
+      RemarkList
     }
   };
 </script>
@@ -182,14 +238,17 @@
         height: 0.9rem;
         background: $primary-color;
         border-radius: 0.1rem ;
-
+        margin-right: 0.15rem;
+        &+button {
+          margin-right: 0;
+          margin-left: 0.15rem;
+        }
         span {
           color: #fff;
           font-size: $font-size-large-s;
         }
       }
     }
-
     .split-bar {
       padding: 0 0.3rem;
       line-height: 0.8rem;

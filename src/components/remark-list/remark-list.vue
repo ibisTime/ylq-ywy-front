@@ -1,34 +1,33 @@
 <template>
-  <div class="qz-list-wrapper" v-show="data">
-    <split-bar @toggle="toggle" :isHide="isHide" title="欺诈认证"></split-bar>
+  <div class="remark-list-wrapper" v-show="data">
+    <split-bar @toggle="toggle" :isHide="isHide" title="备注"></split-bar>
     <div class="list-wrap" ref="listWrap" :class="{hide: isHide}">
-      <div class="list-item border-bottom-1px">
-         <p>评分：{{score}}</p>
+      <div v-if="data && !data.length" class="list-item border-bottom-1px">
+        <p>暂无备注</p>
       </div>
-      <div class="list-item border-bottom-1px">
-         <p>欺诈关注清单是否命中：{{hit ? '命中' : '未命中'}}</p>
-      </div>
-      <template v-if="qzList.length">
-        <div v-for="cont in qzList" class="list-item border-bottom-1px">{{cont}}</div>
+      <template v-if="data && data.length">
+        <div v-for="item in data" class="list-item cd-flexbox border-bottom-1px">
+          <div class="desc cd-flex1">{{item.remark}}</div>
+          <div class="title">{{item.createDatetime | formatDate('yyyy-MM-dd hh:mm')}}</div>
+        </div>
       </template>
     </div>
   </div>
 </template>
 <script>
   import SplitBar from 'components/split-bar/split-bar';
+  import {commonMixin} from 'common/js/mixin';
 
   export default {
+    mixins: [commonMixin],
     props: {
       data: {
-        type: Object,
+        type: Array,
         default: null
       }
     },
     data() {
       return {
-        qzList: [],
-        hit: false,
-        score: '',
         isHide: false
       };
     },
@@ -38,22 +37,19 @@
         setTimeout(() => {
           this.$emit('reload');
         }, 300);
-      },
-      analyzeQzList(newData) {
-        if (newData) {
-          this.hit = newData.hit === 'yes';
-          this.score = newData.score;
-          this.qzList = newData.verifyInfoList;
-          setTimeout(() => {
-            this.$refs.listWrap.style.height = this.$refs.listWrap.clientHeight + 'px';
-          }, 40);
-          this.$emit('reload');
-        }
       }
     },
     watch: {
       data(newData) {
-        this.analyzeQzList(newData);
+        if (newData) {
+          setTimeout(() => {
+            this.$refs.listWrap.style.height = 'auto';
+            setTimeout(() => {
+              this.$refs.listWrap.style.height = this.$refs.listWrap.clientHeight + 'px';
+            }, 20);
+          }, 40);
+          this.$emit('reload');
+        }
       }
     },
     components: {
@@ -65,7 +61,7 @@
   @import "~common/scss/variable";
   @import "~common/scss/mixin";
 
-  .qz-list-wrapper {
+  .remark-list-wrapper {
     background-color: #fff;
     .list-wrap {
       padding-left: 0.3rem;
@@ -81,6 +77,13 @@
         @include border-bottom-1px($color-border);
         &:last-child {
           @include border-none();
+        }
+        .title {
+          flex: 0 0 9.2em;
+          text-align: right;
+        }
+        .desc {
+          word-break: break-all;
         }
       }
     }

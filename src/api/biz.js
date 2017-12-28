@@ -135,7 +135,7 @@ export function getPageCustomers(start, limit) {
  * @param {string} reportCode
  */
 export function getReport(reportCode) {
-  return fetch(805331, {reportCode});
+  return fetch(805331, { reportCode });
 }
 
 /**
@@ -152,10 +152,15 @@ export function transmitReport(mobile, password, reportCode) {
   });
 }
 
-// export function transmitReport(mobile, password, reportCode) {
-//   return fetch(805300, {
-//     mobile,
-//     password,
-//     reportCode
-//   });
-// }
+/**
+ * 给报告添加备注
+ * @param remark
+ * @param reportCode
+ */
+export function addRemark (remark, reportCode) {
+  return fetch(805301, {
+    remark,
+    reportCode,
+    creater: getUserId()
+  });
+}

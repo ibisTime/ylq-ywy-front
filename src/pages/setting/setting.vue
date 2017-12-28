@@ -39,10 +39,6 @@
           关于我们<i class="right-arrow-gray"></i>
         </router-link>
       </div>
-      <div class="service">
-        <span>{{serviceTime.remark}}：{{serviceTime.cvalue}}</span><br>
-        <span>{{serviceTel.remark}}：<a :href="'tel:' +serviceTel.cvalue">{{serviceTel.cvalue}}</a></span>
-      </div>
       <div class="button-wrapper" @click="logout">
         <button>退出登录</button>
       </div>
@@ -63,7 +59,7 @@
   import {SET_USER, SET_USER_AVATAR} from 'store/mutation-types';
   import {setTitle, clearUser, formatAvatar, getImgData} from 'common/js/util';
   import {getUser, changeAvatar} from 'api/user';
-  import {getQiniuToken, getServiceTime, getServiceTel} from 'api/general';
+  import {getQiniuToken} from 'api/general';
   import {mapGetters, mapMutations} from 'vuex';
 
   export default {
@@ -107,7 +103,6 @@
         if (this.shouldGetData()) {
           this.first = false;
           this._getUser();
-          this.getService();
         }
       },
       shouldGetData() {
@@ -134,14 +129,6 @@
         }
         return getUser().then((data) => {
           this.setUser(data);
-        });
-      },
-      getService() {
-        getServiceTime('time').then((data) => {
-          this.serviceTime = data;
-          getServiceTel('telephone').then((data) => {
-            this.serviceTel = data;
-          });
         });
       },
       goCertification() {
@@ -350,16 +337,6 @@
         font-size: $font-size-large-s;
         color: #fff;
         background-color: $primary-color;
-      }
-    }
-    .service{
-      margin-top: 0.5rem;
-      width: 100%;
-      height: 1rem;
-      text-align: center;
-      span{
-        line-height: 0.5rem;
-        font-size: 0.28rem;
       }
     }
   }

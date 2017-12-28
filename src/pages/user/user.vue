@@ -13,7 +13,7 @@
       <div class="main-cont cd-bg-fff">
         <router-link to='/user/service' tag='div' class="line-item cd-flexbox cd-align-center">
           <div class="icon-money"></div>
-          <div class="price cd-flex1"><label>人民币</label>{{amount | formatAmount}}元</div>
+          <div class="price cd-flex1"><label>橙券</label>{{amount | formatAmount}}</div>
           <div class="right-arrow right-arrow-gray"></div>
         </router-link>
         <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/bills')">
@@ -22,11 +22,19 @@
           <div class="right-arrow right-arrow-gray"></div>
         </div>
         <div class="bill-flow border-top-1px" v-show="flowList.length">
-          <div class="bill-item cd-flexbox cd-align-center" v-for="item in flowList">
-            <div class="bill-name cd-flex1">{{item.bizNote}}</div>
-            <div class="bill-price">{{item.transAmount | formatFlowAmount}}元</div>
-            <div class="bill-datetime">{{item.createDatetime | formatDate}}</div>
-          </div>
+          <ul>
+            <li class="border-bottom-1px" v-for="item in flowList">
+              <div class="date">
+                <div class="day">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
+                <div class="time">{{item.createDatetime | formatDate('hh:mm')}}</div>
+              </div>
+              <div class="icon" :class="iconCls(item.transAmount)"></div>
+              <div class="info over-hide">
+                <p class="trans-amount" :class="iconCls(item.transAmount)">{{item.transAmount | formatFlowAmount}}</p>
+                <p class="note over-hide">{{item.bizNote}}</p>
+              </div>
+            </li>
+          </ul>
         </div>
         <full-loading v-show="loadingFlag"></full-loading>
       </div>
@@ -116,6 +124,9 @@
         }
         return formatAvatar(this.preview || this.user.photo);
       },
+      iconCls(amount) {
+        return amount >= 0 ? 'in' : 'out';
+      },
       ...mapMutations({
         'setUser': SET_USER
       })
@@ -197,17 +208,54 @@
     .bill-flow {
       padding: 0.05rem 0;
       @include border-top-1px($color-border);
-      .bill-item {
-        line-height: 1.3;
-        padding: 0.1rem 0;
-        font-size: $font-size-medium-s;
-        .bill-price {
-          padding: 0 0.2rem;
-          text-align: center;
-          white-space: nowrap;
-        }
-        .bill-datetime {
-          white-space: nowrap;
+      ul {
+        li {
+          display: flex;
+          align-items: flex-start;
+          padding: 0.2rem 0;
+          @include border-bottom-1px($color-border);
+          .date {
+            white-space: nowrap;
+            text-align: left;
+            .day {
+              padding-top: 0.04rem;
+              font-size: $font-size-medium-xx;
+            }
+            .time {
+              padding-top: 0.14rem;
+              font-size: $font-size-small;
+              color: $color-text-l;
+            }
+          }
+          .icon {
+            margin-left: 0.32rem;
+            flex: 0 0 0.72rem;
+            width: 0.72rem;
+            height: 0.72rem;
+            background-size: 100%;
+            &.in {
+              @include bg-image('in');
+            }
+            &.out {
+              @include bg-image('out');
+            }
+          }
+          .info {
+            padding-left: 0.32rem;
+            .note {
+              padding-top: 0.18rem;
+              line-height: 1.2;
+              word-break: break-all;
+              font-size: $font-size-small;
+            }
+            .trans-amount {
+              font-size: $font-size-large-s;
+              color: $color-red;
+              &.out {
+                color: $primary-color;
+              }
+            }
+          }
         }
       }
     }

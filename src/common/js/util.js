@@ -109,14 +109,18 @@ export function formatAmount(amount, len = 2) {
   return amount.toFixed(len);
 }
 
-// 判断是否 ios
-export const ISIOS = /(iphone|ipod|ipad)/i.test(navigator.userAgent);
+// 判断是否是windowsPhone
+export const deviceIsWindowsPhone = navigator.userAgent.indexOf('Windows Phone') >= 0;
+// 判断是否是Android
+export const deviceIsAndroid = navigator.userAgent.indexOf('Android') > 0 && !deviceIsWindowsPhone;
+// 判断是否是ios
+export const deviceIsIOS = /iP(ad|hone|od)/.test(navigator.userAgent) && !deviceIsWindowsPhone;
 
 // 微信设置页面标题
 export function setTitle(title) {
   if (document.title !== title) {
     document.title = title;
-    if (ISIOS) {
+    if (deviceIsIOS) {
       let iframe = document.createElement('iframe');
       iframe.src = '/static/zxzx.png';
       iframe.style.display = 'none';
@@ -203,59 +207,6 @@ export function getImgData(fileType, img, dir, next) {
   image.src = img;
 }
 
-// 设置微信登录时填写的手机号和验证码
-export function setWxMobAndCapt (mobile, captcha) {
-  sessionStorage.setItem('__mob__', mobile);
-  sessionStorage.setItem('__capt__', captcha);
-}
-
-// 获取微信登录时填写的手机号和验证码
-export function getWxMobAndCapt () {
-  let mobile = sessionStorage.getItem('__mob__');
-  let captcha = sessionStorage.getItem('__capt__');
-  sessionStorage.removeItem('__mob__');
-  sessionStorage.removeItem('__capt__');
-  if (mobile && captcha) {
-    return {
-      mobile,
-      captcha
-    };
-  }
-  return null;
-}
-
-// 校验短信验证码
-export function captValid(capt) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(capt)) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (!/^\d{4}$/.test(capt)) {
-    result.err = 1;
-    result.msg = '格式错误';
-  }
-  return result;
-}
-
-// 校验手机号
-export function mobileValid(mobile) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(mobile)) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (!/^1[3|4|5|7|8]\d{9}$/.test(mobile)) {
-    result.err = 1;
-    result.msg = '格式错误';
-  }
-  return result;
-}
-
 // 密码校验
 export function pwdValid(trade) {
   let result = {
@@ -288,73 +239,6 @@ export function rePwdValid(rePwd, pwd) {
   return result;
 }
 
-// 昵称校验
-export function nicknameValid(nickname) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(nickname)) {
-    result.err = 1;
-    result.msg = '昵称不能为空';
-  } else if (nickname.length > 10) {
-    result.err = 1;
-    result.msg = '昵称不能超过10位';
-  }
-  return result;
-}
-
-// 真实姓名校验
-export function realNameValid(realName) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(realName)) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (realName.length > 16) {
-    result.err = 1;
-    result.msg = '不能超过16位';
-  }
-  return result;
-}
-// 银行名称校验
-export function bankNameValid(bankName) {
-  return realNameValid(bankName);
-}
-// 支行校验
-export function subbranchValid(subbranch) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(subbranch)) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (subbranch.length > 255) {
-    result.err = 1;
-    result.msg = '不能超过255位';
-  }
-  return result;
-}
-
-// 银行卡号校验
-export function bankcardNumberValid(bankcardNumber) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(bankcardNumber)) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (!/^(\d{16}|\d{19})$/.test(bankcardNumber)) {
-    result.err = 1;
-    result.msg = '格式错误';
-  }
-  return result;
-}
-
 // 金额校验
 export function amountValid(amount) {
   let result = {
@@ -380,22 +264,6 @@ export function emptyValid(value) {
   if (isUnDefined(value)) {
     result.err = 1;
     result.msg = '不能为空';
-  }
-  return result;
-}
-
-// 地址校验
-export function addressValid(value) {
-  let result = {
-    err: 0,
-    msg: ''
-  };
-  if (isUnDefined(value)) {
-    result.err = 1;
-    result.msg = '不能为空';
-  } else if (value.length > 50) {
-    result.err = 1;
-    result.msg = '长度不能超过50位';
   }
   return result;
 }

@@ -2,7 +2,7 @@
     <div class="full-screen-wrapper home-wrapper">
       <scroll ref="scroll" :pullUpLoad="pullUpLoad">
         <div class="banner">
-          <slider v-if="banners.length" :loop="loop" id="slider">
+          <slider v-if="banners.length" :loop="loop" :showDots="showDots" id="slider">
             <div class="home-slider" v-for="item in banners" :key="item.code">
               <a :href="item.url||'javascript:void(0)'" :style="getImgSyl(item.pic)"></a>
             </div>
@@ -38,7 +38,7 @@
           </div>
         </div>
       </scroll>
-
+      <router-view></router-view>
     </div>
 </template>
 <script>
@@ -57,38 +57,38 @@
         }, {
           text: '资信跟踪',
           src: require('./信息跟踪@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
 
         }, {
           text: '资信联动',
           src: require('./资信联动@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
         }],
         items2: [{
           text: '资金代收',
           src: require('./资金代收@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
         }, {
           text: '资金代付',
           src: require('./资金代付@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
         }, {
           text: '资金账本',
           src: require('./资金账本@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
         }],
         items3: [{
           text: '补合同',
           src: require('./合同@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
         }, {
           text: '合同存管',
           src: require('./存管@2x.png'),
-          to: '/contact-business'
+          to: '/home/contact-business'
         }, {
           text: '更多',
           src: require('./more@2x.png'),
-          to: '/contact-business'
+          to: '/home/qrcode'
         }],
         pullUpLoad: null
       };
@@ -168,6 +168,7 @@
     }
     .banner {
       position: relative;
+      height: 3.5rem;
       .home-slider {
         a {
           width: 100%;

@@ -4,18 +4,24 @@
       <div class="rich-text-description" ref="description">
         <div class="content" v-html="cvalue"></div>
       </div>
+      <div class="service">
+        <span>服务时间：{{serviceTime}}</span><br>
+        <span>服务电话：<a :href="'tel:' +serviceTel">{{serviceTel}}</a></span>
+      </div>
     </scroll>
   </div>
 </template>
 <script>
   import {setTitle} from 'common/js/util';
-  import {getUserSystemConfig} from 'api/general';
+  import {getUserSystemConfig, getServiceTime, getServiceTel} from 'api/general';
   import Scroll from 'base/scroll/scroll';
   export default {
     data() {
       return {
         cvalue: '',
-        pullUpLoad: null
+        pullUpLoad: null,
+        serviceTime: '',
+        serviceTel: ''
       };
     },
     created() {
@@ -38,8 +44,12 @@
           this.first = false;
           this.loadingFlag = true;
           Promise.all([
-            this.getUserSystemConfig('aboutUs')
-          ]).then(() => {
+            this.getUserSystemConfig('aboutUs'),
+            getServiceTime('time'),
+            getServiceTel('telephone')
+          ]).then(([, r2, r3]) => {
+            this.serviceTime = r2.cvalue;
+            this.serviceTel = r3.cvalue;
             this.loadingFlag = false;
           }).catch(() => {
             this.loadingFlag = false;
@@ -83,7 +93,6 @@
   };
 </script>
 <style lang="scss" scoped>
-  @import "~common/scss/mixin";
   @import "~common/scss/variable";
 
   .home-wrapper {
@@ -92,20 +101,26 @@
     left: 0;
     width: 100%;
     height: 100%;
-    .fr{
+    .fr {
       float: right;
     }
-    .about-content{
+    .about-content {
       height: 100%;
       background: $color-background;
-      .rich-text-description{
-        height: 100%;
-        padding: 0;
-        margin: 0;
-        .content{
-          width: 100%;
-          padding: 0.3rem;
-        }
+    }
+    .service {
+      margin-top: 0.5rem;
+      width: 100%;
+      height: 1rem;
+      text-align: left;
+      padding: 0 0.3rem;
+      font-size: $font-size-small;
+
+      span {
+        line-height: 0.5rem;
+      }
+      a {
+        color: $color-text;
       }
     }
   }

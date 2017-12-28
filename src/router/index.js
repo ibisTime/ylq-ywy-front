@@ -53,6 +53,10 @@ const sendToClient = () => import('pages/send-to-client/send-to-client');
 const interfaceDetails = () => import('pages/interface-details/interface-details');
 // 联系商务
 const contactBusiness = () => import('pages/contact-business/contact-business');
+// app二维码
+const Qrcode = () => import('pages/qrcode/qrcode');
+// app下载页
+const Download = () => import('pages/download/download');
 
 export default new Router({
   mode: 'history',
@@ -62,7 +66,14 @@ export default new Router({
       redirect: '/home'
     }, {
       path: '/home',
-      component: Home
+      component: Home,
+      children: [{
+        path: 'qrcode',
+        component: Qrcode
+      }, {
+        path: 'contact-business',
+        component: contactBusiness
+      }]
     }, {
       path: '/my-templet',
       component: myTemplet,
@@ -90,9 +101,6 @@ export default new Router({
           }]
         }
       ]
-    }, {
-      path: '/contact-business',
-      component: contactBusiness
     }, {
       path: '/user',
       component: User,
@@ -160,6 +168,9 @@ export default new Router({
     }, {
       path: '/find-pwd',
       component: FindPwd
+    }, {
+      path: '/download',
+      component: Download
     }
   ]
 });

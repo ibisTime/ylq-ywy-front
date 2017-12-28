@@ -24,7 +24,8 @@
     },
     created() {
       if (!isLogin() && location.pathname !== '/find-pwd' &&
-        location.pathname !== '/login' && location.pathname !== '/register') {
+        location.pathname !== '/login' && location.pathname !== '/register' &&
+        location.pathname !== '/download') {
         this.$router.replace('/login');
       } else {
         this.loadingFlag = false;

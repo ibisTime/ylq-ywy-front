@@ -4,14 +4,14 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入您要发送的手机号">
+          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入对方业务员的手机号">
           <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
         </div>
       </div>
       <div class="form-item">
-        <div class="item-label">您的密码</div>
+        <div class="item-label">登录密码</div>
         <div class="item-input-wrapper">
-          <input type="password" class="item-input" name="pwd" v-model="pwd" v-validate="'required|min:6'" placeholder="请输入您的密码">
+          <input type="password" class="item-input" name="pwd" v-model="pwd" v-validate="'required|min:6'" placeholder="请输入您的登录密码">
           <span v-show="errors.has('pwd')" class="error-tip">{{errors.first('pwd')}}</span>
         </div>
       </div>

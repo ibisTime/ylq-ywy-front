@@ -4,7 +4,7 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">手机号</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入您要发送的手机号">
+          <input v-focus type="tel" class="item-input" name="mobile" v-model="mobile" v-validate="'required|mobile'" placeholder="请输入客户的手机号">
           <span v-show="errors.has('mobile')" class="error-tip">{{errors.first('mobile')}}</span>
         </div>
       </div>

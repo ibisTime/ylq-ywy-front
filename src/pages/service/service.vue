@@ -8,22 +8,24 @@
             <img src="./kefu.png">
           </div>
           <div class="desc">
-            <div class="info">微信ID：{{wxID}}</div>
+            <div class="info">微信ID：<label>{{wxID}}</label></div>
             <div class="info">加微信好友，和客服私聊哦^_^</div>
           </div>
         </div>
       </div>
       <div class="bottom">
-        <div class="qr-box" :style="getBg()"></div>
+        <div class="qr-box"><img :src="this.qrCode | formatImg"></div>
         <div class="text">或<span>微信扫一扫</span></div>
       </div>
     </div>
 </template>
 <script>
   import {getUserSystemConfig} from 'api/general';
-  import {setTitle, formatImg} from 'common/js/util';
+  import {setTitle} from 'common/js/util';
+  import {commonMixin} from 'common/js/mixin';
 
   export default {
+    mixins: [commonMixin],
     data() {
       return {
         wxID: '',
@@ -39,13 +41,6 @@
         this.wxID = cvalue.id;
         this.qrCode = cvalue.pic;
       });
-    },
-    methods: {
-      getBg() {
-        return {
-          backgroundImage: `url(${formatImg(this.qrCode)})`
-        };
-      }
     }
   };
 </script>
@@ -86,10 +81,12 @@
         width: 3.1rem;
         height: 3.1rem;
         margin: 0 auto;
-        box-shadow: 2px 2px 13px rgba(0,0,0,0.18);
-        background-position: center;
-        background-size: 86%;
-        background-repeat: no-repeat;
+        padding: 0.12rem;
+        box-shadow: 2px 2px 13px rgba(0, 0, 0, 0.18);
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .text {
         margin-top: 0.68rem;
