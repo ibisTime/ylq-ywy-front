@@ -23,7 +23,7 @@
     methods: {
       getImg() {
         return {
-          backgroundImage: `url(${this.icon || noImg})`
+          backgroundImage: `url('${this.icon || noImg}')`
         };
       }
     }

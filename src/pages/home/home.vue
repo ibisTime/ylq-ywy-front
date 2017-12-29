@@ -140,7 +140,7 @@
       },
       getImgSyl(imgs) {
         return {
-          backgroundImage: `url(${formatImg(imgs)})`
+          backgroundImage: `url('${formatImg(imgs)}')`
         };
       },
       getBanners() {

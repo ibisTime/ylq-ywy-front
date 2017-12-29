@@ -1,43 +1,45 @@
 <template>
     <div class="full-screen-wrapper user-wrapper">
-      <router-link tag="div" to="/user/setting" class="header">
-        <div class="cd-flexbox cd-align-center">
-          <div class="cd-avatar-box user-avatar"><img :src="getAvatar()"></div>
-          <div class="cd-flex1 user-message">
-            <p class="over-hide">{{nickname}}</p>
-            <p>{{mobile}}</p>
+      <scroll :hasMore="hasMore" :data="flowList">
+        <router-link tag="div" to="/user/setting" class="header">
+          <div class="cd-flexbox cd-align-center">
+            <div class="cd-avatar-box user-avatar"><img :src="getAvatar()"></div>
+            <div class="cd-flex1 user-message">
+              <p class="over-hide">{{nickname}}</p>
+              <p>{{mobile}}</p>
+            </div>
+            <div class="right-arrow"></div>
           </div>
-          <div class="right-arrow"></div>
-        </div>
-      </router-link>
-      <div class="main-cont cd-bg-fff">
-        <router-link to='/user/service' tag='div' class="line-item cd-flexbox cd-align-center">
-          <div class="icon-money"></div>
-          <div class="price cd-flex1"><label>橙券</label>{{amount | formatAmount}}</div>
-          <div class="right-arrow right-arrow-gray"></div>
         </router-link>
-        <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/bills')">
-          <div class="icon-bill"></div>
-          <div class="price cd-flex1"><label>账单</label></div>
-          <div class="right-arrow right-arrow-gray"></div>
+        <div class="main-cont cd-bg-fff">
+          <router-link to='/user/service' tag='div' class="line-item cd-flexbox cd-align-center">
+            <div class="icon-money"></div>
+            <div class="price cd-flex1"><label>橙券</label>{{amount | formatAmount}}</div>
+            <div class="right-arrow right-arrow-gray"></div>
+          </router-link>
+          <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/bills')">
+            <div class="icon-bill"></div>
+            <div class="price cd-flex1"><label>账单</label></div>
+            <div class="right-arrow right-arrow-gray"></div>
+          </div>
+          <div class="bill-flow border-top-1px" v-show="flowList.length">
+            <ul>
+              <li class="border-bottom-1px" v-for="item in flowList">
+                <div class="date">
+                  <div class="day">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
+                  <div class="time">{{item.createDatetime | formatDate('hh:mm')}}</div>
+                </div>
+                <div class="icon" :class="iconCls(item.transAmount)"></div>
+                <div class="info over-hide">
+                  <p class="trans-amount" :class="iconCls(item.transAmount)">{{item.transAmount | formatFlowAmount}}</p>
+                  <p class="note over-hide">{{item.bizNote}}</p>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div class="bill-flow border-top-1px" v-show="flowList.length">
-          <ul>
-            <li class="border-bottom-1px" v-for="item in flowList">
-              <div class="date">
-                <div class="day">{{item.createDatetime | formatDate('yy/MM/dd')}}</div>
-                <div class="time">{{item.createDatetime | formatDate('hh:mm')}}</div>
-              </div>
-              <div class="icon" :class="iconCls(item.transAmount)"></div>
-              <div class="info over-hide">
-                <p class="trans-amount" :class="iconCls(item.transAmount)">{{item.transAmount | formatFlowAmount}}</p>
-                <p class="note over-hide">{{item.bizNote}}</p>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <full-loading v-show="loadingFlag"></full-loading>
-      </div>
+      </scroll>
+      <full-loading v-show="loadingFlag"></full-loading>
       <router-view></router-view>
     </div>
 </template>
@@ -45,6 +47,7 @@
   import {mapGetters, mapMutations} from 'vuex';
   import {SET_USER} from 'store/mutation-types';
   import FullLoading from 'base/full-loading/full-loading';
+  import Scroll from 'base/scroll/scroll';
   import {setTitle, formatAvatar} from 'common/js/util';
   import {commonMixin} from 'common/js/mixin';
   import {getUser} from 'api/user';
@@ -73,6 +76,7 @@
     },
     created() {
       this.first = true;
+      this.hasMore = false;
       this.getInitData();
     },
     updated() {
@@ -115,7 +119,7 @@
           }
           getPageFlow(1, 10, this.accountNumber).then((data1) => {
             this.flowList = data1.list;
-          });
+          }).catch(() => {});
         });
       },
       getAvatar() {
@@ -132,6 +136,7 @@
       })
     },
     components: {
+      Scroll,
       FullLoading
     }
   };
@@ -214,6 +219,9 @@
           align-items: flex-start;
           padding: 0.2rem 0;
           @include border-bottom-1px($color-border);
+          &:last-child {
+            @include border-none();
+          }
           .date {
             white-space: nowrap;
             text-align: left;

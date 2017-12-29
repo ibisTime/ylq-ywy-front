@@ -34,13 +34,13 @@
     },
     computed: {
       identifyPic() {
-        return this.data ? { backgroundImage: `url(${formatImg(this.data.identifyPic)})` } : null;
+        return this.data ? { backgroundImage: `url('${formatImg(this.data.identifyPic)}')` } : null;
       },
       identifyPicReverse() {
-        return this.data ? { backgroundImage: `url(${formatImg(this.data.identifyPicReverse)})` } : null;
+        return this.data ? { backgroundImage: `url('${formatImg(this.data.identifyPicReverse)}')` } : null;
       },
       identifyPicHand() {
-        return this.data ? { backgroundImage: `url(${formatImg(this.data.identifyPicHand)})` } : null;
+        return this.data ? { backgroundImage: `url('${formatImg(this.data.identifyPicHand)}')` } : null;
       }
     },
     methods: {
