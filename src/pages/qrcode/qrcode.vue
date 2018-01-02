@@ -16,7 +16,12 @@
   </div>
 </template>
 <script>
-  export default {};
+  import {setTitle} from 'common/js/util';
+  export default {
+    create() {
+      setTitle('APP下载');
+    }
+  };
 </script>
 <style lang="scss" scoped>
   @import "~common/scss/mixin";

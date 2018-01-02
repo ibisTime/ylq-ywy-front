@@ -11,7 +11,11 @@
   </div>
 </template>
 <script>
+  import {setTitle} from 'common/js/util';
   export default {
+    create () {
+      setTitle('联系商务');
+    }
   };
 </script>
 <style lang="scss" scoped>
