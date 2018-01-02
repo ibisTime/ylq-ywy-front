@@ -1,21 +1,17 @@
 <template>
     <div class="full-screen-wrapper service-wrapper">
       <div class="top-cont">
-        <div class="inner border-bottom-1px">
+        <div class="inner">
           <div class="imgs">
             <img src="./weixin.png"/>
             <img class="arrow" src="./arrow.png"/>
             <img src="./kefu.png">
           </div>
-          <div class="desc">
-            <div class="info">微信ID：<label>{{wxID}}</label></div>
-            <div class="info">加微信好友，和客服私聊哦^_^</div>
-          </div>
         </div>
       </div>
       <div class="bottom">
         <div class="qr-box"><img :src="this.qrCode | formatImg"></div>
-        <div class="text">或<span>微信扫一扫</span></div>
+        <div class="text">长按识别二维码</span></div>
       </div>
     </div>
 </template>
@@ -53,9 +49,8 @@
     text-align: center;
     .top-cont {
       padding: 0 0.3rem;
-      @include border-bottom-1px($color-border);
       .imgs {
-        padding-top: 0.85rem;
+        padding-top: 1.85rem;
         font-size: 0;
         img {
           width: 1rem;
@@ -63,15 +58,6 @@
           &.arrow {
             margin: 0 0.45rem;
           }
-        }
-      }
-      .desc {
-        padding-top: 0.16rem;
-        padding-bottom: 0.94rem;
-        font-size: $font-size-medium-x;
-        .info {
-          margin-top: 0.48rem;
-          user-select: text;
         }
       }
     }

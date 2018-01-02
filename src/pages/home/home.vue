@@ -86,7 +86,7 @@
           src: require('./存管@2x.png'),
           to: '/home/contact-business'
         }, {
-          text: '更多',
+          text: 'APP下载',
           src: require('./more@2x.png'),
           to: '/home/qrcode'
         }],
