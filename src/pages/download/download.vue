@@ -30,7 +30,7 @@
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
   import {getUserSystemConfig} from 'api/general';
-  import {deviceIsIOS} from 'common/js/util';
+  import {setTitle, deviceIsIOS} from 'common/js/util';
 
   export default {
     data() {
@@ -48,6 +48,7 @@
       }
     },
     created() {
+      setTitle('APP下载');
       Promise.all([
         getUserSystemConfig('ios'),
         getUserSystemConfig('android')

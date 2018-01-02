@@ -30,7 +30,7 @@
       };
     },
     created() {
-      setTitle('接口详情');
+      setTitle('修改模板名称');
       let name = this.$route.query.name;
       // 将数据放在当前组件的数据内
       this.name = name;
