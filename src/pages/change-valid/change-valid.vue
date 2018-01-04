@@ -16,7 +16,7 @@
         </div>
       </div>
       <div class="form-btn">
-        <button @click="changeMobCaptValid">保存</button>
+        <button @click="changeMobCaptValid">下一步</button>
       </div>
       <toast ref="toast" text="验证码错误"></toast>
       <full-loading v-show="loadFlag" :title="loadText"></full-loading>
