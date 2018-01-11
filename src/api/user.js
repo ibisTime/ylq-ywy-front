@@ -4,16 +4,19 @@ import {getUserId} from 'common/js/util';
 
 /**
  * 用户手机号注册
- * @param {string} mobile
- * @param {string} smsCaptcha
- * @param {string} loginPwd
+ * @param mobile
+ * @param smsCaptcha
+ * @param loginPwd
+ * @param userReferee
  */
-export function register(mobile, smsCaptcha, loginPwd) {
+export function register(mobile, smsCaptcha, loginPwd, userReferee) {
   return fetch(805041, {
     kind: USER_KIND,
     mobile,
     smsCaptcha,
-    loginPwd
+    loginPwd,
+    userReferee: userReferee,
+    userRefereeKind: 'B'
   });
 }
 
@@ -180,4 +183,23 @@ export function saveLoginLog () {
     userId: getUserId()
   });
 }
+/** 修改模板名称
+ * @param code
+ * @param name
+ * @param updater
+ */
 
+export function changeTempletName(code, name) {
+  return fetch(805234, {
+    code: code,
+    name: name,
+    updater: getUserId()
+  });
+}
+
+/** 获取操作指南 */
+export function operationHelp() {
+  return fetch(805917, {
+    ckey: 'supportCenter'
+  });
+}

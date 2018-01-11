@@ -20,6 +20,7 @@
   import Toast from 'base/toast/toast';
   import FullLoading from 'base/full-loading/full-loading';
   import {setTitle} from 'common/js/util';
+  import {changeTempletName} from 'api/user';
 
   export default {
     data() {
@@ -32,15 +33,20 @@
     created() {
       setTitle('修改模板名称');
       let name = this.$route.query.name;
+      let code = this.$route.query.code;
       // 将数据放在当前组件的数据内
       this.name = name;
+      this.code = code;
     },
     methods: {
       changeName() {
         this.$validator.validateAll().then((result) => {
           if (result) {
-            this.$emit('changeName', {name: this.name});
-            this.$router.go(-1);
+            changeTempletName(this.code, this.name).then((data) => {
+              this.$refs.toast.show();
+              this.$emit('changeName', {name: this.name});
+              this.$router.go(-1);
+            });
           }
         });
       }

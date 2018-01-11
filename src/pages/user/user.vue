@@ -12,11 +12,22 @@
           </div>
         </router-link>
         <div class="main-cont cd-bg-fff">
-          <router-link to='/user/service' tag='div' class="line-item cd-flexbox cd-align-center">
+          <router-link to='/user/chengquan' tag='div' class="line-item cd-flexbox cd-align-center">
             <div class="icon-money"></div>
-            <div class="price cd-flex1"><label>橙券</label>{{amount | formatAmount}}</div>
-            <div class="right-arrow right-arrow-gray"></div>
+            <div class="price cd-flex1"><label>橙券</label>{{money | formatAmount}}</div>
+            <!--<div class="right-arrow right-arrow-gray"></div>-->
           </router-link>
+          <router-link to='/user/transfer' tag='div' class="line-item cd-flexbox cd-align-center w50">
+            <div class="price cd-flex1" style = "border-right: 1px solid #eee;"><label>转账</label></div>
+          </router-link>
+          <router-link to='/user/recharge' tag='div' class="line-item cd-flexbox cd-align-center w50">
+          <div class="price cd-flex1"><label>充值</label></div>
+        </router-link>
+          <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/help')">
+            <div class="icon-help"></div>
+            <div class="price cd-flex1"><label>帮助中心</label></div>
+            <div class="right-arrow right-arrow-gray"></div>
+          </div>
           <div class="line-item cd-flexbox cd-align-center" @click="$router.push('/user/bills')">
             <div class="icon-bill"></div>
             <div class="price cd-flex1"><label>账单</label></div>
@@ -45,7 +56,7 @@
 </template>
 <script>
   import {mapGetters, mapMutations} from 'vuex';
-  import {SET_USER} from 'store/mutation-types';
+  import {SET_USER, SET_ACCOUNT_MONEY} from 'store/mutation-types';
   import FullLoading from 'base/full-loading/full-loading';
   import Scroll from 'base/scroll/scroll';
   import {setTitle, formatAvatar} from 'common/js/util';
@@ -70,8 +81,12 @@
       mobile() {
         return this.user ? this.user.mobile : '';
       },
+      money() {
+        return this.account ? this.account.money : '';
+      },
       ...mapGetters([
-        'user'
+        'user',
+        'account'
       ])
     },
     created() {
@@ -115,6 +130,8 @@
             if (v.currency === 'CNY') {
               this.amount = v.amount;
               this.accountNumber = v.accountNumber;
+              this.setMoney(this.amount);
+              console.log(this.amount);
             }
           }
           getPageFlow(1, 10, this.accountNumber).then((data1) => {
@@ -132,7 +149,8 @@
         return amount >= 0 ? 'in' : 'out';
       },
       ...mapMutations({
-        'setUser': SET_USER
+        'setUser': SET_USER,
+        'setMoney': SET_ACCOUNT_MONEY
       })
     },
     components: {
@@ -185,10 +203,20 @@
     }
     .line-item {
       height: 1rem;
+      width: 100%;
+      /*border-bottom:1px solid #eee;*/
       .icon-money {
         height: 100%;
         width: 0.28rem;
         @include bg-image('money');
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 0.28rem;
+      }
+      .icon-help {
+        height: 100%;
+        width: 0.28rem;
+        @include bg-image('help');
         background-repeat: no-repeat;
         background-position: center;
         background-size: 0.28rem;
@@ -209,6 +237,11 @@
           font-size: $font-size-medium-x;
         }
       }
+    }
+    .w50 {
+      width: 50%;
+      float: left;
+      text-align: center;
     }
     .bill-flow {
       padding: 0.05rem 0;

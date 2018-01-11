@@ -164,3 +164,39 @@ export function addRemark (remark, reportCode) {
     creater: getUserId()
   });
 }
+
+/**
+ * 获取充值订单
+ */
+export function getOrders (accountNumber, start, limit, status) {
+  return fetch(802705, {
+    start: start,
+    limit: limit,
+    payAccountNumber: accountNumber,
+    status: status
+  });
+}
+
+/**
+ * 获取账单详情
+ * @param code
+ */
+export function getOrderDetail (code) {
+  return fetch(802706, {
+    code: code
+  });
+}
+/**
+ * 审核账单
+ * @param codeList
+ * @param payResult
+ * @param payNote
+ */
+export function check (codeList, payResult, payNote) {
+  return fetch(802701, {
+    codeList: codeList,
+    payUser: getUserId(),
+    payResult: payResult,
+    payNote: payNote
+  });
+}

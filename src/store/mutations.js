@@ -24,6 +24,16 @@ const mutations = {
     user.realName = realName;
     user.idNo = idNo;
     state.user = user;
+  },
+  [types.SET_ACCOUNT_MONEY](state, money) {
+    let account = state.account || {};
+    account.money = money;
+    state.account = account;
+  },
+  [types.CHANGE_ACCOUNT_MONEY](state, money) {
+    let account = state.account || {};
+    account.money -= money * 1000;
+    state.account = account;
   }
 };
 

@@ -25,6 +25,13 @@
           <span v-show="errors.has('pwd')" class="error-tip">{{errors.first('pwd')}}</span>
         </div>
       </div>
+      <div class="form-item border-bottom-1px">
+        <div class="item-label">推荐人</div>
+        <div class="item-input-wrapper">
+          <input v-focus type="tel" class="item-input" name="userReferee" v-model="userReferee" v-validate="'required|mobile'" placeholder="请输入推荐人手机号">
+          <span v-show="errors.has('userReferee')" class="error-tip">{{errors.first('userReferee')}}</span>
+        </div>
+      </div>
       <div class="form-btn">
         <button @click="register">注册</button>
       </div>
@@ -50,7 +57,8 @@
         captcha: '',
         captBtnText: '获取验证码',
         mobile: '',
-        pwd: ''
+        pwd: '',
+        userReferee: ''
       };
     },
     created() {
@@ -73,7 +81,7 @@
         this.$validator.validateAll().then((result) => {
           if (result) {
             this.loadFlag = true;
-            register(this.mobile, this.captcha, this.pwd).then(() => {
+            register(this.mobile, this.captcha, this.pwd, this.userReferee).then(() => {
               login(this.mobile, this.pwd).then((data) => {
                 setUser(data);
                 this.loadFlag = false;

@@ -15,15 +15,33 @@ export function getAccountInfo(accountNumber) {
   });
 }
 
-/**
- * 账户余额微信充值
- * @param params: {amount, openId, activityCode}
+/***
+ *  橙券充值
+ * @param amount
+ * @param remark
  */
-export function recharge(params) {
-  return fetch(802710, {
+export function recharge(amount, remark) {
+  return fetch(805370, {
+    bizType: 'ZXZX_ZZ',
+    userId: getUserId(),
+    amount: amount * 1000,
     applyUser: getUserId(),
-    channelType: 35,
-    ...params
+    applyNote: remark
+  });
+}
+/**
+ *  橙券转赠
+ * @param fromUserId
+ * @param mobile
+ * @param amount
+ */
+
+export function transfer(mobile, amount) {
+  return fetch(805084, {
+    fromUserId: getUserId(),
+    mobile: mobile,
+    kind: 'B',
+    amount: amount * 1000
   });
 }
 /**

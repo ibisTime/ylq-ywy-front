@@ -10,7 +10,7 @@
         </div>
         <div class="middle">
           <router-link tag="div" to="/my-templet/templet-details?moren=1" class="fl sendReport">
-            <span>发送报告</span>
+            <span>发起调查</span>
             <img src="./发送报告@2x.png" class="fr">
           </router-link>
           <router-link tag="div" to="/customers" class="fl myClient">
@@ -51,7 +51,7 @@
       return {
         banners: [],
         items1: [{
-          text: '资信报告',
+          text: '资信模板',
           src: require('./资信报告@2x.png'),
           to: '/my-templet'
         }, {
@@ -82,9 +82,9 @@
           src: require('./合同@2x.png'),
           to: '/home/contact-business'
         }, {
-          text: '合同存管',
+          text: '转赠处理',
           src: require('./存管@2x.png'),
-          to: '/home/contact-business'
+          to: '/home/orders'
         }, {
           text: 'APP下载',
           src: require('./more@2x.png'),

@@ -1,7 +1,7 @@
 <template>
   <div class="full-screen-wrapper templet-detail-wrapper">
     <scroll :pullUpLoad="pullUpLoad" ref="scroll">
-      <div class='templet' @click="toChangeName(templetName)">
+      <div class='templet' @click="toChangeName(templetName, templetCode)">
         <span class="type">模板名称</span>
         <img src="./more-gray@2x.png" class="fr" :class="{vh:!showSave}">
         <span class="status fr">{{templetName}}</span>
@@ -186,9 +186,9 @@
         }
       },
       // 去修改模板名称页面，传递当前模板名称
-      toChangeName(name) {
+      toChangeName(name, code) {
         if (this.showSave) {
-          this.$router.push('/my-templet/templet-details/change-templetname?name=' + name);
+          this.$router.push('/my-templet/templet-details/change-templetname?name=' + name + '&code=' + code);
         }
       },
       // 接口的启用与停用

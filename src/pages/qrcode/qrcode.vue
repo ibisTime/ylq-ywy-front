@@ -4,6 +4,9 @@
       <div class="inner-box">
         <img src="./qrcode.png" alt="app下载二维码">
       </div>
+      <div class="note">
+        <span>被调查人APP</span>
+      </div>
     </div>
     <div class="down-tip cd-flexbox cd-align-center cd-justify-center">
       <i></i><span>下载说明</span><i></i>
@@ -49,6 +52,15 @@
         img {
           width: 100%;
           height: 100%;
+        }
+      }
+      .note {
+        margin: 0 auto;
+        text-align: center;
+        padding-top:0.25rem;
+        span {
+          font-size: $font-size-medium-x;
+          color: red;
         }
       }
     }

@@ -1,6 +1,6 @@
 <template>
   <div class="full-screen-wrapper head-wrapper">
-    <scroll :hasMore="hasMore" :data="list">
+    <scroll :hasMore="hasMore" :data="list" @pullingUp="getPageFlow" >
       <ul>
         <li class="border-bottom-1px" v-for="item in list">
           <div class="date">
@@ -38,24 +38,26 @@
     },
     created() {
       getAccount().then((data) => {
-        let accountNumber;
         for(let v of data) {
           if (v.currency === 'CNY') {
-            accountNumber = v.accountNumber;
+            this.accountNumber = v.accountNumber;
           }
         }
-        getPageFlow(this.start, this.limit, accountNumber).then((res) => {
+        this.getPageFlow();
+      });
+    },
+    methods: {
+      iconCls(amount) {
+        return amount >= 0 ? 'in' : 'out';
+      },
+      getPageFlow() {
+        getPageFlow(this.start, this.limit, this.accountNumber).then((res) => {
           this.list = this.list.concat(res.list);
           if (res.totalPage <= this.start) {
             this.hasMore = false;
           }
           this.start++;
         });
-      });
-    },
-    methods: {
-      iconCls(amount) {
-        return amount >= 0 ? 'in' : 'out';
       }
     },
     components: {

@@ -8,6 +8,18 @@ const Home = () => import('pages/home/home');
 
 // 用户
 const User = () => import('pages/user/user');
+// 帮助中心
+const Help = () => import('pages/help/help');
+// 橙券充值
+const Recharge = () => import('pages/recharge/recharge');
+// 橙券转赠
+const Transfer = () => import('pages/transfer/transfer');
+// 操作指南
+const Question = () => import('pages/question/question');
+// 转增处理（充值订单）
+const Orders = () => import('pages/orders/orders');
+// 审核
+const Check = () => import('pages/check/check');
 // 账单
 const Bills = () => import('pages/bills/bills');
 // 设置
@@ -73,6 +85,13 @@ export default new Router({
       }, {
         path: 'contact-business',
         component: contactBusiness
+      }, {
+        path: 'orders',
+        component: Orders,
+        children: [{
+          path: 'check',
+          component: Check
+        }]
       }]
     }, {
       path: '/my-templet',
@@ -109,6 +128,12 @@ export default new Router({
           path: 'bills',
           component: Bills
         }, {
+          path: 'help',
+          component: Help
+        }, {
+          path: 'question',
+          component: Question
+        }, {
           path: 'setting',
           component: Setting,
           children: [
@@ -141,6 +166,12 @@ export default new Router({
         {
           path: 'service',
           component: Service
+        }, {
+          path: 'recharge',
+          component: Recharge
+        }, {
+          path: 'transfer',
+          component: Transfer
         }
       ]
     }, {
