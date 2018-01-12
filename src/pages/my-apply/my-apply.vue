@@ -9,13 +9,13 @@
     <div class="scroll-wrapper" v-if = "list.length">
       <scroll ref="scroll" :data="list" @pullingUp="getPageOrders" :hasMore="hasMore">
         <ul>
-          <li class="line-item cd-flexbox cd-align-center" v-for="item in list" @click="toCheck(item.code, 'myApply')">
+          <li class="line-item cd-flexbox cd-align-center" v-for="item in list" @click="toCheck(item.code)">
             <div class="date">
             <div class="day">{{item.applyDatetime | formatDate('yy/MM/dd')}}</div>
             <div class="time">{{item.applyDatetime | formatDate('hh:mm')}}</div>
             </div>
             <div class="date">
-              <div class="day">{{item.accountName}}</div>
+              <div class="day">{{item.payAccountName}}</div>
               <div class="time">{{item.bizNote}}</div>
             </div>
             <div class="info over-hide par0">
@@ -100,7 +100,7 @@
     methods: {
       shouldGetData() {
         if (this.$route.path === '/home/my-apply') {
-          setTitle('转赠处理');
+          setTitle('我的申请');
           return this.first;
         }
         return false;
@@ -123,8 +123,8 @@
           return data;
         });
       },
-      toCheck(code, from) {
-        this.$router.push('/home/orders/check?code=' + code + '&from=' + from);
+      toCheck(code) {
+        this.$router.push('/home/my-apply/check-apply?code=' + code);
       },
       nothing() {},
       toggleStatus(index) {
@@ -144,7 +144,6 @@
         for(let i = 0; i < this.orders[0].list.length; i++) {
           if (this.orders[0].list[i].code === n.code) {
             this.orders[0].list[i].status = nextStatus;
-            console.log(this.orders[0].list[i].status);
             break;
           }
         }

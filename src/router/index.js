@@ -21,7 +21,8 @@ const Orders = () => import('pages/orders/orders');
 // 我的申请 （充值订单）
 const Myapply = () => import('pages/my-apply/my-apply');
 // 审核
-const Check = () => import('pages/check/check');
+const CheckOrder = () => import('pages/check-order/check-order');
+const CheckApply = () => import('pages/check-apply/check-apply');
 // 账单
 const Bills = () => import('pages/bills/bills');
 // 设置
@@ -91,15 +92,15 @@ export default new Router({
         path: 'orders',
         component: Orders,
         children: [{
-          path: 'check',
-          component: Check
+          path: 'check-order',
+          component: CheckOrder
         }]
       }, {
         path: 'my-apply',
         component: Myapply,
         children: [{
-          path: 'check',
-          component: Check
+          path: 'check-apply',
+          component: CheckApply
         }]
       }]
     }, {

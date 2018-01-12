@@ -163,7 +163,6 @@
         this.$router.push('/my-templet/templet-details?code=' + code);
       },
       changeName(n) {
-//        console.log(n);
         for(let v of this.templets) {
           if(v.code === n.code) {
             v.name = n.name;

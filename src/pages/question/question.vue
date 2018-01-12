@@ -9,7 +9,7 @@
 </template>
 <script>
   import {setTitle} from 'common/js/util';
-  import {getUserSystemConfig, getServiceTime, getServiceTel} from 'api/general';
+  import {getUserSystemConfig} from 'api/general';
   import {operationHelp} from 'api/user';
   import Scroll from 'base/scroll/scroll';
   export default {
@@ -25,32 +25,9 @@
       operationHelp().then((data) => {
         this.cvalue = data.cvalue;
       });
+      setTitle('操作指南');
     },
     methods: {
-      shouldGetData() {
-        if (this.$route.path === '/user/setting/about-us') {
-          setTitle('关于我们');
-          return this.first;
-        }
-        return false;
-      },
-      getInitData() {
-        if (this.shouldGetData()) {
-          this.first = false;
-          this.loadingFlag = true;
-          Promise.all([
-            this.getUserSystemConfig('aboutUs'),
-            getServiceTime('time'),
-            getServiceTel('telephone')
-          ]).then(([, r2, r3]) => {
-            this.serviceTime = r2.cvalue;
-            this.serviceTel = r3.cvalue;
-            this.loadingFlag = false;
-          }).catch(() => {
-            this.loadingFlag = false;
-          });
-        }
-      },
       _refreshScroll() {
         setTimeout(() => {
           this.$refs.scroll.refresh();

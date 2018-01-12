@@ -28,7 +28,7 @@
       <div class="form-item border-bottom-1px">
         <div class="item-label">推荐人</div>
         <div class="item-input-wrapper">
-          <input v-focus type="tel" class="item-input" name="userReferee" v-model="userReferee" v-validate="'required|mobile'" placeholder="请输入推荐人手机号">
+          <input v-focus type="tel" class="item-input" name="userReferee" v-model="userReferee" v-validate="'required|mobile'" placeholder="请输入推荐人业务员的手机号">
           <span v-show="errors.has('userReferee')" class="error-tip">{{errors.first('userReferee')}}</span>
         </div>
       </div>

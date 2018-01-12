@@ -16,9 +16,9 @@
           </div>
         </div>
         <div class="form-item">
-          <div class="item-label">户名</div>
+          <div class="item-label">付款户名</div>
           <div class="item-input-wrapper">
-            {{details.accountName}}
+            {{details.payAccountName}}
           </div>
         </div>
         <div class="form-item">
@@ -57,21 +57,29 @@
             {{details.applyDatetime | formatDate('yyyy-MM-dd hh:mm:ss')}}
           </div>
         </div>
-        <div class="form-item" v-if="!(this.from === 'myApply' && this.details.status === '待处理')">
-          <div class="item-label">支付说明</div>
+        <div class="form-item" v-if="details.payUser">
+          <div class="item-label">审核人</div>
           <div class="item-input-wrapper">
-            <input type="text" class="item-input" name="payNote" v-model="payNote"  v-validate="'required'" placeholder="（必填）" v-if="showCheck">
-            <span v-if="!showCheck">{{details.payNote}}</span>
+            {{details.payUser}}
           </div>
         </div>
-        <toast ref="toast" text="提交成功"></toast>
+        <div class="form-item" v-if="details.payDatetime">
+          <div class="item-label">审核时间</div>
+          <div class="item-input-wrapper">
+            {{details.payDatetime | formatDate('yyyy-MM-dd hh:mm:ss')}}
+          </div>
+        </div>
+        <div class="form-item" v-if="showCheck">
+          <div class="item-label">支付说明</div>
+          <div class="item-input-wrapper">
+            <input type="text" class="item-input" name="payNote" v-model="payNote"  v-validate="'required'" placeholder="（必填）" v-if="!showNote">
+            <span v-if="showNote">{{details.payNote}}</span>
+          </div>
+        </div>
+        <toast ref="toast" :text="toastText"></toast>
         <full-loading v-show="loadFlag" title="修改中..."></full-loading>
       </div>
       </scroll>
-    </div>
-    <div class="buttons" v-if="showCheck">
-      <button class="start color1" @click="check(true)" >通过</button>
-      <button class="stop color2" @click="check(false)" >不通过</button>
     </div>
   </div>
 </template>
@@ -98,12 +106,16 @@
         code: '',
         details: {},
         detailsArr: [],
-        pullUpLoad: null
+        pullUpLoad: null,
+        toastText: ''
       };
     },
     computed: {
       showCheck() {
-        return this.from === 'myApply' ? 0 : this.details.status === '待处理' ? 1 : 0;
+        return this.details.status === '待处理' ? 0 : 1;
+      },
+      showNote() {
+        return this.details.payNote !== undefined ? 1 : 0;
       }
     },
     created() {
@@ -112,13 +124,7 @@
       this.code = this.$route.query.code;
       this.arr.push(this.code);
       this.status = this.$route.query.status === 'true';
-      this.from = this.$route.query.from;
-//      console.log(this.from);
       this.getOrderDetail();
-      console.log((this.from === 'myApply' && this.details.status === '待处理'));
-//      console.log(this.from === 'myApply');
-//      console.log(this.details);
-//      console.log(this.details.status === '1');
     },
     methods: {
       getDictList() {
@@ -129,7 +135,6 @@
             }
           }
         });
-//        console.log(this.details.bizType);
         getDictList('currency').then((data) => {
           for(let v of data) {
             if(v.dkey === this.details.currency) {
@@ -137,7 +142,6 @@
             }
           }
         });
-//        console.log(this.details.bizType);
         getDictList('channel_type').then((data) => {
           for(let v of data) {
             if(v.dkey === this.details.channelType) {
@@ -145,32 +149,34 @@
             }
           }
         });
-//        console.log(this.details.channelType);
         getDictList('charge_status').then((data) => {
           for(let v of data) {
             if(v.dkey === this.details.status) {
               this.details.status = v.dvalue;
-//              console.log(this.details.status);
             }
           }
         });
       },
       check(status) {
         this.payResult = status ? 1 : 0;
-        check(this.arr, this.payResult, this.payNote).then(() => {
+        if(this.payNote !== '') {
+          check(this.arr, this.payResult, this.payNote).then(() => {
+            this.toastText = '已审核';
+            this.$refs.toast.show();
+            this.$emit('checkResult', {status: status, code: this.details.code});
+            setTimeout(() => {
+              this.$router.back();
+            }, 500);
+          });
+        } else {
+          this.toastText = '必须填写支付说明';
           this.$refs.toast.show();
-          this.$emit('checkResult', {status: status, code: this.details.code});
-          setTimeout(() => {
-            this.$router.back();
-          }, 500);
-        });
+        }
       },
       getOrderDetail() {
         getOrderDetail(this.code).then((data) => {
           this.details = data;
-          console.log(this.details);
           this.detailsArr.push(this.details);
-//          console.log(this.details);
           if (data.user.kind === 'P') {
             this.details.applyUser = data.user.loginName;
           } else {

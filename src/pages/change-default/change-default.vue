@@ -42,7 +42,6 @@
     },
     methods: {
       changeDefault() {
-        console.log(this.isDefault);
 //        this.$emit('changeDefault', {name: this.name});
 //        this.$router.go(-1);
       },
