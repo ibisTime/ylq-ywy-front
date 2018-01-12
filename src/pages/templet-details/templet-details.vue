@@ -17,33 +17,14 @@
         <span class="type">使用的接口</span>
       </div>
       <div class="interfaces">
-        <div class="interface" >
-          <img src="./手机认证@2x.png" class="littleIcon">
-          <span class="type">手机认证</span>
-          <img src="./more-gray@2x.png" class="fr vh">
-          <span class="status fr">使用中</span>
-        </div>
-        <div class="interface">
-          <img src="./芝麻认证@2x.png" class="littleIcon">
-          <span class="type">芝麻认证</span>
-          <img src="./more-gray@2x.png" class="fr vh">
-          <span class="status fr">使用中</span>
-        </div>
-        <div class="interface" >
-          <img src="./基本信息@2x.png" class="littleIcon">
-          <span class="type">基本信息</span>
-          <img src="./more-gray@2x.png" class="fr vh">
-          <span class="status fr">使用中</span>
-        </div>
         <div class="interface"
              v-model="item.status"
-             v-for="item in interface"
-             @click="toInterfaceDetail(item.name,item.status)"
-             v-if="(item.status || showSave)">
-          <img :src="item.src" class="littleIcon">
-          <span class="type">{{item.text}}</span>
-          <img src="./more-gray@2x.png" class="fr" :class="{vh:!showSave}">
-          <span class="status fr" v-if="item.status">使用中</span>
+             v-for="item in interfaceDisplay"
+             @click="toInterfaceDetail(item.code,showStatus(item.code))">
+          <img :src="interface[item.code]" class="littleIcon">
+          <span class="type">{{item.name}}</span>
+          <img src="./more-gray@2x.png" class="fr" :class="{vh:isSys === '1' || item.code === 'F1' || item.code === 'F2' || item.code === 'F3'}">
+          <span class="status fr" v-if="isSys === '1' || showStatus(item.code)|| item.code === 'F1' || item.code === 'F2' || item.code === 'F3'">使用中</span>
         </div>
       </div>
       <div class="text">
@@ -76,57 +57,28 @@
       return {
         loadingFlag: false,
         interfaces: [],
-        interface: [
-          {
+        interface: {
+          'F1': require('./手机认证@2x.png'),
+          'F2': require('./芝麻认证@2x.png'),
+          'F3': require('./基本信息@2x.png'),
             // 1.身份证正反面
-            name: 'PID1',
-            status: false,
-            text: '身份证正反面',
-            src: require('./身份证@2x.png')
-          }, {
+          'PID1': require('./身份证@2x.png'),
             // 2.强制定位
-            name: 'PDW2',
-            status: false,
-            text: '强制定位',
-            src: require('./定位@2x.png')
-          }, {
+          'PDW2': require('./定位@2x.png'),
             // 3.通讯录认证
-            name: 'PTXL3',
-            stats: false,
-            text: '通讯录认证',
-            src: require('./通讯录@2x.png')
-          }, {
-            // 4.运营商认证
-            name: 'PYYS4',
-            status: false,
-            text: '运营商认证',
-            src: require('./运营商@2x.png')
-          }, {
-            // 5.芝麻信用认证
-            name: 'PZM5',
-            status: false,
-            text: '芝麻信用认证',
-            src: require('./芝麻分@2x.png')
-          }, {
-            // 6.行业关注清单认证
-            name: 'PZM6',
-            status: false,
-            text: '行业关注清单认证',
-            src: require('./行业关注名单@2x.png')
-          }, {
-            // 7.欺诈三接口认证
-            name: 'PZM7',
-            status: false,
-            text: '欺诈三接口认证',
-            src: require('./欺诈认证@2x.png')
-          }, {
-            // 8.同盾认证
-            name: 'PTD8',
-            status: null,
-            text: '同盾认证',
-            src: require('./同盾@2x.png')
-          }
-        ],
+          'PTXL3': require('./通讯录@2x.png'),
+          // 4.运营商认证
+          'PYYS4': require('./运营商@2x.png'),
+          // 5.芝麻信用认证
+          'PZM5': require('./芝麻分@2x.png'),
+          // 6.行业关注清单认证
+          'PZM6': require('./行业关注名单@2x.png'),
+          // 7.欺诈三接口认证
+          'PZM7': require('./欺诈认证@2x.png'),
+          // 8.同盾认证
+          'PTD8': require('./同盾@2x.png')
+        },
+        interfaceDisplay: [],
         templetName: '我的模板',
         totalPrice: '',
         open: false,
@@ -134,7 +86,10 @@
         isSys: '',
         moren: '',
         toastText: '',
-        delay: 1500
+        delay: 1500,
+        // 修改专用数组
+        changeArr: [],
+        openInterface: ''
       };
     },
     computed: {
@@ -179,6 +134,20 @@
           });
         }
       },
+      showUse(code) {
+        for(let v of this.interfaces) {
+          if(v === code) {
+            return true;
+          }
+        }
+      },
+      showStatus(code) {
+        for(let v of this.changeArr) {
+          if(v === code) {
+            return true;
+          }
+        }
+      },
       // 去接口的启用与停用页面，传递接口名与使用情况
       toInterfaceDetail(code, status) {
         if (this.showSave) {
@@ -195,22 +164,27 @@
       changeTemplet(n) {
         this.code = n.code || '';
         this.totalPrice = (+this.totalPrice) + n.price + '';
-        for (let v of this.interface) {
-          if (v.name === this.code) {
-            v.status = n.status || false;
+        if(n.status) {
+          this.changeArr.push(this.code);
+        }else {
+          for(var v in this.changeArr) {
+            if(this.changeArr[v] === this.code) {
+              this.changeArr.splice(v, 1);
+            }
           }
         }
       },
       // 修改模板名称
       changeName(n) {
         this.templetName = n.name;
+        this.$emit('changeName', {name: this.templetName, code: this.templetCode});
       },
       save() {
         this.templetCode ? this.edit() : this.addTemplet();
       },
       addTemplet() {
         this.loadingFlag = true;
-        this.getOpenInterface();
+        this.getOpenInterface('add');
         addTemplet(this.open ? '1' : '0', this.templetName, this.openInterface).then((data) => {
           this.loadingFlag = false;
           this.showMsg('创建成功!', 500);
@@ -240,7 +214,7 @@
       // 修改模板
       edit() {
         this.loadingFlag = true;
-        this.getOpenInterface();
+        this.getOpenInterface('edit');
         editTemplet(this.templetCode, this.templetName, this.openInterface).then(() => {
           this.loadingFlag = false;
           this.showMsg('修改成功!');
@@ -261,18 +235,29 @@
         }
       },
       // 获取打开的接口
-      getOpenInterface() {
+      getOpenInterface(event) {
         this.openInterface = '';
-        for (let v of this.interface) {
-          if (v.status) {
-            this.openInterface += v.name + ',';
+        if(event === 'edit') {
+          for(let i = 0; i < this.changeArr.length; i++) {
+            if(i === this.changeArr.length - 1) {
+              this.openInterface += this.changeArr[i];
+            }else {
+              this.openInterface += this.changeArr[i] + ',';
+            }
           }
+          return;
         }
-        if (this.openInterface) {
-          this.openInterface = 'F1,F2,F3,' + this.openInterface;
-          this.openInterface = this.openInterface.substring(0, this.openInterface.length - 1);
-        } else {
-          this.openInterface = 'F1,F2,F3' + this.openInterface;
+        if(this.changeArr.length) {
+          for(let i = 0; i < this.changeArr.length; i++) {
+            if(i === this.changeArr.length - 1) {
+              this.openInterface += this.changeArr[i];
+            }else {
+              this.openInterface += this.changeArr[i] + ',';
+            }
+            this.openInterface = 'F1,F2,F3,' + this.openInterface;
+          }
+        }else {
+          this.openInterface = 'F1,F2,F3';
         }
       },
       // 调用查询默认模板的接口
@@ -298,12 +283,30 @@
         }
         this.isSys = data.isSystem;
         this.templetName = data.name;
-        this.interfaces = data.portList;
+        this.interfaces = data.portList.split(',');
         this.totalPrice = data.totalPrice;
-        for (let v of this.interface) {
-          if (this.interfaces.indexOf(v.name) !== -1) {
-            v.status = true;
-          }
+        if(this.isSys === '0') {
+          getInterface().then((data) => {
+            this.interfaceDisplay = data.list.reverse();
+            for(let i of this.interfaceDisplay) {
+              for(let v of this.interfaces) {
+                if(i.code === v) {
+                  this.changeArr.push(v);
+                }
+              }
+            }
+          });
+        }else {
+          getInterface().then((data) => {
+            for(let i of data.list) {
+              for(let v of this.interfaces) {
+                if(i.code === v) {
+                  this.interfaceDisplay.unshift(i);
+                }
+              }
+            }
+//            this.interfaceDisplay
+          });
         }
       },
       createMethod() {
@@ -315,7 +318,9 @@
         if (this.moren) {
           return this.morenTemplet();
         }
+        // 计算价格
         getInterface().then((data) => {
+          this.interfaceDisplay = data.list.reverse();
           for(let v of data.list) {
             if(v.code === 'F1' || v.code === 'F2' || v.code === 'F3') {
               this.totalPrice = (+this.totalPrice) + v.price;

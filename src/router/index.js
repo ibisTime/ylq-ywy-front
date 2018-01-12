@@ -18,6 +18,8 @@ const Transfer = () => import('pages/transfer/transfer');
 const Question = () => import('pages/question/question');
 // 转增处理（充值订单）
 const Orders = () => import('pages/orders/orders');
+// 我的申请 （充值订单）
+const Myapply = () => import('pages/my-apply/my-apply');
 // 审核
 const Check = () => import('pages/check/check');
 // 账单
@@ -88,6 +90,13 @@ export default new Router({
       }, {
         path: 'orders',
         component: Orders,
+        children: [{
+          path: 'check',
+          component: Check
+        }]
+      }, {
+        path: 'my-apply',
+        component: Myapply,
         children: [{
           path: 'check',
           component: Check

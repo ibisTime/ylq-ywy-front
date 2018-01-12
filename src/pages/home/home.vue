@@ -78,9 +78,9 @@
           to: '/home/contact-business'
         }],
         items3: [{
-          text: '补合同',
+          text: '我的申请',
           src: require('./合同@2x.png'),
-          to: '/home/contact-business'
+          to: '/home/my-apply'
         }, {
           text: '转赠处理',
           src: require('./存管@2x.png'),

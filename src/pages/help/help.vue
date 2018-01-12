@@ -74,20 +74,26 @@
         border-bottom: 1px solid #eee;
         background: #fff;
         .icon-help {
-          height: 100%;
-          width: 0.28rem;
-          @include bg-image('question');
+          height: 0.36rem;
+          width: 0.36rem;
+          background-image: url('./question@3x.png');
           background-repeat: no-repeat;
-          background-position: center;
-          background-size: 0.28rem;
+          /*background-position: center;*/
+          background-size: 0.36rem;
+          margin-left: 0.1rem;
+          /*margin-top:0.32rem;*/
+          box-sizing: border-box;
         }
         .icon-service {
-          height: 100%;
-          width: 0.28rem;
-          @include bg-image('service');
+          height: 0.36rem;
+          width: 0.36rem;
+          background-image: url('./service@3x.png');
           background-repeat: no-repeat;
-          background-position: center;
-          background-size: 0.28rem;
+          /*background-position: center;*/
+          background-size: 0.36rem;
+          margin-left: 0.1rem;
+          /*margin-top:0.32rem;*/
+          box-sizing: border-box;
         }
         .price {
           margin-left: 0.2rem;

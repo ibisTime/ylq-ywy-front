@@ -9,7 +9,7 @@
         </div>
       </div>
       <div class="form-btn">
-        <button @click="changeName">确定</button>
+        <button @click="changeName()">确定</button>
       </div>
       <toast ref="toast" text="修改成功"></toast>
       <full-loading v-show="loadFlag" title="修改中..."></full-loading>
@@ -40,15 +40,20 @@
     },
     methods: {
       changeName() {
-        this.$validator.validateAll().then((result) => {
-          if (result) {
-            changeTempletName(this.code, this.name).then((data) => {
-              this.$refs.toast.show();
-              this.$emit('changeName', {name: this.name});
-              this.$router.go(-1);
-            });
-          }
-        });
+        if(this.code) {
+          this.$validator.validateAll().then((result) => {
+            if (result) {
+              changeTempletName(this.code, this.name).then((data) => {
+                this.$refs.toast.show();
+                this.$emit('changeName', {name: this.name});
+                this.$router.go(-1);
+              });
+            }
+          });
+        } else {
+          this.$emit('changeName', {name: this.name});
+          this.$router.go(-1);
+        }
       }
     },
     components: {

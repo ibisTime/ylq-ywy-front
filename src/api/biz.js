@@ -178,6 +178,17 @@ export function getOrders (accountNumber, start, limit, status) {
 }
 
 /**
+ * 获取我的充值订单
+ */
+export function getOrders1 (accountNumber, start, limit, status) {
+  return fetch(802705, {
+    start: start,
+    limit: limit,
+    accountNumber: accountNumber,
+    status: status
+  });
+}
+/**
  * 获取账单详情
  * @param code
  */

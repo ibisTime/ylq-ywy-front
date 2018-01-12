@@ -12,11 +12,11 @@
           </div>
         </router-link>
         <div class="main-cont cd-bg-fff">
-          <router-link to='/user/chengquan' tag='div' class="line-item cd-flexbox cd-align-center">
+          <div class="line-item cd-flexbox cd-align-center">
             <div class="icon-money"></div>
             <div class="price cd-flex1"><label>橙券</label>{{money | formatAmount}}</div>
             <!--<div class="right-arrow right-arrow-gray"></div>-->
-          </router-link>
+          </div>
           <router-link to='/user/transfer' tag='div' class="line-item cd-flexbox cd-align-center w50">
             <div class="price cd-flex1" style = "border-right: 1px solid #eee;"><label>转账</label></div>
           </router-link>
@@ -51,7 +51,7 @@
         </div>
       </scroll>
       <full-loading v-show="loadingFlag"></full-loading>
-      <router-view></router-view>
+      <router-view @transfer="transfer"></router-view>
     </div>
 </template>
 <script>
@@ -131,7 +131,6 @@
               this.amount = v.amount;
               this.accountNumber = v.accountNumber;
               this.setMoney(this.amount);
-              console.log(this.amount);
             }
           }
           getPageFlow(1, 10, this.accountNumber).then((data1) => {
@@ -147,6 +146,16 @@
       },
       iconCls(amount) {
         return amount >= 0 ? 'in' : 'out';
+      },
+      transfer() {
+        Promise.all([
+          this.queryUser(),
+          this.getAccount()
+        ]).then(() => {
+          this.loadingFlag = false;
+        }).catch(() => {
+          this.loadingFlag = false;
+        });
       },
       ...mapMutations({
         'setUser': SET_USER,

@@ -40,21 +40,9 @@
           </div>
         </div>
         <div class="form-item">
-          <div class="item-label">付款户名</div>
-          <div class="item-input-wrapper">
-            {{details.payAccountName}}
-          </div>
-        </div>
-        <div class="form-item">
           <div class="item-label">状态</div>
           <div class="item-input-wrapper">
             {{details.status}}
-          </div>
-        </div>
-        <div class="form-item">
-          <div class="item-label">支付渠道</div>
-          <div class="item-input-wrapper">
-            {{details.channelType}}
           </div>
         </div>
         <div class="form-item">
@@ -66,43 +54,13 @@
         <div class="form-item">
           <div class="item-label">申请时间</div>
           <div class="item-input-wrapper">
-            {{details.applyDatetime | formatDate('yy/MM/dd')}}
+            {{details.applyDatetime | formatDate('yyyy-MM-dd hh:mm:ss')}}
           </div>
         </div>
-        <div class="form-item">
-          <div class="item-label">申请时间</div>
-          <div class="item-input-wrapper">
-            {{details.applyDatetime | formatDate('yy/MM/dd')}}
-          </div>
-        </div>
-        <div class="form-item">
-          <div class="item-label">申请时间</div>
-          <div class="item-input-wrapper">
-            {{details.applyDatetime | formatDate('yy/MM/dd')}}
-          </div>
-        </div>
-        <div class="form-item">
-          <div class="item-label">申请时间</div>
-          <div class="item-input-wrapper">
-            {{details.applyDatetime | formatDate('yy/MM/dd')}}
-          </div>
-        </div>
-        <div class="form-item">
-          <div class="item-label">申请时间</div>
-          <div class="item-input-wrapper">
-            {{details.applyDatetime | formatDate('yy/MM/dd')}}
-          </div>
-        </div>
-        <div class="form-item">
-          <div class="item-label">申请时间</div>
-          <div class="item-input-wrapper">
-            {{details.applyDatetime | formatDate('yy/MM/dd')}}
-          </div>
-        </div>
-        <div class="form-item">
+        <div class="form-item" v-if="!(this.from === 'myApply' && this.details.status === '待处理')">
           <div class="item-label">支付说明</div>
           <div class="item-input-wrapper">
-            <input type="tel" class="item-input" name="payNote" v-model="payNote"  v-validate="'required'" placeholder="（必填）" v-if="showCheck">
+            <input type="text" class="item-input" name="payNote" v-model="payNote"  v-validate="'required'" placeholder="（必填）" v-if="showCheck">
             <span v-if="!showCheck">{{details.payNote}}</span>
           </div>
         </div>
@@ -145,7 +103,7 @@
     },
     computed: {
       showCheck() {
-        return this.details.status === '待处理' ? 1 : 0;
+        return this.from === 'myApply' ? 0 : this.details.status === '待处理' ? 1 : 0;
       }
     },
     created() {
@@ -154,7 +112,13 @@
       this.code = this.$route.query.code;
       this.arr.push(this.code);
       this.status = this.$route.query.status === 'true';
+      this.from = this.$route.query.from;
+//      console.log(this.from);
       this.getOrderDetail();
+      console.log((this.from === 'myApply' && this.details.status === '待处理'));
+//      console.log(this.from === 'myApply');
+//      console.log(this.details);
+//      console.log(this.details.status === '1');
     },
     methods: {
       getDictList() {
@@ -204,6 +168,7 @@
       getOrderDetail() {
         getOrderDetail(this.code).then((data) => {
           this.details = data;
+          console.log(this.details);
           this.detailsArr.push(this.details);
 //          console.log(this.details);
           if (data.user.kind === 'P') {

@@ -17,7 +17,7 @@
     </router-link>
     <toast ref="toast" text="删除成功"></toast>
     <full-loading v-show="loadFlag"></full-loading>
-    <router-view @addTemplet="addTemplet" @editTemplet="editTemplet"></router-view>
+    <router-view @addTemplet="addTemplet" @editTemplet="editTemplet" @changeName="changeName"></router-view>
   </div>
 </template>
 <script>
@@ -161,6 +161,14 @@
       // 从模板点击进入模板详情
       toTempletDetail(code) {
         this.$router.push('/my-templet/templet-details?code=' + code);
+      },
+      changeName(n) {
+//        console.log(n);
+        for(let v of this.templets) {
+          if(v.code === n.code) {
+            v.name = n.name;
+          }
+        }
       }
     },
     components: {

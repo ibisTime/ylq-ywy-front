@@ -9,7 +9,7 @@
     <div class="scroll-wrapper" v-if = "list.length">
       <scroll ref="scroll" :data="list" @pullingUp="getPageOrders" :hasMore="hasMore">
         <ul>
-          <li class="line-item cd-flexbox cd-align-center" v-for="item in list" @click="toCheck(item.code, 'orders')">
+          <li class="line-item cd-flexbox cd-align-center" v-for="item in list" @click="toCheck(item.code, 'myApply')">
             <div class="date">
             <div class="day">{{item.applyDatetime | formatDate('yy/MM/dd')}}</div>
             <div class="time">{{item.applyDatetime | formatDate('hh:mm')}}</div>
@@ -37,7 +37,7 @@
 <script>
   import Scroll from 'base/scroll/scroll';
   import NoResult from 'base/no-result/no-result';
-  import {getOrders} from 'api/biz';
+  import {getOrders1} from 'api/biz';
   import {getAccount} from 'api/account';
   import {getDictList} from 'api/general';
   import {commonMixin} from 'common/js/mixin';
@@ -99,7 +99,7 @@
     },
     methods: {
       shouldGetData() {
-        if (this.$route.path === '/home/orders') {
+        if (this.$route.path === '/home/my-apply') {
           setTitle('转赠处理');
           return this.first;
         }
@@ -156,7 +156,7 @@
       getPageOrders() {
         let index = this.tabIndex;
         let { config } = this.orders[index];
-        getOrders(this.accountNumber, config.start, config.limit, config.status).then((data) => {
+        getOrders1(this.accountNumber, config.start, config.limit, config.status).then((data) => {
           this.orders[index].list = this.orders[index].list.concat(data.list);
           this.orders[index].hasMore = config.start < data.totalPage;
           this.orders[index].config.start++;
