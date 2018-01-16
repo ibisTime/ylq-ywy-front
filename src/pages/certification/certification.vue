@@ -13,7 +13,7 @@
         <div class="item-label">身份证号</div>
         <div v-if="isRead" class="inner-label">{{idCard}}</div>
         <div v-else class="item-input-wrapper">
-          <input type="number" class="item-input" name="idCard" v-model="idCard" v-validate="'required|idCard'" placeholder="请输入身份证号">
+          <input type="text" class="item-input" name="idCard" v-model="idCard" v-validate="'required|idCard'" placeholder="请输入身份证号">
           <span v-show="errors.has('idCard')" class="error-tip">{{errors.first('idCard')}}</span>
         </div>
       </div>
